@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./shield.svg" />
-    <link rel="alternate icon" href="./icons/icon-192.png" type="image/png" />
-    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
-    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/Civic-Hero/assets/shield-B7kdeZTI.svg" />
+    <link rel="alternate icon" href="/Civic-Hero/assets/icon-192-D0BqYHLL.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/Civic-Hero/assets/apple-touch-icon-C43jlt4a.png" />
+    <link rel="manifest" href="/Civic-Hero/assets/manifest-CvnXEMnv.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
     <!-- PWA & Mobile Web App Meta Tags -->
@@ -25,15 +25,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="./assets/index-DkKsp5zv.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-XCDpGW83.css">
+    <script type="module" crossorigin src="/Civic-Hero/assets/index-BRWRphe3.js"></script>
+    <link rel="stylesheet" crossorigin href="/Civic-Hero/assets/index-yV29Jgkg.css">
   </head>
   <body class="bg-slate-950 text-slate-900 antialiased selection:bg-emerald-500 selection:text-white">
     <div id="root"></div>
     <script>
       if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
+          navigator.serviceWorker.register('./sw.js')
             .then((reg) => console.log('Civic Hero Service Worker registered:', reg.scope))
             .catch((err) => console.warn('Service Worker registration skipped:', err));
         });

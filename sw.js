@@ -1,28 +1,44 @@
-const CACHE_NAME = 'civic-hero-cache-v1';
+const CACHE_NAME = 'civic-hero-cache-v3';
+
+// Dynamically determine the base scope (e.g. '/Civic-Hero/' on GitHub Pages or '/' on localhost)
+const getBaseScope = () => {
+  try {
+    const scope = self.registration ? self.registration.scope : self.location.href;
+    const url = new URL(scope);
+    return url.pathname.endsWith('/') ? url.pathname : url.pathname + '/';
+  } catch {
+    return '/Civic-Hero/';
+  }
+};
+
+const BASE = getBaseScope();
+
 const PRECACHE_URLS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/shield.svg',
-  '/issues/pothole.jpg',
-  '/issues/garbage.jpg',
-  '/issues/waterleak.jpg',
-  '/issues/streetlight.jpg',
-  '/issues/drain.jpg',
-  '/issues/pothole_after.jpg',
-  '/issues/garbage_after.jpg',
-  '/issues/waterleak_after.jpg',
-  '/issues/streetlight_after.jpg',
-  '/issues/drain_after.jpg'
+  BASE,
+  BASE + 'index.html',
+  BASE + 'manifest.json',
+  BASE + 'shield.svg',
+  BASE + 'icons/icon-192.png',
+  BASE + 'icons/icon-512.png',
+  BASE + 'issues/pothole.jpg',
+  BASE + 'issues/garbage.jpg',
+  BASE + 'issues/waterleak.jpg',
+  BASE + 'issues/streetlight.jpg',
+  BASE + 'issues/drain.jpg',
+  BASE + 'issues/pothole_after.jpg',
+  BASE + 'issues/garbage_after.jpg',
+  BASE + 'issues/waterleak_after.jpg',
+  BASE + 'issues/streetlight_after.jpg',
+  BASE + 'issues/drain_after.jpg'
 ];
 
 // Install: precache key assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_URLS).catch((err) => {
-        console.warn('Pre-caching partial failure:', err);
-      });
+      return Promise.allSettled(
+        PRECACHE_URLS.map((url) => cache.add(url).catch((e) => console.warn('Pre-cache skip:', url, e)))
+      );
     }).then(() => self.skipWaiting())
   );
 });
@@ -50,8 +66,8 @@ self.addEventListener('fetch', (event) => {
 
   // Handle image and static asset caching
   if (
-    url.pathname.startsWith('/issues/') ||
-    url.pathname.startsWith('/icons/') ||
+    url.pathname.includes('/issues/') ||
+    url.pathname.includes('/icons/') ||
     url.pathname.endsWith('.svg') ||
     url.pathname.endsWith('.png') ||
     url.pathname.endsWith('.jpg') ||
@@ -61,7 +77,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
         if (cachedResponse) {
-          // Fetch update in background (stale-while-revalidate)
+          // Background revalidation
           fetch(event.request).then((networkResponse) => {
             if (networkResponse && networkResponse.status === 200) {
               caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
@@ -80,8 +96,7 @@ self.addEventListener('fetch', (event) => {
           });
           return networkResponse;
         }).catch(() => {
-          // Offline fallback
-          return caches.match('/shield.svg');
+          return caches.match(BASE + 'shield.svg');
         });
       })
     );
@@ -92,7 +107,7 @@ self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(() => {
-        return caches.match('/index.html');
+        return caches.match(BASE + 'index.html');
       })
     );
     return;
