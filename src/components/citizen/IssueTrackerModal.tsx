@@ -180,22 +180,37 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
               )}
             </div>
           ) : (
-            /* Single Before Photo */
-            <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm aspect-video bg-slate-900">
-              <img
-                src={issue.photoUrl}
-                alt={issue.title}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  const fallback = getAssetUrl('issues/garbage.jpg');
-                  if (target.src !== fallback) target.src = fallback;
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-              <span className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[11px] font-semibold px-2 py-0.5 rounded">
-                Report Photo • {issue.createdAt}
-              </span>
+            /* Single or Multi-Photo Evidence */
+            <div className="space-y-2">
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm aspect-video bg-slate-900">
+                <img
+                  src={issue.photoUrl}
+                  alt={issue.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    const fallback = getAssetUrl('issues/garbage.jpg');
+                    if (target.src !== fallback) target.src = fallback;
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                <span className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[11px] font-semibold px-2 py-0.5 rounded">
+                  Report Photo • {issue.createdAt}
+                </span>
+              </div>
+
+              {issue.photos && issue.photos.length > 1 && (
+                <div className="grid grid-cols-3 gap-2 pt-1">
+                  {issue.photos.map((p, idx) => (
+                    <div key={idx} className="relative rounded-xl overflow-hidden border border-slate-200 aspect-video bg-slate-100">
+                      <img src={p} alt={`Evidence ${idx + 1}`} className="w-full h-full object-cover" />
+                      <span className="absolute bottom-0.5 left-0.5 bg-black/70 text-white text-[8px] font-bold px-1 rounded">
+                        #{idx + 1}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

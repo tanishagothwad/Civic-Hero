@@ -69,10 +69,13 @@ interface AppContextType {
   createReport: (data: {
     title: string;
     category: IssueCategory;
+    customCategory?: string;
     severity: IssueSeverity;
     description: string;
     photoUrl: string;
+    photos?: string[];
     voiceNoteTranscription?: string;
+    includeReporterContact?: boolean;
     location: {
       address: string;
       ward: string;
@@ -385,10 +388,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const createReport = (data: {
     title: string;
     category: IssueCategory;
+    customCategory?: string;
     severity: IssueSeverity;
     description: string;
     photoUrl: string;
+    photos?: string[];
     voiceNoteTranscription?: string;
+    includeReporterContact?: boolean;
     location: {
       address: string;
       ward: string;
@@ -400,17 +406,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newId = 'civic-' + (issues.length + 101);
     const newTicket = `BLR-2026-0${850 + issues.length}`;
 
+    const effectiveCategory = data.category === 'Other' && data.customCategory ? 'Other' : data.category;
+    const effectiveTitle = data.title.trim() || `${data.category === 'Other' && data.customCategory ? data.customCategory : data.category} near ${data.location.address.split(',')[0]}`;
+
     const newIssue: CivicIssue = {
       id: newId,
       ticketNumber: newTicket,
-      title: data.title || `${data.category} issue near ${data.location.address.split(',')[0]}`,
-      category: data.category,
+      title: effectiveTitle,
+      category: effectiveCategory,
+      customCategory: data.customCategory,
       severity: data.severity,
       status: 'Submitted',
-      description: data.description || 'Reported via Civic Hero citizen mobile app.',
+      description: data.description || 'Reported via Civic Hero citizen community listing.',
       location: data.location,
       photoUrl: data.photoUrl,
+      photos: data.photos && data.photos.length > 0 ? data.photos : [data.photoUrl],
       voiceNoteTranscription: data.voiceNoteTranscription,
+      includeReporterContact: data.includeReporterContact ?? true,
+      reporterPhone: session?.phone || currentUser.phone,
       createdAt: 'Just now',
       updatedAt: 'Just now',
       timeline: [
@@ -418,8 +431,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           id: 't-now-' + Date.now(),
           status: 'Submitted',
           timestamp: 'Just now',
-          title: 'Report Submitted',
-          description: `Issue logged with auto-detected ${data.category} and ${data.severity} priority.`,
+          title: 'Report Submitted & Published to Ward',
+          description: `Citizen listing published to ${data.location.ward}. Priority: ${data.severity}.`,
           actor: currentUser.name,
         },
       ],
@@ -432,6 +445,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     setIssues((prev) => [newIssue, ...prev]);
+
 
     // Update user stats
     setCurrentUser((prev) => ({

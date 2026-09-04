@@ -33,11 +33,13 @@ export interface CivicIssue {
   ticketNumber: string;
   title: string;
   category: IssueCategory;
+  customCategory?: string;
   severity: IssueSeverity;
   status: IssueStatus;
   description: string;
   location: IssueLocation;
   photoUrl: string;
+  photos?: string[];
   afterPhotoUrl?: string;
   voiceNoteUrl?: string;
   voiceNoteTranscription?: string;
@@ -53,9 +55,12 @@ export interface CivicIssue {
   targetResolutionHours?: number;
   citizenId: string;
   citizenName: string;
+  reporterPhone?: string;
+  includeReporterContact?: boolean;
   resolutionRemarks?: string;
   resolvedAt?: string;
 }
+
 
 export interface FieldWorker {
   id: string;
