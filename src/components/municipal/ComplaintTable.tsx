@@ -220,6 +220,12 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                         src={issue.photoUrl}
                         alt={issue.title}
                         className="w-10 h-10 rounded-lg object-cover border border-slate-200 flex-shrink-0"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (!target.src.endsWith('/issues/garbage.jpg')) {
+                            target.src = '/issues/garbage.jpg';
+                          }
+                        }}
                       />
                       <div>
                         <span className="font-mono font-bold text-slate-900 block">

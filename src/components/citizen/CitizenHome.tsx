@@ -226,6 +226,12 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                         alt={issue.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (!target.src.endsWith('/issues/garbage.jpg')) {
+                            target.src = '/issues/garbage.jpg';
+                          }
+                        }}
                       />
                       {isResolved && (
                         <span className="absolute bottom-1 right-1 bg-emerald-600 text-white text-[8px] font-black px-1 py-0.2 rounded shadow">

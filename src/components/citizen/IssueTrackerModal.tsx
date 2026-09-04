@@ -142,6 +142,10 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                     src={issue.photoUrl}
                     alt="Before resolution"
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (!target.src.endsWith('/issues/garbage.jpg')) target.src = '/issues/garbage.jpg';
+                    }}
                   />
                   <span className="absolute bottom-1 left-1 bg-black/70 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
                     {t.beforePhoto}
@@ -154,6 +158,10 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                     src={issue.afterPhotoUrl}
                     alt="After resolution"
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (!target.src.endsWith('/issues/garbage_after.jpg')) target.src = '/issues/garbage_after.jpg';
+                    }}
                   />
                   <span className="absolute bottom-1 left-1 bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">
                     {t.afterPhoto}
@@ -175,6 +183,10 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                 src={issue.photoUrl}
                 alt={issue.title}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (!target.src.endsWith('/issues/garbage.jpg')) target.src = '/issues/garbage.jpg';
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               <span className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[11px] font-semibold px-2 py-0.5 rounded">

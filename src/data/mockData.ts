@@ -46,7 +46,7 @@ export const samplePresetImages = [
     label: 'Road Damage',
     category: 'Road Damage' as const,
     severity: 'Medium' as const,
-    url: 'https://images.unsplash.com/photo-1578873375972-03d3c87dc5b4?auto=format&fit=crop&w=800&q=80',
+    url: '/issues/pothole.jpg',
     description: 'Cracked asphalt and eroded edge after monsoon rainfall near market entrance.',
   }
 ];
@@ -201,7 +201,7 @@ export const initialIssues: CivicIssue[] = [
       lng: 77.6408,
     },
     photoUrl: '/issues/pothole.jpg',
-    afterPhotoUrl: 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: '/issues/pothole_after.jpg',
     voiceNoteTranscription: 'There is a deep dangerous pothole right in the middle of 100ft road junction. Two bikes skidded this morning.',
     createdAt: '2 hours ago',
     updatedAt: '30 mins ago',
@@ -257,7 +257,7 @@ export const initialIssues: CivicIssue[] = [
       lng: 77.6441,
     },
     photoUrl: '/issues/garbage.jpg',
-    afterPhotoUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: '/issues/garbage_after.jpg',
     voiceNoteTranscription: 'Massive uncollected garbage bags spilling across the park walkway. Foul smell spreading.',
     createdAt: '1 day ago',
     updatedAt: '3 hours ago',
@@ -323,7 +323,7 @@ export const initialIssues: CivicIssue[] = [
       lng: 77.6495,
     },
     photoUrl: '/issues/waterleak.jpg',
-    afterPhotoUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: '/issues/waterleak_after.jpg',
     createdAt: '15 mins ago',
     updatedAt: '15 mins ago',
     timeline: [
@@ -359,7 +359,7 @@ export const initialIssues: CivicIssue[] = [
       lng: 77.6267,
     },
     photoUrl: '/issues/streetlight.jpg',
-    afterPhotoUrl: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: '/issues/streetlight_after.jpg',
     createdAt: '4 hours ago',
     updatedAt: '2 hours ago',
     timeline: [
@@ -406,7 +406,7 @@ export const initialIssues: CivicIssue[] = [
       lng: 77.6446,
     },
     photoUrl: '/issues/drain.jpg',
-    afterPhotoUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: '/issues/drain_after.jpg',
     createdAt: '5 hours ago',
     updatedAt: '1 hour ago',
     timeline: [

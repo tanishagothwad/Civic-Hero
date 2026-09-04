@@ -187,6 +187,10 @@ export const FieldWorkerApp: React.FC = () => {
                     src={isResolved && task.afterPhotoUrl ? task.afterPhotoUrl : task.photoUrl}
                     alt={task.title}
                     className="w-20 h-20 rounded-2xl object-cover border border-slate-200 flex-shrink-0"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (!target.src.endsWith('/issues/garbage.jpg')) target.src = '/issues/garbage.jpg';
+                    }}
                   />
                   <div className="flex-1 min-w-0">
                     <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
