@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { CivicIssue } from '../../types';
+import { getAssetUrl } from '../../utils/assetUrl';
 import { ResolveTaskModal } from './ResolveTaskModal';
 import { IssueTrackerModal } from '../citizen/IssueTrackerModal';
 import {
@@ -189,7 +190,8 @@ export const FieldWorkerApp: React.FC = () => {
                     className="w-20 h-20 rounded-2xl object-cover border border-slate-200 flex-shrink-0"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      if (!target.src.endsWith('/issues/garbage.jpg')) target.src = '/issues/garbage.jpg';
+                      const fallback = getAssetUrl('issues/garbage.jpg');
+                      if (target.src !== fallback) target.src = fallback;
                     }}
                   />
                   <div className="flex-1 min-w-0">

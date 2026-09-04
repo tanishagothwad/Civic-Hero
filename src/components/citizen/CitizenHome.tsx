@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { CivicIssue } from '../../types';
+import { getAssetUrl } from '../../utils/assetUrl';
 import {
   Camera,
   Trophy,
@@ -228,8 +229,9 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                         loading="lazy"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          if (!target.src.endsWith('/issues/garbage.jpg')) {
-                            target.src = '/issues/garbage.jpg';
+                          const fallback = getAssetUrl('issues/garbage.jpg');
+                          if (target.src !== fallback) {
+                            target.src = fallback;
                           }
                         }}
                       />

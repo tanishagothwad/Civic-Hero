@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { CivicIssue } from '../../types';
+import { getAssetUrl } from '../../utils/assetUrl';
 import {
   Search,
   Eye,
@@ -222,8 +223,9 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                         className="w-10 h-10 rounded-lg object-cover border border-slate-200 flex-shrink-0"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          if (!target.src.endsWith('/issues/garbage.jpg')) {
-                            target.src = '/issues/garbage.jpg';
+                          const fallback = getAssetUrl('issues/garbage.jpg');
+                          if (target.src !== fallback) {
+                            target.src = fallback;
                           }
                         }}
                       />

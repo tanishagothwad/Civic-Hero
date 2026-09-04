@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { CivicIssue } from '../../types';
+import { getAssetUrl } from '../../utils/assetUrl';
 import {
   CheckCircle2,
   Clock,
@@ -144,7 +145,8 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      if (!target.src.endsWith('/issues/garbage.jpg')) target.src = '/issues/garbage.jpg';
+                      const fallback = getAssetUrl('issues/garbage.jpg');
+                      if (target.src !== fallback) target.src = fallback;
                     }}
                   />
                   <span className="absolute bottom-1 left-1 bg-black/70 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
@@ -160,7 +162,8 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      if (!target.src.endsWith('/issues/garbage_after.jpg')) target.src = '/issues/garbage_after.jpg';
+                      const fallback = getAssetUrl('issues/garbage_after.jpg');
+                      if (target.src !== fallback) target.src = fallback;
                     }}
                   />
                   <span className="absolute bottom-1 left-1 bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">
@@ -185,7 +188,8 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  if (!target.src.endsWith('/issues/garbage.jpg')) target.src = '/issues/garbage.jpg';
+                  const fallback = getAssetUrl('issues/garbage.jpg');
+                  if (target.src !== fallback) target.src = fallback;
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />

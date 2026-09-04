@@ -1,4 +1,5 @@
 import { CivicIssue, FieldWorker, Badge, UserProfile, LeaderboardEntry, PreProvisionedUser } from '../types';
+import { getAssetUrl } from '../utils/assetUrl';
 
 export const samplePresetImages = [
   {
@@ -6,7 +7,7 @@ export const samplePresetImages = [
     label: 'Road Pothole',
     category: 'Pothole' as const,
     severity: 'Critical' as const,
-    url: '/issues/pothole.jpg',
+    url: getAssetUrl('issues/pothole.jpg'),
     description: 'A deep, wide pothole at a busy road junction poses a serious hazard to vehicles and two-wheelers, especially at night or during rain.',
   },
   {
@@ -14,7 +15,7 @@ export const samplePresetImages = [
     label: 'Garbage Dump',
     category: 'Garbage' as const,
     severity: 'High' as const,
-    url: '/issues/garbage.jpg',
+    url: getAssetUrl('issues/garbage.jpg'),
     description: 'Uncollected household and public waste has accumulated into a large pile outside a community park, attracting pests and creating a health hazard.',
   },
   {
@@ -22,7 +23,7 @@ export const samplePresetImages = [
     label: 'Water Pipe Leak',
     category: 'Water Leak' as const,
     severity: 'Critical' as const,
-    url: '/issues/waterleak.jpg',
+    url: getAssetUrl('issues/waterleak.jpg'),
     description: 'A ruptured underground water pipeline is flooding the street with clean drinking water, causing wastage and traffic disruption.',
   },
   {
@@ -30,7 +31,7 @@ export const samplePresetImages = [
     label: 'Broken Streetlight',
     category: 'Streetlight' as const,
     severity: 'High' as const,
-    url: '/issues/streetlight.jpg',
+    url: getAssetUrl('issues/streetlight.jpg'),
     description: 'Multiple non-functional streetlights have left an entire stretch of road in complete darkness, raising safety concerns for pedestrians.',
   },
   {
@@ -38,7 +39,7 @@ export const samplePresetImages = [
     label: 'Open Drain Slab',
     category: 'Drain' as const,
     severity: 'Critical' as const,
-    url: '/issues/drain.jpg',
+    url: getAssetUrl('issues/drain.jpg'),
     description: 'The concrete slab covering a storm water drain has collapsed, leaving an open, hazardous gap on a path frequently used by schoolchildren.',
   },
   {
@@ -46,10 +47,11 @@ export const samplePresetImages = [
     label: 'Road Damage',
     category: 'Road Damage' as const,
     severity: 'Medium' as const,
-    url: '/issues/pothole.jpg',
+    url: getAssetUrl('issues/pothole.jpg'),
     description: 'Cracked asphalt and eroded edge after monsoon rainfall near market entrance.',
   }
 ];
+
 
 export const initialFieldWorkers: FieldWorker[] = [
   {
@@ -262,8 +264,8 @@ export const initialIssues: CivicIssue[] = [
       lat: 12.9784,
       lng: 77.6408,
     },
-    photoUrl: '/issues/pothole.jpg',
-    afterPhotoUrl: '/issues/pothole_after.jpg',
+    photoUrl: getAssetUrl('issues/pothole.jpg'),
+    afterPhotoUrl: getAssetUrl('issues/pothole_after.jpg'),
     voiceNoteTranscription: 'There is a deep dangerous pothole right in the middle of 100ft road junction. Two bikes skidded this morning.',
     createdAt: '2 hours ago',
     updatedAt: '30 mins ago',
@@ -318,8 +320,8 @@ export const initialIssues: CivicIssue[] = [
       lat: 12.9732,
       lng: 77.6441,
     },
-    photoUrl: '/issues/garbage.jpg',
-    afterPhotoUrl: '/issues/garbage_after.jpg',
+    photoUrl: getAssetUrl('issues/garbage.jpg'),
+    afterPhotoUrl: getAssetUrl('issues/garbage_after.jpg'),
     voiceNoteTranscription: 'Massive uncollected garbage bags spilling across the park walkway. Foul smell spreading.',
     createdAt: '1 day ago',
     updatedAt: '3 hours ago',
@@ -384,8 +386,8 @@ export const initialIssues: CivicIssue[] = [
       lat: 12.9698,
       lng: 77.6495,
     },
-    photoUrl: '/issues/waterleak.jpg',
-    afterPhotoUrl: '/issues/waterleak_after.jpg',
+    photoUrl: getAssetUrl('issues/waterleak.jpg'),
+    afterPhotoUrl: getAssetUrl('issues/waterleak_after.jpg'),
     createdAt: '15 mins ago',
     updatedAt: '15 mins ago',
     timeline: [
@@ -420,8 +422,8 @@ export const initialIssues: CivicIssue[] = [
       lat: 12.9344,
       lng: 77.6267,
     },
-    photoUrl: '/issues/streetlight.jpg',
-    afterPhotoUrl: '/issues/streetlight_after.jpg',
+    photoUrl: getAssetUrl('issues/streetlight.jpg'),
+    afterPhotoUrl: getAssetUrl('issues/streetlight_after.jpg'),
     createdAt: '4 hours ago',
     updatedAt: '2 hours ago',
     timeline: [
@@ -467,8 +469,9 @@ export const initialIssues: CivicIssue[] = [
       lat: 12.9121,
       lng: 77.6446,
     },
-    photoUrl: '/issues/drain.jpg',
-    afterPhotoUrl: '/issues/drain_after.jpg',
+    photoUrl: getAssetUrl('issues/drain.jpg'),
+    afterPhotoUrl: getAssetUrl('issues/drain_after.jpg'),
+
     createdAt: '5 hours ago',
     updatedAt: '1 hour ago',
     timeline: [
