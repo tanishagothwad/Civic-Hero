@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { UserRole } from '../../types';
-import { Shield, LayoutDashboard, HardHat, Smartphone, Globe, Sparkles } from 'lucide-react';
+import { Shield, LayoutDashboard, HardHat, Smartphone, Globe } from 'lucide-react';
 import { languageList } from '../../i18n/translations';
 
 export const RoleSwitcherBar: React.FC<{ onOpenLanguage: () => void }> = ({ onOpenLanguage }) => {
@@ -41,9 +41,6 @@ export const RoleSwitcherBar: React.FC<{ onOpenLanguage: () => void }> = ({ onOp
           <div>
             <div className="flex items-center space-x-1.5">
               <span className="font-extrabold text-base tracking-tight text-white">{t.appName}</span>
-              <span className="text-[10px] uppercase font-bold bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30 flex items-center gap-0.5">
-                <Sparkles className="w-2.5 h-2.5" /> AI Powered
-              </span>
             </div>
             <p className="text-[11px] text-slate-400 hidden sm:block">
               {t.tagline}

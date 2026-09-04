@@ -14,22 +14,22 @@ export const ResolveTaskModal: React.FC<ResolveTaskModalProps> = ({ issue, onClo
   // Default sample clean photo
   const sampleCleanPhotos: Record<string, string> = {
     Garbage:
-      'https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
     Pothole:
-      'https://images.unsplash.com/photo-1578873375972-03d3c87dc5b4?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80',
     'Water Leak':
-      'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
     Streetlight:
-      'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80',
     Drain:
-      'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
     'Road Damage':
-      'https://images.unsplash.com/photo-1578873375972-03d3c87dc5b4?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80',
   };
 
   const defaultPhoto =
     (issue && sampleCleanPhotos[issue.category]) ||
-    'https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&w=800&q=80';
+    'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80';
 
   const [afterPhoto, setAfterPhoto] = useState<string>(defaultPhoto);
   const [remarks, setRemarks] = useState<string>(

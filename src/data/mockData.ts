@@ -14,7 +14,7 @@ export const samplePresetImages = [
     label: 'Garbage Dump',
     category: 'Garbage' as const,
     severity: 'Medium' as const,
-    url: 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80',
     description: 'Overflowing garbage bin near residential park corner attracting stray animals.',
   },
   {
@@ -22,7 +22,7 @@ export const samplePresetImages = [
     label: 'Water Pipe Leak',
     category: 'Water Leak' as const,
     severity: 'Critical' as const,
-    url: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80',
     description: 'Main potable water pipeline bursting with heavy flow on pedestrian walkway.',
   },
   {
@@ -30,7 +30,7 @@ export const samplePresetImages = [
     label: 'Broken Streetlight',
     category: 'Streetlight' as const,
     severity: 'Low' as const,
-    url: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=800&q=80',
     description: 'Pole lamp fixture flickering and broken, dark stretch near crossroad junction.',
   },
   {
@@ -38,7 +38,7 @@ export const samplePresetImages = [
     label: 'Open Drain',
     category: 'Drain' as const,
     severity: 'High' as const,
-    url: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&w=800&q=80',
     description: 'Concrete slab missing over storm drain, posing severe falling risk to school children.',
   },
   {
@@ -201,6 +201,7 @@ export const initialIssues: CivicIssue[] = [
       lng: 77.6408,
     },
     photoUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80',
     voiceNoteTranscription: 'There is a huge pothole right opposite the metro pillar 42. Bikes are falling.',
     createdAt: '2 hours ago',
     updatedAt: '30 mins ago',
@@ -218,8 +219,8 @@ export const initialIssues: CivicIssue[] = [
         status: 'Acknowledged',
         timestamp: '1 hour ago',
         title: 'Municipal Auto-Verification',
-        description: 'AI verified severity as High. Assigned to Road Division Zone 4.',
-        actor: 'Civic AI Engine',
+        description: 'Severity verified as High. Assigned to Road Division Zone 4.',
+        actor: 'Municipal Dispatch',
       },
       {
         id: 't-3',
@@ -255,8 +256,8 @@ export const initialIssues: CivicIssue[] = [
       lat: 12.9732,
       lng: 77.6441,
     },
-    photoUrl: 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=800&q=80',
-    afterPhotoUrl: 'https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&w=800&q=80',
+    photoUrl: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
     voiceNoteTranscription: 'Cleaners missed this corner for 3 days. Foul smell spreading.',
     createdAt: '1 day ago',
     updatedAt: '3 hours ago',
@@ -321,7 +322,8 @@ export const initialIssues: CivicIssue[] = [
       lat: 12.9698,
       lng: 77.6495,
     },
-    photoUrl: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
+    photoUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
     createdAt: '15 mins ago',
     updatedAt: '15 mins ago',
     timeline: [
@@ -330,8 +332,8 @@ export const initialIssues: CivicIssue[] = [
         status: 'Submitted',
         timestamp: '15 mins ago',
         title: 'Critical Alert Raised',
-        description: 'High-volume water pipeline burst flagged by AI as Critical severity.',
-        actor: 'Citizen App AI',
+        description: 'High-volume water pipeline burst flagged as Critical severity.',
+        actor: 'Citizen App',
       }
     ],
     upvotes: 42,
@@ -356,7 +358,8 @@ export const initialIssues: CivicIssue[] = [
       lat: 12.9344,
       lng: 77.6267,
     },
-    photoUrl: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80',
+    photoUrl: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80',
     createdAt: '4 hours ago',
     updatedAt: '2 hours ago',
     timeline: [
@@ -402,7 +405,8 @@ export const initialIssues: CivicIssue[] = [
       lat: 12.9121,
       lng: 77.6446,
     },
-    photoUrl: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=800&q=80',
+    photoUrl: 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&w=800&q=80',
+    afterPhotoUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
     createdAt: '5 hours ago',
     updatedAt: '1 hour ago',
     timeline: [
@@ -452,7 +456,7 @@ export const initialLeaderboard: LeaderboardEntry[] = [
     points: 720,
     reportsCount: 14,
     resolvedCount: 12,
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
     badgeTitle: 'Civic Titan 🏆',
   },
   {
@@ -463,7 +467,7 @@ export const initialLeaderboard: LeaderboardEntry[] = [
     points: 590,
     reportsCount: 11,
     resolvedCount: 9,
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
     badgeTitle: 'Green Warrior 🌿',
   },
   {
@@ -486,7 +490,7 @@ export const initialLeaderboard: LeaderboardEntry[] = [
     points: 310,
     reportsCount: 5,
     resolvedCount: 4,
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
     badgeTitle: 'Street Scout 🔍',
   },
   {
@@ -497,7 +501,7 @@ export const initialLeaderboard: LeaderboardEntry[] = [
     points: 260,
     reportsCount: 4,
     resolvedCount: 3,
-    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
     badgeTitle: 'Clean Champion ⭐',
   }
 ];
