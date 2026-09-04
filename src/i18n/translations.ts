@@ -100,6 +100,26 @@ export interface TranslationStrings {
     'In Progress': string;
     Resolved: string;
   };
+  loginTitle?: string;
+  loginSubtitle?: string;
+  enterPhone?: string;
+  phonePlaceholder?: string;
+  sendOtp?: string;
+  enterOtp?: string;
+  verifyOtp?: string;
+  demoOtpNotice?: string;
+  quickDemoLogin?: string;
+  citizenDemo?: string;
+  municipalDemo?: string;
+  workerDemo?: string;
+  welcomeCitizen?: string;
+  enterName?: string;
+  namePlaceholder?: string;
+  selectWard?: string;
+  startApp?: string;
+  logout?: string;
+  loggedInAs?: string;
+  installApp?: string;
 }
 
 export const translations: Record<SupportedLanguage, TranslationStrings> = {
@@ -107,6 +127,26 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
     appName: 'Civic Hero',
     tagline: 'Report. Track. Earn. Change Your City.',
     taglineSub: 'Empowering citizens with AI to fix public issues faster.',
+    loginTitle: 'Sign In to Civic Hero',
+    loginSubtitle: 'Enter your mobile number to get started or manage civic issues.',
+    enterPhone: 'Mobile Phone Number',
+    phonePlaceholder: 'Enter 10-digit mobile number',
+    sendOtp: 'Get Verification OTP',
+    enterOtp: 'Enter 6-digit OTP Code',
+    verifyOtp: 'Verify & Sign In',
+    demoOtpNotice: 'Demo Mode: Use 123456 as OTP',
+    quickDemoLogin: 'Quick Demo Sign-In (1-Tap)',
+    citizenDemo: 'Citizen (Aarav Mehta)',
+    municipalDemo: 'Municipal Staff (Dr. Sunita Rao)',
+    workerDemo: 'Field Worker (Ramesh Kumar)',
+    welcomeCitizen: 'Welcome Citizen Hero! 🎉',
+    enterName: 'What is your name?',
+    namePlaceholder: 'Enter your full name',
+    selectWard: 'Select your home Ward / Area',
+    startApp: 'Start Reporting & Earning XP',
+    logout: 'Log Out',
+    loggedInAs: 'Logged In as',
+    installApp: 'Install App on Phone',
     reportIssue: 'Report an Issue',
     reportProblem: 'Report a Problem',
     myReports: 'My Reports',

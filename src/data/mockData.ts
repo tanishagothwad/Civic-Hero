@@ -1,4 +1,4 @@
-import { CivicIssue, FieldWorker, Badge, UserProfile, LeaderboardEntry } from '../types';
+import { CivicIssue, FieldWorker, Badge, UserProfile, LeaderboardEntry, PreProvisionedUser } from '../types';
 
 export const samplePresetImages = [
   {
@@ -183,6 +183,68 @@ export const initialCurrentUser: UserProfile = {
   reportsResolved: 4,
   impactScore: 92,
 };
+
+export const preProvisionedUsers: PreProvisionedUser[] = [
+  // 1. Pre-registered Citizen (Demo)
+  {
+    phone: '+91 98765 43210',
+    name: 'Aarav Mehta',
+    role: 'citizen',
+    ward: 'Ward 4 - Indiranagar',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
+  },
+  // 2. Pre-provisioned Municipal Staff / Admin
+  {
+    phone: '+91 91234 56789',
+    name: 'Dr. Sunita Rao',
+    role: 'municipal',
+    department: 'BBMP Central Municipal Administration',
+    ward: 'Citywide Admin HQ',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+    inviteCode: 'MUNI-STAFF-2026',
+  },
+  // 3. Pre-provisioned Field Workers
+  {
+    phone: '+91 98450 11223',
+    name: 'Ramesh Kumar',
+    role: 'worker',
+    department: 'Civil & Pothole Repair',
+    ward: 'Ward 4 - Indiranagar',
+    workerId: 'worker-1',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+    inviteCode: 'WORKER-FIELD-2026',
+  },
+  {
+    phone: '+91 98450 33445',
+    name: 'Priya Sharma',
+    role: 'worker',
+    department: 'Solid Waste Management',
+    ward: 'Ward 4 - Indiranagar',
+    workerId: 'worker-2',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+    inviteCode: 'WORKER-FIELD-2026',
+  },
+  {
+    phone: '+91 98450 55667',
+    name: 'Anil Verma',
+    role: 'worker',
+    department: 'Streetlights & Energy',
+    ward: 'Ward 7 - Koramangala',
+    workerId: 'worker-3',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+    inviteCode: 'WORKER-FIELD-2026',
+  },
+  {
+    phone: '+91 98450 77889',
+    name: 'Sunita Devi',
+    role: 'worker',
+    department: 'Water Board & Sewage',
+    ward: 'Ward 12 - HSR Layout',
+    workerId: 'worker-4',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80',
+    inviteCode: 'WORKER-FIELD-2026',
+  },
+];
 
 export const initialIssues: CivicIssue[] = [
   {

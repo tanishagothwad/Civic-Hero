@@ -125,3 +125,26 @@ export interface NotificationItem {
 export type SupportedLanguage = 'en' | 'hi' | 'mr' | 'ta' | 'te' | 'bn' | 'kn';
 
 export type UserRole = 'citizen' | 'municipal' | 'worker';
+
+export interface AuthSession {
+  userId: string;
+  name: string;
+  phone: string;
+  role: UserRole;
+  avatar?: string;
+  department?: string;
+  ward?: string;
+  workerId?: string;
+  isFirstLogin?: boolean;
+}
+
+export interface PreProvisionedUser {
+  phone: string;
+  name: string;
+  role: UserRole;
+  department?: string;
+  ward?: string;
+  workerId?: string;
+  avatar?: string;
+  inviteCode?: string;
+}

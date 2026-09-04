@@ -5,6 +5,8 @@ import { DeviceFrame } from './components/common/DeviceFrame';
 import { Header } from './components/common/Header';
 import { LanguagePicker } from './components/common/LanguagePicker';
 import { ToastNotification } from './components/common/ToastNotification';
+import { InstallPromptBanner } from './components/common/InstallPromptBanner';
+import { LoginModal } from './components/auth/LoginModal';
 import { CitizenHome } from './components/citizen/CitizenHome';
 import { ReportWizard } from './components/citizen/ReportWizard';
 import { IssueTrackerModal } from './components/citizen/IssueTrackerModal';
@@ -16,6 +18,7 @@ import { FieldWorkerApp } from './components/worker/FieldWorkerApp';
 const MainApp: React.FC = () => {
   const {
     role,
+    isAuthenticated,
     isReportModalOpen,
     setIsReportModalOpen,
     selectedIssueForTracking,
@@ -27,8 +30,25 @@ const MainApp: React.FC = () => {
   const [isGamificationModalOpen, setIsGamificationModalOpen] = useState<boolean>(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
 
+  // If not authenticated, present phone + OTP login screen
+  if (!isAuthenticated) {
+    return (
+      <>
+        <LoginModal onOpenLanguage={() => setIsLanguageModalOpen(true)} />
+        <LanguagePicker
+          isOpen={isLanguageModalOpen}
+          onClose={() => setIsLanguageModalOpen(false)}
+        />
+        <ToastNotification />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-900 flex flex-col font-sans">
+      {/* PWA Install Banner */}
+      <InstallPromptBanner />
+
       {/* 1. Sticky Role & Persona Switcher */}
       <RoleSwitcherBar onOpenLanguage={() => setIsLanguageModalOpen(true)} />
 

@@ -10,12 +10,14 @@ import {
   IssueStatus,
   IssueCategory,
   IssueSeverity,
+  AuthSession,
 } from '../types';
 import {
   initialIssues,
   initialFieldWorkers,
   initialCurrentUser,
   initialLeaderboard,
+  preProvisionedUsers,
 } from '../data/mockData';
 import { translations, TranslationStrings } from '../i18n/translations';
 import confetti from 'canvas-confetti';
@@ -29,9 +31,13 @@ interface ToastData {
   type: 'xp' | 'success' | 'info' | 'badge';
 }
 
+const AUTH_STORAGE_KEY = 'civic_hero_auth_session';
+
 interface AppContextType {
   role: UserRole;
   setRole: (role: UserRole) => void;
+  session: AuthSession | null;
+  isAuthenticated: boolean;
   language: SupportedLanguage;
   setLanguage: (lang: SupportedLanguage) => void;
   t: TranslationStrings;
@@ -49,6 +55,16 @@ interface AppContextType {
   isReportModalOpen: boolean;
   setIsReportModalOpen: (open: boolean) => void;
   
+  // Auth Actions
+  loginWithPhone: (
+    phone: string,
+    otp: string,
+    inviteCode?: string
+  ) => { success: boolean; isNewUser: boolean; role: UserRole; error?: string };
+  completeCitizenOnboarding: (name: string, ward: string) => void;
+  quickDemoLogin: (role: UserRole) => void;
+  logout: () => void;
+
   // Actions
   createReport: (data: {
     title: string;
@@ -78,10 +94,34 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [role, setRole] = useState<UserRole>('citizen');
+  // Load session from localStorage if available
+  const [session, setSession] = useState<AuthSession | null>(() => {
+    try {
+      const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  });
+
+  const [role, setRole] = useState<UserRole>(session ? session.role : 'citizen');
   const [language, setLanguage] = useState<SupportedLanguage>('en');
   const [issues, setIssues] = useState<CivicIssue[]>(initialIssues);
-  const [currentUser, setCurrentUser] = useState<UserProfile>(initialCurrentUser);
+  const [currentUser, setCurrentUser] = useState<UserProfile>(() => {
+    if (session && session.role === 'citizen') {
+      return {
+        ...initialCurrentUser,
+        id: session.userId || initialCurrentUser.id,
+        name: session.name || initialCurrentUser.name,
+        phone: session.phone || initialCurrentUser.phone,
+        ward: session.ward || initialCurrentUser.ward,
+      };
+    }
+    return initialCurrentUser;
+  });
   const [fieldWorkers, setFieldWorkers] = useState<FieldWorker[]>(initialFieldWorkers);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(initialLeaderboard);
   const [showDeviceFrame, setShowDeviceFrame] = useState<boolean>(true);
@@ -148,6 +188,154 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch {
       // fallback
     }
+  };
+
+  // Helper to normalize phone numbers
+  const cleanPhone = (p: string) => p.replace(/[\s\-()]/g, '').trim();
+
+  // Login method
+  const loginWithPhone = (
+    phone: string,
+    otp: string,
+    inviteCode?: string
+  ): { success: boolean; isNewUser: boolean; role: UserRole; error?: string } => {
+    const cleanedOtp = otp.trim();
+    if (cleanedOtp.length < 4) {
+      return { success: false, isNewUser: false, role: 'citizen', error: 'Please enter a valid 6-digit OTP' };
+    }
+
+    const normalizedInput = cleanPhone(phone);
+    // Find in pre-provisioned directory
+    const matched = preProvisionedUsers.find(
+      (u) => cleanPhone(u.phone) === normalizedInput || cleanPhone(u.phone).endsWith(normalizedInput.slice(-10))
+    );
+
+    let assignedRole: UserRole = 'citizen';
+    let userName = 'Citizen Hero';
+    let userWard = 'Ward 4 - Indiranagar';
+    let userDept = '';
+    let workerId = '';
+    let avatar = '';
+    let isNewUser = false;
+
+    if (matched) {
+      assignedRole = matched.role;
+      userName = matched.name;
+      userWard = matched.ward || 'Ward 4 - Indiranagar';
+      userDept = matched.department || '';
+      workerId = matched.workerId || '';
+      avatar = matched.avatar || '';
+      isNewUser = false;
+    } else {
+      // Check if user entered invite code
+      const code = inviteCode?.trim().toUpperCase();
+      if (code === 'MUNI-STAFF-2026') {
+        assignedRole = 'municipal';
+        userName = 'Municipal Officer';
+        userDept = 'BBMP Municipal Administration';
+        userWard = 'Citywide Admin HQ';
+      } else if (code === 'WORKER-FIELD-2026') {
+        assignedRole = 'worker';
+        userName = 'Field Operative';
+        userDept = 'Public Works Dept';
+        userWard = 'Ward 4 - Indiranagar';
+        workerId = 'worker-1';
+      } else {
+        // Default role for anyone signing up without a special code/invite: Citizen
+        assignedRole = 'citizen';
+        isNewUser = true;
+      }
+    }
+
+    const newSession: AuthSession = {
+      userId: matched ? `user-${matched.phone}` : `user-${Date.now()}`,
+      name: userName,
+      phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
+      role: assignedRole,
+      department: userDept,
+      ward: userWard,
+      workerId: workerId,
+      avatar: avatar,
+      isFirstLogin: isNewUser,
+    };
+
+    setSession(newSession);
+    setRole(assignedRole);
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(newSession));
+
+    if (assignedRole === 'citizen' && !isNewUser) {
+      setCurrentUser((prev) => ({
+        ...prev,
+        name: userName,
+        phone: newSession.phone,
+        ward: userWard,
+      }));
+    }
+
+    addToast({
+      title: `Signed In as ${assignedRole === 'municipal' ? 'Municipal Staff' : assignedRole === 'worker' ? 'Field Worker' : 'Citizen'}`,
+      message: `Welcome, ${userName}!`,
+      type: 'info',
+    });
+
+    return {
+      success: true,
+      isNewUser,
+      role: assignedRole,
+    };
+  };
+
+  // Onboarding completion for new citizen
+  const completeCitizenOnboarding = (name: string, ward: string) => {
+    if (!session) return;
+    const finalName = name.trim() || 'Citizen Hero';
+    const finalWard = ward || 'Ward 4 - Indiranagar';
+
+    const updatedSession: AuthSession = {
+      ...session,
+      name: finalName,
+      ward: finalWard,
+      isFirstLogin: false,
+    };
+    setSession(updatedSession);
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updatedSession));
+
+    setCurrentUser((prev) => ({
+      ...prev,
+      name: finalName,
+      ward: finalWard,
+      points: prev.points + 50,
+    }));
+
+    addPoints(50, 'Welcome Bonus');
+    addToast({
+      title: 'Profile Created! +50 XP 🌟',
+      message: `Welcome to Civic Hero, ${finalName}!`,
+      type: 'success',
+    });
+    triggerCelebration();
+  };
+
+  // Quick 1-tap demo login
+  const quickDemoLogin = (targetRole: UserRole) => {
+    if (targetRole === 'citizen') {
+      loginWithPhone('+91 98765 43210', '123456');
+    } else if (targetRole === 'municipal') {
+      loginWithPhone('+91 91234 56789', '123456');
+    } else if (targetRole === 'worker') {
+      loginWithPhone('+91 98450 11223', '123456');
+    }
+  };
+
+  // Logout method
+  const logout = () => {
+    setSession(null);
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    addToast({
+      title: 'Logged Out',
+      message: 'You have been safely signed out.',
+      type: 'info',
+    });
   };
 
   // Add Points to Active User & Check Level Up
@@ -495,6 +683,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         role,
         setRole,
+        session,
+        isAuthenticated: !!session,
         language,
         setLanguage,
         t,
@@ -511,6 +701,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setSelectedIssueForTracking,
         isReportModalOpen,
         setIsReportModalOpen,
+        loginWithPhone,
+        completeCitizenOnboarding,
+        quickDemoLogin,
+        logout,
         createReport,
         mergeReport,
         upvoteReport,
