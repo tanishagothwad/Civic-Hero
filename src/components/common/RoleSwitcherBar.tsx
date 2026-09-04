@@ -41,9 +41,6 @@ export const RoleSwitcherBar: React.FC<{ onOpenLanguage: () => void }> = ({ onOp
           <div>
             <div className="flex items-center space-x-1.5">
               <span className="font-extrabold text-sm tracking-tight text-white">{t.appName}</span>
-              <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-1.5 py-0.2 rounded border border-emerald-500/30">
-                PWA
-              </span>
             </div>
             <p className="text-[10px] text-slate-400 hidden sm:block">
               {t.tagline}
