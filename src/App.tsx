@@ -33,14 +33,17 @@ const MainApp: React.FC = () => {
   // If not authenticated, present phone + OTP login screen
   if (!isAuthenticated) {
     return (
-      <>
+      <div className="min-h-screen bg-slate-950 flex flex-col justify-between">
         <LoginModal onOpenLanguage={() => setIsLanguageModalOpen(true)} />
+        <footer className="py-4 text-center text-xs text-slate-500">
+          Designed by Tanisha Gothwad
+        </footer>
         <LanguagePicker
           isOpen={isLanguageModalOpen}
           onClose={() => setIsLanguageModalOpen(false)}
         />
         <ToastNotification />
-      </>
+      </div>
     );
   }
 
@@ -82,6 +85,11 @@ const MainApp: React.FC = () => {
           </DeviceFrame>
         )}
       </main>
+
+      {/* Footer Credit */}
+      <footer className="py-4 text-center text-xs text-slate-500">
+        Designed by Tanisha Gothwad
+      </footer>
 
       {/* 3. Modals and Drawers */}
       {/* 3-Step Report Wizard */}
