@@ -1,7 +1,9 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { UserRole } from '../../types';
+import { createRipple } from './MaterialRipple';
 import {
+  Menu,
   Shield,
   LayoutDashboard,
   HardHat,
@@ -14,12 +16,14 @@ import {
 import { languageList } from '../../i18n/translations';
 
 interface RoleSwitcherBarProps {
+  onOpenDrawer?: () => void;
   onOpenLanguage: () => void;
   onOpenNotifications?: () => void;
   onOpenGamification?: () => void;
 }
 
 export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
+  onOpenDrawer,
   onOpenLanguage,
   onOpenNotifications,
   onOpenGamification,
@@ -35,104 +39,121 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
     t,
   } = useApp();
 
-  const roles: { key: UserRole; label: string; icon: React.ReactNode; badge: string }[] = [
+  const roles: { key: UserRole; label: string; icon: React.ReactNode }[] = [
     {
       key: 'citizen',
       label: t.citizenRole || 'Citizen Portal',
       icon: <Users className="w-4 h-4" />,
-      badge: 'Public',
     },
     {
       key: 'municipal',
       label: t.municipalRole || 'Municipal HQ',
       icon: <LayoutDashboard className="w-4 h-4" />,
-      badge: 'Admin',
     },
     {
       key: 'worker',
       label: t.workerRole || 'Field Ops',
       icon: <HardHat className="w-4 h-4" />,
-      badge: 'Operations',
     },
   ];
 
   const currentLangObj = languageList.find((l) => l.code === language);
 
   return (
-    <header className="bg-navy-950 text-white border-b border-navy-800 sticky top-0 z-50 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
-        {/* Brand */}
-        <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <Shield className="w-5 h-5 text-white stroke-[2.5]" />
-          </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="font-extrabold text-base tracking-tight text-white">{t.appName || 'Civic Hero'}</span>
-              <span className="hidden md:inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                Official City Portal
-              </span>
+    <header className="bg-[#0B132B] text-white sticky top-0 z-40 shadow-elevation-4">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
+        {/* Left: Hamburger button + Brand */}
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {onOpenDrawer && (
+            <button
+              onClick={(e) => {
+                createRipple(e, 'rgba(255, 255, 255, 0.3)');
+                onOpenDrawer();
+              }}
+              className="w-10 h-10 rounded flex items-center justify-center text-white/87 hover:text-white hover:bg-white/10 transition-colors ripple-surface"
+              aria-label="Open navigation drawer"
+              title="Navigation Menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded bg-[#2E7D32] flex items-center justify-center shadow-sm">
+              <Shield className="w-5 h-5 text-white stroke-[2.2]" />
             </div>
-            <p className="text-[11px] text-slate-400 hidden sm:block">
-              {t.tagline || 'Report. Track. Earn. Change Your City.'}
-            </p>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-bold text-base sm:text-lg tracking-wide text-white">
+                  {t.appName || 'Civic Hero'}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Persona Switcher Tabs */}
-        <nav className="flex items-center bg-navy-900/90 p-1 rounded-xl border border-navy-800 shadow-inner overflow-x-auto max-w-full" aria-label="Portal Navigation">
+        {/* Center: Material Tabs for Portals */}
+        <nav className="flex items-center space-x-1 h-full overflow-x-auto" aria-label="Portals">
           {roles.map((r) => {
             const isActive = role === r.key;
             return (
               <button
                 key={r.key}
-                onClick={() => setRole(r.key)}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                onClick={(e) => {
+                  createRipple(e, 'rgba(46, 125, 50, 0.3)');
+                  setRole(r.key);
+                }}
+                className={`relative h-full px-3 sm:px-4 flex items-center space-x-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ripple-surface ${
                   isActive
-                    ? 'bg-emerald-600 text-white shadow-sm ring-1 ring-emerald-400/40'
-                    : 'text-slate-300 hover:text-white hover:bg-navy-800'
+                    ? 'text-white font-bold'
+                    : 'text-white/70 hover:text-white hover:bg-white/5'
                 }`}
-                aria-label={`Switch view to ${r.label}`}
+                aria-label={`Switch to ${r.label}`}
               >
-                {r.icon}
-                <span>{r.label}</span>
-                <span
-                  className={`text-[9px] px-1.5 py-0.2 rounded font-normal hidden lg:inline ${
-                    isActive ? 'bg-emerald-700 text-emerald-100' : 'bg-navy-950 text-slate-400'
-                  }`}
-                >
-                  {r.badge}
+                <span className={isActive ? 'text-[#81C784]' : 'text-white/60'}>
+                  {r.icon}
                 </span>
+                <span className="hidden sm:inline">{r.label}</span>
+                {/* Active Underline Indicator */}
+                {isActive && (
+                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#2E7D32] rounded-t" />
+                )}
               </button>
             );
           })}
         </nav>
 
-        {/* Right Section: Gamification + Notifications + Language + User Menu */}
-        <div className="flex items-center space-x-2">
-          {/* Gamification XP pill */}
+        {/* Right: Gamification + Notification + Language + User Menu */}
+        <div className="flex items-center space-x-1 sm:space-x-2">
+          {/* Gamification XP Chip */}
           {role === 'citizen' && onOpenGamification && (
             <button
-              onClick={onOpenGamification}
-              className="hidden sm:flex items-center space-x-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs"
-              title="View your XP points and badges"
+              onClick={(e) => {
+                createRipple(e, 'rgba(251, 192, 45, 0.3)');
+                onOpenGamification();
+              }}
+              className="hidden md:flex items-center space-x-1.5 bg-[#FBC02D]/15 hover:bg-[#FBC02D]/25 text-[#FBC02D] px-2.5 py-1.5 rounded text-xs font-bold transition-colors ripple-surface border border-[#FBC02D]/30"
+              title="View your XP points & badges"
             >
-              <Trophy className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <Trophy className="w-3.5 h-3.5 fill-[#FBC02D]" />
               <span>{currentUser.points} XP</span>
             </button>
           )}
 
-          {/* Notifications Bell */}
+          {/* Notifications Icon Button */}
           {onOpenNotifications && (
             <button
-              onClick={onOpenNotifications}
-              className="relative w-8 h-8 rounded-lg bg-navy-900 hover:bg-navy-800 flex items-center justify-center text-slate-200 border border-navy-700 transition-colors"
+              onClick={(e) => {
+                createRipple(e, 'rgba(255, 255, 255, 0.3)');
+                onOpenNotifications();
+              }}
+              className="relative w-9 h-9 rounded flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 transition-colors ripple-surface"
               aria-label={`Notifications (${unreadNotificationCount} unread)`}
               title="Notifications"
             >
-              <Bell className="w-4 h-4 text-slate-200" />
+              <Bell className="w-5 h-5" />
               {unreadNotificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center shadow-md animate-pulse">
+                <span className="absolute 1 right-1 bg-[#D32F2F] text-white font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow">
                   {unreadNotificationCount}
                 </span>
               )}
@@ -141,35 +162,36 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
 
           {/* Language Selector */}
           <button
-            onClick={onOpenLanguage}
-            className="flex items-center space-x-1.5 bg-navy-900 hover:bg-navy-800 text-slate-200 hover:text-white px-2.5 py-1.5 rounded-lg border border-navy-700 text-xs font-medium transition-colors"
-            aria-label="Select Language"
+            onClick={(e) => {
+              createRipple(e, 'rgba(255, 255, 255, 0.3)');
+              onOpenLanguage();
+            }}
+            className="flex items-center space-x-1 text-white/80 hover:text-white hover:bg-white/10 px-2 py-1.5 rounded text-xs font-medium transition-colors ripple-surface"
             title="Switch Language"
           >
-            <Globe className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="font-semibold">{currentLangObj?.nativeName || 'Language'}</span>
+            <Globe className="w-4 h-4 text-[#81C784]" />
+            <span className="hidden xl:inline">{currentLangObj?.nativeName || 'Language'}</span>
           </button>
 
-          {/* User Session Info Pill */}
+          {/* User Session Chip */}
           {session && (
-            <div className="hidden xl:flex items-center space-x-2 bg-navy-900/90 border border-navy-800 px-2.5 py-1 rounded-lg text-xs">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <div className="text-left leading-tight">
-                <span className="font-bold text-slate-200 block text-[11px] truncate max-w-[110px]">{session.name}</span>
-                <span className="text-[9px] text-emerald-400 font-mono">{session.role.toUpperCase()}</span>
-              </div>
+            <div className="hidden lg:flex items-center space-x-2 bg-white/10 px-2.5 py-1 rounded text-xs">
+              <span className="w-2 h-2 rounded-full bg-[#81C784]" />
+              <span className="text-white/90 font-medium truncate max-w-[100px]">{session.name}</span>
             </div>
           )}
 
-          {/* Log Out Button */}
+          {/* Logout Button */}
           <button
-            onClick={logout}
-            className="flex items-center space-x-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all active:scale-95"
-            title="Log out and return to sign-in screen"
+            onClick={(e) => {
+              createRipple(e, 'rgba(211, 47, 47, 0.3)');
+              logout();
+            }}
+            className="w-9 h-9 rounded flex items-center justify-center text-red-300 hover:text-white hover:bg-red-900/40 transition-colors ripple-surface"
+            title="Log out"
             aria-label="Log out"
           >
-            <LogOut className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">{t.logout || 'Log Out'}</span>
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -177,3 +199,4 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
   );
 };
 
+export default RoleSwitcherBar;

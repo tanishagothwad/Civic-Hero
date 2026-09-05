@@ -6,6 +6,7 @@ import { ComplaintMap } from './ComplaintMap';
 import { ComplaintTable } from './ComplaintTable';
 import { AssignWorkerModal } from './AssignWorkerModal';
 import { IssueTrackerModal } from '../citizen/IssueTrackerModal';
+import { createRipple } from '../common/MaterialRipple';
 import {
   LayoutDashboard,
   Map as MapIcon,
@@ -22,24 +23,24 @@ export const MunicipalDashboard: React.FC = () => {
   const [assigningIssue, setAssigningIssue] = useState<CivicIssue | null>(null);
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 pb-12">
+    <div className="min-h-screen bg-[#F5F5F5] text-mat-text-primary pb-12 font-sans">
       {/* Command Center Subheader */}
-      <div className="bg-white border-b border-slate-200 sticky top-[57px] z-20 shadow-xs">
+      <div className="bg-white border-b border-gray-200 sticky top-[64px] z-20 shadow-elevation-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-navy-950 text-white flex items-center justify-center font-black shadow-md">
+            <div className="w-10 h-10 rounded bg-mat-primary text-white flex items-center justify-center font-bold shadow-elevation-1">
               <LayoutDashboard className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-base sm:text-lg font-black text-slate-900">
+                <h1 className="text-base sm:text-lg font-medium text-mat-text-primary tracking-wide">
                   {t.municipalCommand}
                 </h1>
-                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live Telemetry
+                <span className="bg-emerald-50 text-mat-secondary text-[10px] font-medium px-2 py-0.5 rounded border border-mat-secondary/30 flex items-center gap-1 uppercase tracking-wide">
+                  <span className="w-1.5 h-1.5 rounded-full bg-mat-secondary animate-pulse" /> Live Telemetry
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-mat-text-secondary">
                 Bengaluru Municipal Corporation • Indiranagar & Koramangala Zones
               </p>
             </div>
@@ -47,34 +48,43 @@ export const MunicipalDashboard: React.FC = () => {
 
           {/* View Toggle (Split / Map / Table) */}
           <div className="flex items-center space-x-2">
-            <div className="bg-slate-100 p-1 rounded-2xl flex items-center border border-slate-200">
+            <div className="bg-gray-100 p-0.5 rounded border border-gray-200 flex items-center">
               <button
-                onClick={() => setViewMode('split')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                onClick={(e) => {
+                  createRipple(e);
+                  setViewMode('split');
+                }}
+                className={`px-3 py-1.5 rounded text-xs font-medium uppercase tracking-wider transition-all ripple-surface ${
                   viewMode === 'split'
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-mat-text-primary shadow-elevation-1'
+                    : 'text-mat-text-secondary hover:text-mat-text-primary'
                 }`}
               >
                 Split View
               </button>
               <button
-                onClick={() => setViewMode('map')}
-                className={`flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                onClick={(e) => {
+                  createRipple(e);
+                  setViewMode('map');
+                }}
+                className={`flex items-center space-x-1 px-3 py-1.5 rounded text-xs font-medium uppercase tracking-wider transition-all ripple-surface ${
                   viewMode === 'map'
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-mat-text-primary shadow-elevation-1'
+                    : 'text-mat-text-secondary hover:text-mat-text-primary'
                 }`}
               >
                 <MapIcon className="w-3.5 h-3.5" />
                 <span>Map Only</span>
               </button>
               <button
-                onClick={() => setViewMode('table')}
-                className={`flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                onClick={(e) => {
+                  createRipple(e);
+                  setViewMode('table');
+                }}
+                className={`flex items-center space-x-1 px-3 py-1.5 rounded text-xs font-medium uppercase tracking-wider transition-all ripple-surface ${
                   viewMode === 'table'
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-mat-text-primary shadow-elevation-1'
+                    : 'text-mat-text-secondary hover:text-mat-text-primary'
                 }`}
               >
                 <TableIcon className="w-3.5 h-3.5" />

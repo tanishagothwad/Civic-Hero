@@ -139,12 +139,12 @@ export const ComplaintMap: React.FC<ComplaintMapProps> = ({
         <p class="text-[10px] text-slate-500 mb-2">${issue.location.address}</p>
         <img src="${issue.photoUrl}" alt="${issue.title}" style="width: 100%; height: 90px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;" />
         <div class="flex space-x-1.5">
-          <button id="btn-view-${issue.id}" class="flex-1 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-[11px] font-bold">
+          <button id="btn-view-${issue.id}" class="flex-1 py-1.5 bg-[#0B132B] hover:bg-[#050A17] text-white rounded text-[11px] font-medium uppercase tracking-wider">
             View
           </button>
           ${
             !isResolved && !issue.assignedWorkerName
-              ? `<button id="btn-assign-${issue.id}" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold">
+              ? `<button id="btn-assign-${issue.id}" class="flex-1 py-1.5 bg-[#2E7D32] hover:bg-emerald-800 text-white rounded text-[11px] font-medium uppercase tracking-wider">
                   Assign
                 </button>`
               : ''
@@ -170,34 +170,34 @@ export const ComplaintMap: React.FC<ComplaintMapProps> = ({
   }, [filteredIssues, onSelectIssue, onAssignWorker]);
 
   return (
-    <div className="relative w-full h-[520px] rounded-3xl overflow-hidden border border-slate-200 shadow-md">
+    <div className="relative w-full h-[520px] rounded overflow-hidden border border-gray-200 shadow-elevation-1">
       {/* Leaflet Map DOM Container */}
       <div ref={mapContainerRef} className="w-full h-full" />
 
       {/* Map Severity Heatmap Legend Overlay */}
-      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-slate-200 z-[1000] text-xs">
-        <h5 className="font-bold text-slate-900 mb-1.5 flex items-center justify-between">
+      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-xs p-3 rounded shadow-elevation-4 border border-gray-200 z-[1000] text-xs">
+        <h5 className="font-medium text-mat-text-primary mb-1.5 flex items-center justify-between uppercase tracking-wider text-[11px]">
           <span>Complaint Severity & Density</span>
-          <span className="text-[10px] text-slate-400 font-normal">
+          <span className="text-[10px] text-mat-text-secondary font-normal lowercase">
             ({filteredIssues.length} pins)
           </span>
         </h5>
         <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[11px]">
           <div className="flex items-center space-x-1.5">
-            <span className="w-3 h-3 rounded-full bg-red-500 shadow-xs" />
-            <span className="text-slate-700 font-medium">Critical Priority</span>
+            <span className="w-3 h-3 rounded-full bg-mat-critical shadow-xs" />
+            <span className="text-mat-text-secondary font-medium">Critical Priority</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-3 h-3 rounded-full bg-orange-500 shadow-xs" />
-            <span className="text-slate-700 font-medium">High Priority</span>
+            <span className="w-3 h-3 rounded-full bg-mat-high shadow-xs" />
+            <span className="text-mat-text-secondary font-medium">High Priority</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-3 h-3 rounded-full bg-amber-500 shadow-xs" />
-            <span className="text-slate-700 font-medium">Medium Priority</span>
+            <span className="w-3 h-3 rounded-full bg-mat-medium shadow-xs" />
+            <span className="text-mat-text-secondary font-medium">Medium Priority</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-3 h-3 rounded-full bg-emerald-500 shadow-xs" />
-            <span className="text-slate-700 font-medium">Resolved Cleaned</span>
+            <span className="w-3 h-3 rounded-full bg-mat-secondary shadow-xs" />
+            <span className="text-mat-text-secondary font-medium">Resolved Cleaned</span>
           </div>
         </div>
       </div>

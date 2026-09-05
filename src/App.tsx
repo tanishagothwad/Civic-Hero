@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { RoleSwitcherBar } from './components/common/RoleSwitcherBar';
+import { NavigationDrawer } from './components/common/NavigationDrawer';
+import { FloatingActionButton } from './components/common/FloatingActionButton';
 import { LanguagePicker } from './components/common/LanguagePicker';
 import { ToastNotification } from './components/common/ToastNotification';
 import { LoginModal } from './components/auth/LoginModal';
@@ -23,6 +25,7 @@ const MainApp: React.FC = () => {
     issues,
   } = useApp();
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState<boolean>(false);
   const [isGamificationModalOpen, setIsGamificationModalOpen] = useState<boolean>(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
@@ -30,9 +33,9 @@ const MainApp: React.FC = () => {
   // If not authenticated, present phone + OTP login screen
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col justify-between">
+      <div className="min-h-screen bg-[#F5F5F5] flex flex-col justify-between">
         <LoginModal onOpenLanguage={() => setIsLanguageModalOpen(true)} />
-        <footer className="py-4 text-center text-xs text-slate-500">
+        <footer className="py-4 text-center text-xs text-black/60 bg-white border-t border-slate-200">
           Designed by Tanisha Gothwad
         </footer>
         <LanguagePicker
@@ -45,16 +48,26 @@ const MainApp: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-900 flex flex-col font-sans">
-      {/* 1. Sticky Role & Website Navigation Bar */}
+    <div className="min-h-screen bg-[#F5F5F5] text-[#212121] flex flex-col font-sans">
+      {/* 1. Material App Bar */}
       <RoleSwitcherBar
+        onOpenDrawer={() => setIsDrawerOpen(true)}
         onOpenLanguage={() => setIsLanguageModalOpen(true)}
         onOpenNotifications={() => setIsNotificationsOpen(true)}
         onOpenGamification={() => setIsGamificationModalOpen(true)}
       />
 
-      {/* 2. Persona Content */}
-      <main className="flex-1 flex flex-col bg-slate-100">
+      {/* 2. Material Left Navigation Drawer */}
+      <NavigationDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onOpenReport={() => setIsReportModalOpen(true)}
+        onOpenGamification={() => setIsGamificationModalOpen(true)}
+        onOpenLanguage={() => setIsLanguageModalOpen(true)}
+      />
+
+      {/* 3. Main Portal Content */}
+      <main className="flex-1 flex flex-col bg-[#F5F5F5]">
         {role === 'citizen' && (
           <CitizenHome
             onOpenReport={() => setIsReportModalOpen(true)}
@@ -68,8 +81,16 @@ const MainApp: React.FC = () => {
         {role === 'worker' && <FieldWorkerApp />}
       </main>
 
+      {/* 4. Floating Action Button (FAB) for Citizen reporting */}
+      {role === 'citizen' && (
+        <FloatingActionButton
+          onClick={() => setIsReportModalOpen(true)}
+          label="Report Issue"
+        />
+      )}
+
       {/* Footer Credit */}
-      <footer className="py-4 text-center text-xs text-slate-500 bg-navy-950 border-t border-navy-900">
+      <footer className="py-4 text-center text-xs text-black/60 bg-white border-t border-slate-200 shadow-sm">
         Designed by Tanisha Gothwad
       </footer>
 

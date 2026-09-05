@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Shield, Smartphone, KeyRound, Sparkles, CheckCircle2, ArrowRight, UserCheck, Lock, Globe, HardHat, LayoutDashboard, User } from 'lucide-react';
+import { UserRole } from '../../types';
+import { createRipple } from '../common/MaterialRipple';
+import {
+  Shield,
+  Smartphone,
+  KeyRound,
+  CheckCircle2,
+  ArrowRight,
+  User,
+  LayoutDashboard,
+  HardHat,
+  Globe,
+  UserCheck,
+  Building2,
+} from 'lucide-react';
 import { VoiceInputButton } from '../common/VoiceInputButton';
 
 interface LoginModalProps {
@@ -8,78 +22,81 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
-  const { loginWithPhone, completeCitizenOnboarding, quickDemoLogin, t } = useApp();
+  const { loginWithPhone, completeCitizenOnboarding, t } = useApp();
 
+  // Multi-step auth flow
   const [step, setStep] = useState<'phone' | 'otp' | 'onboarding'>('phone');
   const [phone, setPhone] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
   const [inviteCode, setInviteCode] = useState<string>('');
-  const [showInviteField, setShowInviteField] = useState<boolean>(false);
-  const [name, setName] = useState<string>('');
-  const [ward, setWard] = useState<string>('Ward 4 - Indiranagar');
+  const [showInviteInput, setShowInviteInput] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Citizen first-time onboarding state
+  const [name, setName] = useState<string>('');
+  const [ward, setWard] = useState<string>('Ward 4 - Indiranagar');
+
   const wardOptions = [
     'Ward 4 - Indiranagar',
-    'Ward 7 - Koramangala',
+    'Ward 8 - Koramangala',
     'Ward 12 - HSR Layout',
-    'Ward 1 - Malleshwaram',
-    'Ward 8 - Whitefield',
-    'Ward 15 - Jayanagar',
+    'Ward 15 - Whitefield',
+    'Ward 2 - Malleshwaram',
+    'Ward 6 - Jayanagar',
   ];
 
-  const handleSendOtp = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setError('');
-    const cleanNum = phone.replace(/\D/g, '');
-    if (cleanNum.length < 10) {
-      setError('Please enter a valid 10-digit mobile number.');
+  const handleSendOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phone || phone.length < 10) {
+      setError('Please enter a valid 10-digit mobile number');
       return;
     }
-
+    setError('');
     setIsLoading(true);
+
     setTimeout(() => {
       setIsLoading(false);
       setStep('otp');
     }, 400);
   };
 
-  const handleVerifyOtp = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setError('');
+  const handleVerifyOtp = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!otp || otp.length < 4) {
-      setError('Please enter the 6-digit OTP code.');
+      setError('Please enter the 6-digit OTP');
       return;
     }
 
     setIsLoading(true);
+    setError('');
+
     setTimeout(() => {
       setIsLoading(false);
       const res = loginWithPhone(phone, otp, inviteCode);
-      if (res.success) {
-        if (res.isNewUser) {
-          setStep('onboarding');
-        }
-      } else {
-        setError(res.error || 'Invalid OTP code. Please use 123456 for demo.');
+      if (!res.success) {
+        setError(res.error || 'Invalid OTP code');
+        return;
       }
-    }, 500);
+
+      if (res.isNewUser) {
+        setStep('onboarding');
+      }
+    }, 400);
   };
 
   const handleCompleteOnboarding = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError('Please enter your full name.');
+      setError('Please enter your full name to complete setup');
       return;
     }
-    completeCitizenOnboarding(name, ward);
+    completeCitizenOnboarding(name.trim(), ward);
   };
 
-  const fillDemoNumber = (demoPhone: string, role: 'citizen' | 'municipal' | 'worker') => {
+  const fillDemoNumber = (demoPhone: string, _targetRole: UserRole) => {
     setPhone(demoPhone);
     setError('');
-    quickDemoLogin(role);
   };
 
   const fillDemoOtp = () => {
@@ -88,52 +105,58 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
   };
 
   return (
-    <div className="flex-1 w-full bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Dynamic Background Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Top bar with Language Switcher */}
-      <div className="w-full max-w-md flex justify-between items-center mb-6 z-10 px-2">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-            <Shield className="w-4 h-4 text-white stroke-[2.5]" />
+    <div className="flex-1 w-full bg-[#F5F5F5] flex flex-col items-center justify-center p-4 relative">
+      {/* Top bar with Branding & Language Switcher */}
+      <div className="w-full max-w-md flex justify-between items-center mb-5 px-1">
+        <div className="flex items-center space-x-2.5">
+          <div className="w-9 h-9 rounded bg-[#2E7D32] flex items-center justify-center shadow-elevation-1">
+            <Shield className="w-5 h-5 text-white stroke-[2.2]" />
           </div>
-          <span className="font-extrabold text-lg text-white tracking-tight">Civic Hero</span>
+          <div>
+            <span className="font-bold text-lg text-[#0B132B] tracking-tight">Civic Hero</span>
+            <span className="block text-[10px] text-black/60 uppercase tracking-wider font-medium">
+              Citizen Portal
+            </span>
+          </div>
         </div>
 
         <button
-          onClick={onOpenLanguage}
-          className="flex items-center space-x-1.5 bg-navy-900/90 hover:bg-navy-800 text-slate-200 px-3 py-1.5 rounded-xl border border-navy-700 text-xs font-semibold backdrop-blur transition-all"
+          onClick={(e) => {
+            createRipple(e, 'rgba(0, 0, 0, 0.1)');
+            onOpenLanguage();
+          }}
+          className="flex items-center space-x-1.5 bg-white text-black/87 px-3 py-1.5 rounded border border-slate-300 text-xs font-medium shadow-elevation-1 hover:bg-slate-50 transition-colors ripple-surface"
         >
-          <Globe className="w-3.5 h-3.5 text-emerald-400" />
+          <Globe className="w-3.5 h-3.5 text-[#2E7D32]" />
           <span>Language</span>
         </button>
       </div>
 
-      {/* Main Authentication Card */}
-      <div className="w-full max-w-md bg-navy-900/95 border border-navy-800/90 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative z-10 text-white">
+      {/* Main Material Authentication Card */}
+      <div className="w-full max-w-md bg-white border border-slate-200 rounded shadow-elevation-8 p-6 sm:p-8 text-[#212121]">
         
         {/* STEP 1: PHONE NUMBER */}
         {step === 'phone' && (
           <div>
             <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 mb-3 border border-emerald-500/30">
-                <Smartphone className="w-7 h-7" />
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded bg-[#E8F5E9] text-[#2E7D32] mb-3">
+                <Smartphone className="w-6 h-6" />
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-white">{t.loginTitle || 'Sign In to Civic Hero'}</h1>
-              <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-normal text-black/87">
+                {t.loginTitle || 'Sign In to Civic Hero'}
+              </h1>
+              <p className="text-xs text-black/60 mt-1 max-w-xs mx-auto">
                 {t.loginSubtitle || 'Enter your mobile number to report issues, track resolutions, or access staff portals.'}
               </p>
             </div>
 
             <form onSubmit={handleSendOtp} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium uppercase tracking-wider text-black/60 mb-1.5">
                   {t.enterPhone || 'Mobile Phone Number'}
                 </label>
-                <div className="flex rounded-2xl overflow-hidden border border-navy-700 bg-navy-950 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/30 transition-all">
-                  <span className="inline-flex items-center px-3.5 bg-navy-900 border-r border-navy-700 text-slate-300 font-bold text-sm">
+                <div className="flex rounded border border-slate-300 bg-white focus-within:border-[#2E7D32] focus-within:ring-1 focus-within:ring-[#2E7D32] transition-colors">
+                  <span className="inline-flex items-center px-3.5 bg-slate-100 border-r border-slate-300 text-black/87 font-medium text-sm">
                     🇮🇳 +91
                   </span>
                   <input
@@ -141,7 +164,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                     placeholder="98765 43210"
-                    className="flex-1 bg-transparent px-4 py-3.5 text-white placeholder-slate-500 text-sm font-semibold focus:outline-none"
+                    className="flex-1 bg-transparent px-3.5 py-2.5 text-black/87 placeholder-slate-400 text-sm font-medium focus:outline-none"
                     autoFocus
                   />
                 </div>
@@ -149,118 +172,125 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
 
               {/* Optional Invite Code Toggle */}
               <div>
-                <button
-                  type="button"
-                  onClick={() => setShowInviteField(!showInviteField)}
-                  className="text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors"
-                >
-                  <Lock className="w-3 h-3" />
-                  <span>{showInviteField ? 'Hide Municipal Invite Code' : 'Have a Staff or Field Worker Invite Code?'}</span>
-                </button>
-
-                {showInviteField && (
-                  <div className="mt-2 p-3 bg-navy-950/80 rounded-xl border border-navy-700">
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                      Official Invite Code
+                {!showInviteInput ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowInviteInput(true)}
+                    className="text-xs text-[#2E7D32] hover:underline font-medium flex items-center space-x-1"
+                  >
+                    <Building2 className="w-3.5 h-3.5" />
+                    <span>Have a Municipal Staff / Worker Invite Code?</span>
+                  </button>
+                ) : (
+                  <div className="space-y-1">
+                    <label className="block text-xs font-medium uppercase tracking-wider text-black/60">
+                      Staff / Worker Invite Code (Optional)
                     </label>
                     <input
                       type="text"
                       value={inviteCode}
-                      onChange={(e) => setInviteCode(e.target.value)}
-                      placeholder="e.g. MUNI-STAFF-2026 or WORKER-FIELD-2026"
-                      className="w-full bg-navy-900 border border-navy-700 rounded-lg px-3 py-2 text-xs text-white uppercase placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                      onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                      placeholder="e.g. MUNI-STAFF-2026"
+                      className="w-full bg-white border border-slate-300 focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] rounded px-3.5 py-2.5 text-sm text-black/87 font-mono uppercase focus:outline-none"
                     />
-                    <p className="text-[10px] text-slate-500 mt-1">
-                      Municipal Staff: <code className="text-amber-400 font-mono">MUNI-STAFF-2026</code> • Field Worker: <code className="text-teal-400 font-mono">WORKER-FIELD-2026</code>
-                    </p>
                   </div>
                 )}
               </div>
 
               {error && (
-                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs font-semibold text-rose-300 text-center animate-shake">
+                <div className="p-3 bg-red-50 border border-red-200 rounded text-xs font-medium text-[#D32F2F] text-center">
                   {error}
                 </div>
               )}
 
+              {/* Material Contained Primary Button */}
               <button
                 type="submit"
-                disabled={isLoading || phone.length < 5}
-                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
+                disabled={isLoading || phone.length < 10}
+                onClick={(e) => createRipple(e, 'rgba(255, 255, 255, 0.3)')}
+                className="w-full bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-medium uppercase tracking-wider text-xs sm:text-sm py-3 px-4 rounded shadow-elevation-2 hover:shadow-elevation-4 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all ripple-surface"
               >
-                <span>{isLoading ? 'Sending OTP...' : (t.sendOtp || 'Get Verification OTP')}</span>
+                <span>{isLoading ? 'Sending Code...' : (t.sendOtp || 'Get 6-Digit OTP')}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
 
-            {/* Quick 1-Tap Demo Logins */}
-            <div className="mt-6 pt-5 border-t border-navy-800">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 text-center mb-3 flex items-center justify-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>1-Tap Demo Quick Sign-In</span>
+            {/* Quick Demo Credentials */}
+            <div className="mt-6 pt-5 border-t border-slate-200">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-black/60 text-center mb-2.5">
+                Quick Demo Auto-Fill
               </p>
 
               <div className="grid grid-cols-1 gap-2">
                 <button
                   type="button"
-                  onClick={() => fillDemoNumber('9876543210', 'citizen')}
-                  className="w-full bg-navy-950 hover:bg-navy-800/80 border border-navy-700/80 hover:border-emerald-500/40 p-2.5 rounded-xl flex items-center justify-between text-left transition-all group"
+                  onClick={(e) => {
+                    createRipple(e, 'rgba(46, 125, 50, 0.15)');
+                    fillDemoNumber('9876543210', 'citizen');
+                  }}
+                  className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300 p-2.5 rounded flex items-center justify-between text-left transition-colors ripple-surface"
                 >
                   <div className="flex items-center space-x-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+                    <div className="w-7 h-7 rounded bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center">
                       <User className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                      <div className="text-xs font-medium text-black/87">
                         Citizen — Aarav Mehta
                       </div>
-                      <div className="text-[10px] text-slate-400">Reports, XP, Ward Guardian (+91 98765 43210)</div>
+                      <div className="text-[10px] text-black/60">+91 98765 43210 (Ward Guardian)</div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md">
-                    Sign In
+                  <span className="text-[10px] font-medium bg-[#E8F5E9] text-[#2E7D32] px-2 py-0.5 rounded">
+                    Fill
                   </span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => fillDemoNumber('9123456789', 'municipal')}
-                  className="w-full bg-navy-950 hover:bg-navy-800/80 border border-navy-700/80 hover:border-blue-500/40 p-2.5 rounded-xl flex items-center justify-between text-left transition-all group"
+                  onClick={(e) => {
+                    createRipple(e, 'rgba(25, 118, 210, 0.15)');
+                    fillDemoNumber('9123456789', 'municipal');
+                  }}
+                  className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300 p-2.5 rounded flex items-center justify-between text-left transition-colors ripple-surface"
                 >
                   <div className="flex items-center space-x-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
+                    <div className="w-7 h-7 rounded bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
                       <LayoutDashboard className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">
+                      <div className="text-xs font-medium text-black/87">
                         Municipal Staff — Dr. Sunita Rao
                       </div>
-                      <div className="text-[10px] text-slate-400">HQ Dashboard, Triage, Worker Dispatch</div>
+                      <div className="text-[10px] text-black/60">+91 91234 56789 (HQ Triage)</div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-md">
-                    Sign In
+                  <span className="text-[10px] font-medium bg-[#E3F2FD] text-[#1976D2] px-2 py-0.5 rounded">
+                    Fill
                   </span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => fillDemoNumber('9845011223', 'worker')}
-                  className="w-full bg-navy-950 hover:bg-navy-800/80 border border-navy-700/80 hover:border-amber-500/40 p-2.5 rounded-xl flex items-center justify-between text-left transition-all group"
+                  onClick={(e) => {
+                    createRipple(e, 'rgba(245, 124, 0, 0.15)');
+                    fillDemoNumber('9845011223', 'worker');
+                  }}
+                  className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300 p-2.5 rounded flex items-center justify-between text-left transition-colors ripple-surface"
                 >
                   <div className="flex items-center space-x-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
+                    <div className="w-7 h-7 rounded bg-[#FFF3E0] text-[#F57C00] flex items-center justify-center">
                       <HardHat className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
+                      <div className="text-xs font-medium text-black/87">
                         Field Worker — Ramesh Kumar
                       </div>
-                      <div className="text-[10px] text-slate-400">Road Inspector, Task Queue, Photo Proof</div>
+                      <div className="text-[10px] text-black/60">+91 98450 11223 (Field Ops)</div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-md">
-                    Sign In
+                  <span className="text-[10px] font-medium bg-[#FFF3E0] text-[#F57C00] px-2 py-0.5 rounded">
+                    Fill
                   </span>
                 </button>
               </div>
@@ -272,34 +302,26 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
         {step === 'otp' && (
           <div>
             <div className="text-center mb-5">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 mb-3 border border-amber-500/30">
-                <KeyRound className="w-7 h-7" />
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded bg-[#FFF8E1] text-[#F57C00] mb-3">
+                <KeyRound className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-black tracking-tight text-white">{t.enterOtp || 'Enter OTP Code'}</h2>
-              <p className="text-xs text-slate-400 mt-1">
-                Sent 6-digit verification code to <span className="text-white font-bold">+91 {phone}</span>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-normal text-black/87">
+                {t.enterOtp || 'Enter OTP Code'}
+              </h2>
+              <p className="text-xs text-black/60 mt-1">
+                Sent verification code to <span className="text-black/87 font-medium">+91 {phone}</span>
               </p>
-              <button
-                type="button"
-                onClick={() => setStep('phone')}
-                className="text-xs text-emerald-400 hover:underline font-semibold mt-1"
-              >
-                Change mobile number
-              </button>
             </div>
 
-            {/* Prominent Demo Notice */}
-            <div className="bg-amber-400/10 border border-amber-400/30 rounded-2xl p-3.5 mb-5 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-                <span className="text-xs font-bold text-amber-300">
-                  {t.demoOtpNotice || 'Demo mode: use 123456 as OTP'}
-                </span>
+            {/* Helper Banner with Auto-fill */}
+            <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded flex items-center justify-between">
+              <div className="text-xs text-black/60">
+                <span className="font-bold text-black/87">Demo Mode:</span> OTP is <span className="font-mono font-bold text-[#2E7D32]">123456</span>
               </div>
               <button
                 type="button"
                 onClick={fillDemoOtp}
-                className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs px-2.5 py-1 rounded-lg shadow transition-all active:scale-95"
+                className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-medium text-xs uppercase tracking-wider px-2.5 py-1 rounded transition-colors"
               >
                 Auto-fill
               </button>
@@ -313,13 +335,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   placeholder="• • • • • •"
-                  className="w-full bg-navy-950 border border-navy-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 text-center tracking-[0.5em] text-2xl font-black text-white py-3.5 rounded-2xl focus:outline-none transition-all"
+                  className="w-full bg-white border border-slate-300 focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] text-center tracking-[0.5em] text-2xl font-bold text-black/87 py-3 rounded focus:outline-none transition-all"
                   autoFocus
                 />
               </div>
 
               {error && (
-                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs font-semibold text-rose-300 text-center">
+                <div className="p-3 bg-red-50 border border-red-200 rounded text-xs font-medium text-[#D32F2F] text-center">
                   {error}
                 </div>
               )}
@@ -327,7 +349,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
               <button
                 type="submit"
                 disabled={isLoading || otp.length < 4}
-                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
+                onClick={(e) => createRipple(e, 'rgba(255, 255, 255, 0.3)')}
+                className="w-full bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-medium uppercase tracking-wider text-xs sm:text-sm py-3 px-4 rounded shadow-elevation-2 hover:shadow-elevation-4 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all ripple-surface"
               >
                 <span>{isLoading ? 'Verifying OTP...' : (t.verifyOtp || 'Verify & Sign In')}</span>
                 <CheckCircle2 className="w-4 h-4" />
@@ -340,18 +363,20 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
         {step === 'onboarding' && (
           <div>
             <div className="text-center mb-5">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 mb-3 border border-emerald-500/30 animate-bounce">
-                <UserCheck className="w-7 h-7" />
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded bg-[#E8F5E9] text-[#2E7D32] mb-3">
+                <UserCheck className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-black tracking-tight text-white">{t.welcomeCitizen || 'Welcome Citizen Hero! 🎉'}</h2>
-              <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-normal text-black/87">
+                {t.welcomeCitizen || 'Welcome Citizen Hero! 🎉'}
+              </h2>
+              <p className="text-xs text-black/60 mt-1 max-w-xs mx-auto">
                 Set up your citizen profile to start reporting civic issues and earning ward badges!
               </p>
             </div>
 
             <form onSubmit={handleCompleteOnboarding} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium uppercase tracking-wider text-black/60 mb-1.5">
                   {t.enterName || 'Your Full Name'}
                 </label>
                 <div className="relative">
@@ -360,7 +385,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t.namePlaceholder || 'e.g. Kavita Nair'}
-                    className="w-full bg-navy-950 border border-navy-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none"
+                    className="w-full bg-white border border-slate-300 focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] rounded px-3.5 py-2.5 text-sm text-black/87 placeholder-slate-400 focus:outline-none"
                     autoFocus
                   />
                   <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -370,16 +395,16 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium uppercase tracking-wider text-black/60 mb-1.5">
                   {t.selectWard || 'Select your home Ward / Area'}
                 </label>
                 <select
                   value={ward}
                   onChange={(e) => setWard(e.target.value)}
-                  className="w-full bg-navy-950 border border-navy-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none cursor-pointer"
+                  className="w-full bg-white border border-slate-300 focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] rounded px-3.5 py-2.5 text-sm text-black/87 focus:outline-none cursor-pointer"
                 >
                   {wardOptions.map((w) => (
-                    <option key={w} value={w} className="bg-navy-900 text-white">
+                    <option key={w} value={w} className="bg-white text-black/87">
                       {w}
                     </option>
                   ))}
@@ -387,21 +412,22 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
               </div>
 
               {error && (
-                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs font-semibold text-rose-300 text-center">
+                <div className="p-3 bg-red-50 border border-red-200 rounded text-xs font-medium text-[#D32F2F] text-center">
                   {error}
                 </div>
               )}
 
-              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-3 flex items-center space-x-2.5">
+              <div className="bg-[#E8F5E9] border border-[#A5D6A7] rounded p-3 flex items-center space-x-2.5">
                 <span className="text-xl">🎁</span>
-                <p className="text-xs text-emerald-300 font-semibold">
-                  You will earn <span className="font-extrabold text-amber-400">+50 XP Welcome Points</span> upon completing setup!
+                <p className="text-xs text-[#2E7D32] font-medium">
+                  You will earn <span className="font-bold text-[#F57C00]">+50 XP Welcome Points</span> upon completing setup!
                 </p>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30 active:scale-[0.98] transition-all"
+                onClick={(e) => createRipple(e, 'rgba(255, 255, 255, 0.3)')}
+                className="w-full bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-medium uppercase tracking-wider text-xs sm:text-sm py-3 px-4 rounded shadow-elevation-2 hover:shadow-elevation-4 flex items-center justify-center space-x-2 transition-all ripple-surface"
               >
                 <span>{t.startApp || 'Start Reporting & Earning XP'}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -414,3 +440,5 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
     </div>
   );
 };
+
+export default LoginModal;

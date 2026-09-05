@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { CivicIssue } from '../../types';
+import { createRipple } from '../common/MaterialRipple';
 import { Camera, Upload, CheckCircle2, X } from 'lucide-react';
 
 interface ResolveTaskModalProps {
@@ -53,22 +54,25 @@ export const ResolveTaskModal: React.FC<ResolveTaskModalProps> = ({ issue, onClo
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="bg-white rounded shadow-elevation-8 w-full max-w-lg overflow-hidden border border-gray-200 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="bg-navy-950 text-white p-4 sm:p-5 flex items-start justify-between flex-shrink-0">
+        <div className="bg-mat-primary text-white p-4 sm:p-5 flex items-start justify-between flex-shrink-0 border-b border-mat-primary-dark">
           <div className="flex items-center space-x-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded bg-emerald-400/20 text-emerald-300 flex items-center justify-center font-medium border border-emerald-400/30">
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold">{t.markResolved}</h3>
-              <p className="text-xs text-slate-400">Mandatory proof photo upload required</p>
+              <h3 className="text-base font-medium text-white tracking-wide">{t.markResolved}</h3>
+              <p className="text-xs text-white/70">Mandatory proof photo upload required</p>
             </div>
           </div>
           <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
+            onClick={(e) => {
+              createRipple(e);
+              onClose();
+            }}
+            className="text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors ripple-surface"
             aria-label="Close resolve modal"
           >
             <X className="w-5 h-5" />
@@ -79,19 +83,21 @@ export const ResolveTaskModal: React.FC<ResolveTaskModalProps> = ({ issue, onClo
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
           {/* Before Photo for Reference */}
           <div className="space-y-1.5">
-            <span className="text-xs font-bold text-slate-700 block">Original Issue (Before):</span>
-            <div className="flex items-center space-x-3 bg-slate-50 p-2.5 rounded-2xl border border-slate-200">
+            <span className="text-xs font-medium text-mat-text-secondary block uppercase tracking-wider">
+              Original Issue (Before):
+            </span>
+            <div className="flex items-center space-x-3 bg-[#FAFAFA] p-2.5 rounded border border-gray-200">
               <img
                 src={issue.photoUrl}
                 alt="Before"
-                className="w-16 h-16 rounded-xl object-cover border border-slate-300 flex-shrink-0"
+                className="w-16 h-16 rounded object-cover border border-gray-300 flex-shrink-0"
               />
               <div className="min-w-0">
-                <span className="text-[10px] font-mono text-slate-500 block">
+                <span className="text-[10px] font-mono text-mat-text-secondary block">
                   #{issue.ticketNumber} • {issue.category}
                 </span>
-                <h5 className="text-xs font-bold text-slate-900 truncate">{issue.title}</h5>
-                <p className="text-[10px] text-slate-500 truncate">{issue.location.address}</p>
+                <h5 className="text-xs font-medium text-mat-text-primary truncate">{issue.title}</h5>
+                <p className="text-[10px] text-mat-text-secondary truncate">{issue.location.address}</p>
               </div>
             </div>
           </div>
@@ -99,15 +105,15 @@ export const ResolveTaskModal: React.FC<ResolveTaskModalProps> = ({ issue, onClo
           {/* Mandatory "After" Photo Upload */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-900 block">
-                {t.uploadProof} <span className="text-red-500">*</span>
+              <label className="text-xs font-medium text-mat-text-primary block uppercase tracking-wider">
+                {t.uploadProof} <span className="text-mat-critical">*</span>
               </label>
-              <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+              <span className="text-[10px] bg-emerald-100 text-mat-secondary font-medium px-2 py-0.5 rounded uppercase tracking-wide">
                 Required for Closure
               </span>
             </div>
 
-            <div className="relative rounded-2xl overflow-hidden border-2 border-dashed border-emerald-500/50 bg-emerald-50/30 aspect-video flex items-center justify-center group shadow-inner">
+            <div className="relative rounded overflow-hidden border-2 border-dashed border-mat-secondary/40 bg-emerald-50/20 aspect-video flex items-center justify-center group shadow-inner">
               {afterPhoto ? (
                 <>
                   <img
@@ -116,7 +122,7 @@ export const ResolveTaskModal: React.FC<ResolveTaskModalProps> = ({ issue, onClo
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
-                    <label className="bg-white text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer shadow">
+                    <label className="bg-white text-mat-text-primary px-3 py-1.5 rounded text-xs font-medium uppercase tracking-wider cursor-pointer shadow-elevation-1">
                       Retake Proof Photo
                       <input
                         type="file"
@@ -130,15 +136,15 @@ export const ResolveTaskModal: React.FC<ResolveTaskModalProps> = ({ issue, onClo
                 </>
               ) : (
                 <div className="text-center p-4">
-                  <Camera className="w-8 h-8 mx-auto text-emerald-600 mb-1" />
-                  <p className="text-xs text-slate-600">Take after photo of resolved area</p>
+                  <Camera className="w-8 h-8 mx-auto text-mat-secondary mb-1" />
+                  <p className="text-xs text-mat-text-secondary">Take after photo of resolved area</p>
                 </div>
               )}
             </div>
 
             {/* Buttons */}
             <div className="flex items-center space-x-2">
-              <label className="flex-1 flex items-center justify-center space-x-1.5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold cursor-pointer transition-colors shadow min-h-touch">
+              <label className="flex-1 flex items-center justify-center space-x-1.5 py-2.5 bg-mat-secondary hover:bg-emerald-800 text-white rounded text-xs font-medium uppercase tracking-wider cursor-pointer transition-all shadow-elevation-1 min-h-touch ripple-surface">
                 <Camera className="w-4 h-4" />
                 <span>Take After Photo</span>
                 <input
@@ -149,8 +155,8 @@ export const ResolveTaskModal: React.FC<ResolveTaskModalProps> = ({ issue, onClo
                   className="hidden"
                 />
               </label>
-              <label className="flex items-center justify-center space-x-1.5 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold cursor-pointer border border-slate-300 transition-colors min-h-touch">
-                <Upload className="w-4 h-4 text-slate-600" />
+              <label className="flex items-center justify-center space-x-1.5 px-4 py-2.5 bg-white hover:bg-gray-100 text-mat-text-secondary rounded text-xs font-medium uppercase tracking-wider cursor-pointer border border-gray-300 transition-colors min-h-touch ripple-surface">
+                <Upload className="w-4 h-4 text-mat-text-secondary" />
                 <span>Upload</span>
                 <input
                   type="file"
@@ -164,7 +170,7 @@ export const ResolveTaskModal: React.FC<ResolveTaskModalProps> = ({ issue, onClo
 
           {/* Remarks */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-900 block">
+            <label className="text-xs font-medium text-mat-text-primary block uppercase tracking-wider">
               Field Officer Resolution Remarks:
             </label>
             <textarea
@@ -172,24 +178,30 @@ export const ResolveTaskModal: React.FC<ResolveTaskModalProps> = ({ issue, onClo
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
               placeholder="Describe repairs carried out on site..."
-              className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all resize-none"
+              className="w-full p-2.5 bg-white border border-gray-300 rounded text-xs text-mat-text-primary placeholder:text-gray-400 focus:outline-none focus:border-mat-secondary focus:ring-1 focus:ring-mat-secondary transition-all resize-none"
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end space-x-2 flex-shrink-0">
+        <div className="p-4 bg-[#FAFAFA] border-t border-gray-200 flex items-center justify-end space-x-2 flex-shrink-0">
           <button
             type="button"
-            onClick={onClose}
-            className="px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors min-h-touch"
+            onClick={(e) => {
+              createRipple(e);
+              onClose();
+            }}
+            className="px-4 py-2 text-mat-text-secondary hover:bg-gray-100 rounded text-xs font-medium uppercase tracking-wider transition-colors ripple-surface min-h-touch"
           >
             {t.cancel}
           </button>
           <button
             type="button"
-            onClick={handleSubmitResolution}
-            className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md transition-colors flex items-center space-x-1.5 min-h-touch"
+            onClick={(e) => {
+              createRipple(e);
+              handleSubmitResolution();
+            }}
+            className="px-6 py-2.5 bg-mat-secondary hover:bg-emerald-800 text-white rounded text-xs font-medium uppercase tracking-wider shadow-elevation-2 transition-all flex items-center space-x-1.5 ripple-surface min-h-touch"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>Complete & Award Citizen XP</span>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { languageList } from '../../i18n/translations';
+import { createRipple } from './MaterialRipple';
 import { Globe, Check, X } from 'lucide-react';
 
 interface LanguagePickerProps {
@@ -14,22 +15,25 @@ export const LanguagePicker: React.FC<LanguagePickerProps> = ({ isOpen, onClose 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl border border-slate-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="bg-white rounded shadow-elevation-8 w-full max-w-sm overflow-hidden border border-gray-200">
         {/* Header */}
-        <div className="bg-navy-950 text-white px-5 py-4 flex items-center justify-between">
+        <div className="bg-mat-primary text-white px-5 py-4 flex items-center justify-between border-b border-mat-primary-dark">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-emerald-400/20 text-emerald-300 flex items-center justify-center border border-emerald-400/30">
               <Globe className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold">Select Language / भाषा चुनें</h3>
-              <p className="text-xs text-slate-400">Choose your preferred Indian language</p>
+              <h3 className="text-base font-medium text-white tracking-wide">Select Language / भाषा चुनें</h3>
+              <p className="text-xs text-white/70">Choose your preferred Indian language</p>
             </div>
           </div>
           <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-navy-800 transition-colors"
+            onClick={(e) => {
+              createRipple(e);
+              onClose();
+            }}
+            className="text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors ripple-surface"
             aria-label="Close language selector"
           >
             <X className="w-5 h-5" />
@@ -43,23 +47,24 @@ export const LanguagePicker: React.FC<LanguagePickerProps> = ({ isOpen, onClose 
             return (
               <button
                 key={item.code}
-                onClick={() => {
+                onClick={(e) => {
+                  createRipple(e);
                   setLanguage(item.code);
                   onClose();
                 }}
-                className={`flex items-center justify-between px-4 py-3 rounded-2xl border text-left transition-all min-h-[52px] ${
+                className={`flex items-center justify-between px-4 py-3 rounded border text-left transition-all min-h-[52px] ripple-surface ${
                   isSelected
-                    ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-bold ring-2 ring-emerald-400/40'
-                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-800 font-medium'
+                    ? 'border-mat-secondary bg-emerald-50/70 text-mat-text-primary font-medium ring-1 ring-mat-secondary shadow-elevation-1'
+                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-mat-text-primary font-normal'
                 }`}
                 aria-label={`Select ${item.name}`}
               >
                 <div>
-                  <span className="text-base font-bold block">{item.nativeName}</span>
-                  <span className="text-xs text-slate-500">{item.name}</span>
+                  <span className="text-base font-medium block">{item.nativeName}</span>
+                  <span className="text-xs text-mat-text-secondary">{item.name}</span>
                 </div>
                 {isSelected && (
-                  <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-sm">
+                  <div className="w-6 h-6 rounded-full bg-mat-secondary text-white flex items-center justify-center shadow-xs">
                     <Check className="w-4 h-4 stroke-[3]" />
                   </div>
                 )}
@@ -69,8 +74,8 @@ export const LanguagePicker: React.FC<LanguagePickerProps> = ({ isOpen, onClose 
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
-          <p className="text-[11px] text-slate-500">
+        <div className="p-3 bg-[#FAFAFA] border-t border-gray-200 text-center">
+          <p className="text-[11px] text-mat-text-secondary">
             Voice-to-text and UI labels automatically adapt to your chosen language.
           </p>
         </div>

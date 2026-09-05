@@ -20,41 +20,41 @@ export const AnalyticsOverview: React.FC = () => {
       title: 'Issues Resolved',
       value: `${resolvedCount}`,
       subtext: '+12% vs last week',
-      icon: <CheckCircle2 className="w-5 h-5 text-emerald-600" />,
-      bg: 'bg-emerald-50 border-emerald-200',
-      textColor: 'text-emerald-950',
+      icon: <CheckCircle2 className="w-5 h-5 text-mat-secondary" />,
+      bg: 'bg-white border-gray-200',
+      textColor: 'text-mat-secondary',
     },
     {
       title: 'Avg Resolution Time',
       value: '4.2 hrs',
       subtext: 'Target SLA: < 6.0 hrs',
-      icon: <Clock className="w-5 h-5 text-blue-600" />,
-      bg: 'bg-blue-50 border-blue-200',
-      textColor: 'text-blue-950',
+      icon: <Clock className="w-5 h-5 text-mat-low" />,
+      bg: 'bg-white border-gray-200',
+      textColor: 'text-mat-low',
     },
     {
       title: 'Critical Hazards',
       value: `${criticalCount}`,
       subtext: 'Immediate action required',
-      icon: <AlertTriangle className="w-5 h-5 text-rose-600" />,
-      bg: 'bg-rose-50 border-rose-200',
-      textColor: 'text-rose-950',
+      icon: <AlertTriangle className="w-5 h-5 text-mat-critical" />,
+      bg: 'bg-white border-gray-200',
+      textColor: 'text-mat-critical',
     },
     {
       title: 'Top Problem Ward',
       value: topWard[0].split('-')[1]?.trim() || topWard[0],
       subtext: `${topWard[1]} active complaints`,
-      icon: <TrendingUp className="w-5 h-5 text-amber-600" />,
-      bg: 'bg-amber-50 border-amber-200',
-      textColor: 'text-amber-950',
+      icon: <TrendingUp className="w-5 h-5 text-mat-high" />,
+      bg: 'bg-white border-gray-200',
+      textColor: 'text-mat-high',
     },
     {
       title: 'Citizen Satisfaction',
       value: '94.8%',
       subtext: 'Based on 420 ratings',
-      icon: <ShieldCheck className="w-5 h-5 text-teal-600" />,
-      bg: 'bg-teal-50 border-teal-200',
-      textColor: 'text-teal-950',
+      icon: <ShieldCheck className="w-5 h-5 text-emerald-700" />,
+      bg: 'bg-white border-gray-200',
+      textColor: 'text-emerald-700',
     },
   ];
 
@@ -63,15 +63,15 @@ export const AnalyticsOverview: React.FC = () => {
       {cards.map((card, idx) => (
         <div
           key={idx}
-          className={`p-4 rounded-3xl border shadow-sm transition-all hover:shadow-md ${card.bg}`}
+          className={`p-4 rounded border shadow-elevation-1 transition-all hover:shadow-elevation-2 ${card.bg}`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-600">{card.title}</span>
-            <div className="p-2 rounded-xl bg-white/80 shadow-xs">{card.icon}</div>
+            <span className="text-xs font-medium text-mat-text-secondary uppercase tracking-wider">{card.title}</span>
+            <div className="p-1.5 rounded bg-gray-50 border border-gray-100">{card.icon}</div>
           </div>
           <div className="mt-2">
-            <h3 className={`text-xl sm:text-2xl font-black ${card.textColor}`}>{card.value}</h3>
-            <p className="text-[11px] text-slate-500 font-medium mt-0.5">{card.subtext}</p>
+            <h3 className={`text-xl sm:text-2xl font-bold ${card.textColor}`}>{card.value}</h3>
+            <p className="text-[11px] text-mat-text-secondary font-normal mt-0.5">{card.subtext}</p>
           </div>
         </div>
       ))}
