@@ -68,54 +68,54 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
   const getSeverityBadge = (sev: string) => {
     switch (sev) {
       case 'Critical':
-        return 'bg-red-50 text-mat-critical border-mat-critical/30';
+        return 'bg-[#FCE8E6] text-[#C5221F] border-[#FAD2CF]';
       case 'High':
-        return 'bg-orange-50 text-mat-high border-mat-high/30';
+        return 'bg-[#FEF7E0] text-[#B06000] border-[#FEEFC3]';
       case 'Medium':
-        return 'bg-amber-50 text-amber-800 border-mat-medium/40';
+        return 'bg-[#FEF7E0] text-[#78350F] border-[#FBBC05]/40';
       default:
-        return 'bg-blue-50 text-mat-low border-mat-low/30';
+        return 'bg-[#E8F0FE] text-[#1A73E8] border-[#D2E3FC]';
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'Resolved':
-        return 'bg-emerald-50 text-mat-secondary border-mat-secondary/30';
+        return 'bg-[#E6F4EA] text-[#137333] border-[#CEEAD6]';
       case 'In Progress':
-        return 'bg-blue-50 text-mat-low border-mat-low/30';
+        return 'bg-[#E8F0FE] text-[#1A73E8] border-[#D2E3FC]';
       case 'Acknowledged':
-        return 'bg-amber-50 text-amber-800 border-mat-medium/40';
+        return 'bg-[#FEF7E0] text-[#B06000] border-[#FEEFC3]';
       default:
-        return 'bg-gray-100 text-mat-text-secondary border-gray-300';
+        return 'bg-[#F1F3F4] text-[#5F6368] border-[#DADCE0]';
     }
   };
 
   return (
-    <div className="bg-white rounded border border-gray-200 shadow-elevation-1 overflow-hidden flex flex-col">
+    <div className="bg-white rounded border border-[#DADCE0] shadow-elevation-1 overflow-hidden flex flex-col">
       {/* Search & Filter Bar */}
-      <div className="p-4 border-b border-gray-200 space-y-3 bg-[#FAFAFA]">
+      <div className="p-4 border-b border-[#DADCE0] space-y-3 bg-[#FAFAFA]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {/* Search Box */}
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-mat-text-secondary absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#5F6368] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by ticket #, keyword, ward, or citizen..."
-              className="w-full pl-9 pr-4 py-2 bg-white border border-gray-300 rounded text-xs text-mat-text-primary placeholder:text-gray-400 focus:outline-none focus:border-mat-secondary focus:ring-1 focus:ring-mat-secondary transition-all"
+              className="w-full pl-9 pr-4 py-2 bg-white border border-[#DADCE0] rounded text-xs text-[#202124] placeholder:text-gray-400 focus:outline-none focus:border-[#4285F4] focus:ring-1 focus:ring-[#4285F4] transition-all"
             />
           </div>
 
           {/* Sort Selector */}
           <div className="flex items-center space-x-2">
-            <ArrowUpDown className="w-3.5 h-3.5 text-mat-text-secondary" />
-            <span className="text-xs text-mat-text-secondary font-medium">Sort by:</span>
+            <ArrowUpDown className="w-3.5 h-3.5 text-[#5F6368]" />
+            <span className="text-xs text-[#5F6368] font-medium">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-2.5 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium text-mat-text-primary focus:outline-none focus:border-mat-secondary"
+              className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
             >
               <option value="date">Most Recent</option>
               <option value="priority">Highest Severity</option>
@@ -130,7 +130,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium text-mat-text-primary focus:outline-none focus:border-mat-secondary"
+            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
           >
             <option value="all">All Statuses</option>
             <option value="Submitted">Submitted</option>
@@ -143,7 +143,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium text-mat-text-primary focus:outline-none focus:border-mat-secondary"
+            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
           >
             <option value="all">All Categories</option>
             <option value="Garbage">Garbage & Waste</option>
@@ -158,7 +158,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
           <select
             value={severityFilter}
             onChange={(e) => setSeverityFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium text-mat-text-primary focus:outline-none focus:border-mat-secondary"
+            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
           >
             <option value="all">All Priorities</option>
             <option value="Critical">Critical</option>
@@ -171,7 +171,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
           <select
             value={wardFilter}
             onChange={(e) => setWardFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium text-mat-text-primary focus:outline-none focus:border-mat-secondary"
+            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
           >
             <option value="all">All Wards</option>
             {wards.map((w) => (
@@ -181,7 +181,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
             ))}
           </select>
 
-          <span className="text-[11px] text-mat-text-secondary ml-auto font-medium">
+          <span className="text-[11px] text-[#5F6368] ml-auto font-medium">
             Showing {sorted.length} of {issues.length} complaints
           </span>
         </div>
@@ -189,8 +189,8 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
 
       {/* Table Content */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs text-mat-text-secondary">
-          <thead className="bg-[#FAFAFA] text-mat-text-secondary font-medium uppercase text-[10px] tracking-wider border-b border-gray-200">
+        <table className="w-full text-left text-xs text-[#5F6368]">
+          <thead className="bg-[#FAFAFA] text-[#5F6368] font-medium uppercase text-[10px] tracking-wider border-b border-[#DADCE0]">
             <tr>
               <th className="py-3 px-4">Ticket & Photo</th>
               <th className="py-3 px-4">Category / Issue</th>
@@ -201,10 +201,10 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
               <th className="py-3 px-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-[#DADCE0]">
             {sorted.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-8 text-center text-mat-text-secondary">
+                <td colSpan={7} className="py-8 text-center text-[#5F6368]">
                   No matching complaints found.
                 </td>
               </tr>
@@ -221,7 +221,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                       <img
                         src={issue.photoUrl}
                         alt={issue.title}
-                        className="w-10 h-10 rounded object-cover border border-gray-200 flex-shrink-0"
+                        className="w-10 h-10 rounded object-cover border border-[#DADCE0] flex-shrink-0"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           const fallback = getAssetUrl('issues/garbage.jpg');
@@ -231,10 +231,10 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                         }}
                       />
                       <div>
-                        <span className="font-mono font-medium text-mat-text-primary block">
+                        <span className="font-mono font-medium text-[#202124] block">
                           #{issue.ticketNumber}
                         </span>
-                        <span className="text-[10px] text-mat-text-secondary">{issue.createdAt}</span>
+                        <span className="text-[10px] text-[#5F6368]">{issue.createdAt}</span>
                       </div>
                     </div>
                   </td>
@@ -242,12 +242,12 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                   {/* Title & Category */}
                   <td className="py-3 px-4">
                     <div className="max-w-xs">
-                      <span className="text-[10px] font-medium text-mat-secondary bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 uppercase tracking-wide">
+                      <span className="text-[10px] font-medium text-[#1A73E8] bg-[#E8F0FE] px-1.5 py-0.5 rounded border border-[#D2E3FC] uppercase tracking-wide">
                         {t.categories[issue.category]}
                       </span>
-                      <h5 className="font-medium text-mat-text-primary mt-0.5 truncate">{issue.title}</h5>
-                      <span className="text-[10px] text-mat-text-secondary flex items-center gap-1 mt-0.5">
-                        <ThumbsUp className="w-2.5 h-2.5" /> {issue.upvotes} upvotes
+                      <h5 className="font-medium text-[#202124] mt-0.5 truncate">{issue.title}</h5>
+                      <span className="text-[10px] text-[#5F6368] flex items-center gap-1 mt-0.5">
+                        <ThumbsUp className="w-2.5 h-2.5 text-[#1A73E8]" /> {issue.upvotes} upvotes
                         {issue.mergedCount > 0 && ` • +${issue.mergedCount} merged`}
                       </span>
                     </div>
@@ -256,10 +256,10 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                   {/* Location */}
                   <td className="py-3 px-4">
                     <div className="max-w-[180px]">
-                      <span className="font-medium text-mat-text-primary text-[11px] block truncate">
+                      <span className="font-medium text-[#202124] text-[11px] block truncate">
                         {issue.location.ward}
                       </span>
-                      <span className="text-[10px] text-mat-text-secondary truncate block">
+                      <span className="text-[10px] text-[#5F6368] truncate block">
                         {issue.location.address}
                       </span>
                     </div>
@@ -290,12 +290,12 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                   {/* Assigned Officer */}
                   <td className="py-3 px-4">
                     {issue.assignedWorkerName ? (
-                      <div className="flex items-center space-x-1.5 text-mat-low font-medium">
-                        <HardHat className="w-3.5 h-3.5 text-mat-low flex-shrink-0" />
+                      <div className="flex items-center space-x-1.5 text-[#1A73E8] font-medium">
+                        <HardHat className="w-3.5 h-3.5 text-[#4285F4] flex-shrink-0" />
                         <span className="truncate">{issue.assignedWorkerName}</span>
                       </div>
                     ) : (
-                      <span className="text-mat-text-secondary italic text-[11px]">Unassigned</span>
+                      <span className="text-[#5F6368] italic text-[11px]">Unassigned</span>
                     )}
                   </td>
 
@@ -310,7 +310,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                           createRipple(e);
                           onSelectIssue(issue);
                         }}
-                        className="p-1.5 text-mat-text-secondary hover:text-mat-text-primary hover:bg-gray-100 rounded transition-colors ripple-surface"
+                        className="p-1.5 text-[#5F6368] hover:text-[#202124] hover:bg-gray-100 rounded transition-colors ripple-surface"
                         title="View issue timeline"
                         aria-label="View issue"
                       >
@@ -323,7 +323,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                             createRipple(e);
                             onAssignWorker(issue);
                           }}
-                          className="px-2.5 py-1 bg-mat-secondary hover:bg-emerald-800 text-white rounded font-medium text-[11px] uppercase tracking-wider transition-all shadow-elevation-1 ripple-surface"
+                          className="px-2.5 py-1 bg-[#4285F4] hover:bg-[#1A73E8] text-white rounded font-medium text-[11px] uppercase tracking-wider transition-all shadow-elevation-1 ripple-surface"
                           aria-label="Assign field worker"
                         >
                           Assign

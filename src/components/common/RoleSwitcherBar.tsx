@@ -60,7 +60,10 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
   const currentLangObj = languageList.find((l) => l.code === language);
 
   return (
-    <header className="bg-[#0B132B] text-white sticky top-0 z-40 shadow-elevation-4">
+    <header className="bg-[#4285F4] text-white sticky top-0 z-40 shadow-elevation-4">
+      {/* Google Signature 4-Color Accent Line at top of App Bar */}
+      <div className="h-1 w-full google-accent-bar" />
+
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
         {/* Left: Hamburger button + Brand */}
         <div className="flex items-center space-x-2 sm:space-x-3">
@@ -70,7 +73,7 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
                 createRipple(e, 'rgba(255, 255, 255, 0.3)');
                 onOpenDrawer();
               }}
-              className="w-10 h-10 rounded flex items-center justify-center text-white/87 hover:text-white hover:bg-white/10 transition-colors ripple-surface"
+              className="w-10 h-10 rounded flex items-center justify-center text-white/90 hover:text-white hover:bg-white/10 transition-colors ripple-surface"
               aria-label="Open navigation drawer"
               title="Navigation Menu"
             >
@@ -79,8 +82,8 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
           )}
 
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded bg-[#2E7D32] flex items-center justify-center shadow-sm">
-              <Shield className="w-5 h-5 text-white stroke-[2.2]" />
+            <div className="w-8 h-8 rounded bg-white flex items-center justify-center shadow-sm">
+              <Shield className="w-5 h-5 text-[#4285F4] stroke-[2.4]" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
@@ -100,23 +103,21 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
               <button
                 key={r.key}
                 onClick={(e) => {
-                  createRipple(e, 'rgba(46, 125, 50, 0.3)');
+                  createRipple(e, 'rgba(255, 255, 255, 0.3)');
                   setRole(r.key);
                 }}
                 className={`relative h-full px-3 sm:px-4 flex items-center space-x-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ripple-surface ${
                   isActive
-                    ? 'text-white font-bold'
-                    : 'text-white/70 hover:text-white hover:bg-white/5'
+                    ? 'text-white font-bold bg-white/10'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
                 }`}
                 aria-label={`Switch to ${r.label}`}
               >
-                <span className={isActive ? 'text-[#81C784]' : 'text-white/60'}>
-                  {r.icon}
-                </span>
+                <span>{r.icon}</span>
                 <span className="hidden sm:inline">{r.label}</span>
                 {/* Active Underline Indicator */}
                 {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#2E7D32] rounded-t" />
+                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-white rounded-t" />
                 )}
               </button>
             );
@@ -129,13 +130,13 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
           {role === 'citizen' && onOpenGamification && (
             <button
               onClick={(e) => {
-                createRipple(e, 'rgba(251, 192, 45, 0.3)');
+                createRipple(e, 'rgba(251, 188, 5, 0.3)');
                 onOpenGamification();
               }}
-              className="hidden md:flex items-center space-x-1.5 bg-[#FBC02D]/15 hover:bg-[#FBC02D]/25 text-[#FBC02D] px-2.5 py-1.5 rounded text-xs font-bold transition-colors ripple-surface border border-[#FBC02D]/30"
+              className="hidden md:flex items-center space-x-1.5 bg-[#FBBC05] text-[#202124] px-2.5 py-1.5 rounded text-xs font-bold transition-colors ripple-surface shadow-xs hover:bg-[#F29900]"
               title="View your XP points & badges"
             >
-              <Trophy className="w-3.5 h-3.5 fill-[#FBC02D]" />
+              <Trophy className="w-3.5 h-3.5 fill-[#202124]" />
               <span>{currentUser.points} XP</span>
             </button>
           )}
@@ -147,13 +148,13 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
                 createRipple(e, 'rgba(255, 255, 255, 0.3)');
                 onOpenNotifications();
               }}
-              className="relative w-9 h-9 rounded flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 transition-colors ripple-surface"
+              className="relative w-9 h-9 rounded flex items-center justify-center text-white/90 hover:text-white hover:bg-white/10 transition-colors ripple-surface"
               aria-label={`Notifications (${unreadNotificationCount} unread)`}
               title="Notifications"
             >
               <Bell className="w-5 h-5" />
               {unreadNotificationCount > 0 && (
-                <span className="absolute 1 right-1 bg-[#D32F2F] text-white font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow">
+                <span className="absolute top-1 right-1 bg-[#EA4335] text-white font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow">
                   {unreadNotificationCount}
                 </span>
               )}
@@ -166,28 +167,28 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
               createRipple(e, 'rgba(255, 255, 255, 0.3)');
               onOpenLanguage();
             }}
-            className="flex items-center space-x-1 text-white/80 hover:text-white hover:bg-white/10 px-2 py-1.5 rounded text-xs font-medium transition-colors ripple-surface"
+            className="flex items-center space-x-1 text-white/90 hover:text-white hover:bg-white/10 px-2 py-1.5 rounded text-xs font-medium transition-colors ripple-surface"
             title="Switch Language"
           >
-            <Globe className="w-4 h-4 text-[#81C784]" />
+            <Globe className="w-4 h-4 text-white" />
             <span className="hidden xl:inline">{currentLangObj?.nativeName || 'Language'}</span>
           </button>
 
           {/* User Session Chip */}
           {session && (
-            <div className="hidden lg:flex items-center space-x-2 bg-white/10 px-2.5 py-1 rounded text-xs">
-              <span className="w-2 h-2 rounded-full bg-[#81C784]" />
-              <span className="text-white/90 font-medium truncate max-w-[100px]">{session.name}</span>
+            <div className="hidden lg:flex items-center space-x-2 bg-white/15 px-2.5 py-1 rounded text-xs">
+              <span className="w-2 h-2 rounded-full bg-[#34A853]" />
+              <span className="text-white font-medium truncate max-w-[100px]">{session.name}</span>
             </div>
           )}
 
           {/* Logout Button */}
           <button
             onClick={(e) => {
-              createRipple(e, 'rgba(211, 47, 47, 0.3)');
+              createRipple(e, 'rgba(234, 67, 53, 0.3)');
               logout();
             }}
-            className="w-9 h-9 rounded flex items-center justify-center text-red-300 hover:text-white hover:bg-red-900/40 transition-colors ripple-surface"
+            className="w-9 h-9 rounded flex items-center justify-center text-white/80 hover:text-white hover:bg-[#EA4335]/30 transition-colors ripple-surface"
             title="Log out"
             aria-label="Log out"
           >

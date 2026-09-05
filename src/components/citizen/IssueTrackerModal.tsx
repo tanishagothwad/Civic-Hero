@@ -43,51 +43,54 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="bg-white rounded shadow-elevation-8 w-full max-w-lg overflow-hidden border border-gray-200 flex flex-col max-h-[92vh]">
-        {/* Top Header */}
-        <div className="bg-mat-primary text-white p-4 sm:p-5 flex items-start justify-between flex-shrink-0">
-          <div className="min-w-0 pr-2">
-            <div className="flex items-center space-x-2">
-              <span className="text-[11px] font-mono font-medium bg-white/15 text-emerald-300 px-2 py-0.5 rounded border border-white/20">
-                #{issue.ticketNumber}
-              </span>
-              <span
-                className={`text-[10px] font-semibold px-2 py-0.5 rounded border uppercase tracking-wider ${getSeverityBadge(
-                  issue.severity
-                )}`}
-              >
-                {t.severities[issue.severity]}
-              </span>
+        {/* Top Header (Google Blue with Accent Strip) */}
+        <div className="bg-[#4285F4] text-white relative flex-shrink-0">
+          <div className="google-accent-bar" />
+          <div className="p-4 sm:p-5 flex items-start justify-between">
+            <div className="min-w-0 pr-2">
+              <div className="flex items-center space-x-2">
+                <span className="text-[11px] font-mono font-medium bg-white/20 text-white px-2 py-0.5 rounded border border-white/30">
+                  #{issue.ticketNumber}
+                </span>
+                <span
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded border uppercase tracking-wider ${getSeverityBadge(
+                    issue.severity
+                  )}`}
+                >
+                  {t.severities[issue.severity]}
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-medium text-white mt-2 leading-snug">
+                {issue.title}
+              </h3>
+              <p className="text-xs text-white/80 flex items-center mt-1">
+                <MapPin className="w-3.5 h-3.5 text-[#FBBC05] mr-1 flex-shrink-0" />
+                <span className="truncate">{issue.location.address}</span>
+              </p>
             </div>
-            <h3 className="text-sm sm:text-base font-medium text-white mt-2 leading-snug">
-              {issue.title}
-            </h3>
-            <p className="text-xs text-white/70 flex items-center mt-1">
-              <MapPin className="w-3.5 h-3.5 text-emerald-400 mr-1 flex-shrink-0" />
-              <span className="truncate">{issue.location.address}</span>
-            </p>
-          </div>
 
-          <button
-            onClick={(e) => {
-              createRipple(e);
-              onClose();
-            }}
-            className="text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors flex-shrink-0 ripple-surface"
-            aria-label="Close tracking details"
-          >
-            <X className="w-5 h-5" />
-          </button>
+            <button
+              onClick={(e) => {
+                createRipple(e);
+                onClose();
+              }}
+              className="text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors flex-shrink-0 ripple-surface"
+              aria-label="Close tracking details"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Horizontal Stepper */}
-        <div className="bg-[#FAFAFA] border-b border-gray-200 px-4 py-3.5 flex-shrink-0">
+        <div className="bg-[#F8F9FA] border-b border-[#DADCE0] px-4 py-3.5 flex-shrink-0">
           <div className="flex items-center justify-between relative">
             {/* Background connecting bar */}
-            <div className="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-0.5 bg-gray-300 -z-0" />
+            <div className="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-0.5 bg-gray-200 -z-0" />
             
-            {/* Active connecting bar */}
+            {/* Active connecting bar (Google Blue) */}
             <div
-              className="absolute top-1/2 left-4 -translate-y-1/2 h-0.5 bg-mat-secondary transition-all duration-500 -z-0"
+              className="absolute top-1/2 left-4 -translate-y-1/2 h-0.5 bg-[#4285F4] transition-all duration-500 -z-0"
               style={{
                 width: `${(Math.max(0, currentStatusIndex) / (statuses.length - 1)) * 92}%`,
               }}
@@ -102,7 +105,7 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                   <div
                     className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium transition-all shadow-elevation-1 ${
                       isCompleted
-                        ? 'bg-mat-secondary text-white ring-4 ring-mat-secondary/15'
+                        ? 'bg-[#4285F4] text-white ring-4 ring-[#4285F4]/15'
                         : 'bg-white text-gray-500 border border-gray-300'
                     }`}
                   >
@@ -111,10 +114,10 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                   <span
                     className={`text-[10px] mt-1 font-medium tracking-wide whitespace-nowrap uppercase ${
                       isCurrent
-                        ? 'text-mat-secondary font-bold'
+                        ? 'text-[#1A73E8] font-bold'
                         : isCompleted
-                        ? 'text-mat-text-primary'
-                        : 'text-mat-text-secondary'
+                        ? 'text-[#202124]'
+                        : 'text-[#5F6368]'
                     }`}
                   >
                     {t.statuses[step]}
@@ -129,13 +132,13 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {/* Before & After Photos (If Resolved) */}
           {issue.status === 'Resolved' && issue.afterPhotoUrl ? (
-            <div className="bg-emerald-50/70 border border-emerald-200 rounded p-3.5">
+            <div className="bg-[#E6F4EA] border border-[#CEEAD6] rounded p-3.5">
               <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center space-x-1.5 text-emerald-900 font-medium text-xs">
-                  <Sparkles className="w-4 h-4 text-mat-secondary" />
+                <div className="flex items-center space-x-1.5 text-[#137333] font-medium text-xs">
+                  <Sparkles className="w-4 h-4 text-[#34A853]" />
                   <span>Resolution Verification (Before & After)</span>
                 </div>
-                <span className="text-[10px] bg-mat-secondary text-white px-2 py-0.5 rounded font-medium uppercase tracking-wide">
+                <span className="text-[10px] bg-[#34A853] text-white px-2 py-0.5 rounded font-medium uppercase tracking-wide">
                   Verified Cleaned
                 </span>
               </div>
@@ -159,7 +162,7 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                 </div>
 
                 {/* After Photo */}
-                <div className="relative rounded overflow-hidden border-2 border-mat-secondary shadow-elevation-1 aspect-video">
+                <div className="relative rounded overflow-hidden border-2 border-[#34A853] shadow-elevation-1 aspect-video">
                   <img
                     src={issue.afterPhotoUrl}
                     alt="After resolution"
@@ -170,16 +173,16 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                       if (target.src !== fallback) target.src = fallback;
                     }}
                   />
-                  <span className="absolute bottom-1 left-1 bg-mat-secondary text-white text-[9px] font-medium px-1.5 py-0.5 rounded shadow-sm">
+                  <span className="absolute bottom-1 left-1 bg-[#34A853] text-white text-[9px] font-medium px-1.5 py-0.5 rounded shadow-sm">
                     {t.afterPhoto}
                   </span>
                 </div>
               </div>
 
               {issue.resolutionRemarks && (
-                <div className="mt-2.5 bg-white p-2.5 rounded border border-emerald-100 text-xs text-mat-text-primary">
-                  <span className="font-medium text-mat-text-primary block mb-0.5">{t.workerRemarks}:</span>
-                  <p className="italic text-[11px] text-mat-text-secondary">{issue.resolutionRemarks}</p>
+                <div className="mt-2.5 bg-white p-2.5 rounded border border-[#CEEAD6] text-xs text-[#202124]">
+                  <span className="font-medium text-[#137333] block mb-0.5">{t.workerRemarks}:</span>
+                  <p className="italic text-[11px] text-[#5F6368]">{issue.resolutionRemarks}</p>
                 </div>
               )}
             </div>
@@ -219,18 +222,18 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
           )}
 
           {/* Description & Voice Transcription */}
-          <div className="bg-[#FAFAFA] rounded p-3.5 border border-gray-200 space-y-2">
-            <h4 className="text-xs font-medium text-mat-text-primary uppercase tracking-wider">{t.describeIssue}</h4>
-            <p className="text-xs text-mat-text-primary leading-relaxed">{issue.description}</p>
+          <div className="bg-[#FAFAFA] rounded p-3.5 border border-[#DADCE0] space-y-2">
+            <h4 className="text-xs font-medium text-[#202124] uppercase tracking-wider">{t.describeIssue}</h4>
+            <p className="text-xs text-[#202124] leading-relaxed">{issue.description}</p>
 
             {issue.voiceNoteTranscription && (
-              <div className="bg-white p-2.5 rounded border border-gray-200 flex items-start space-x-2">
-                <Volume2 className="w-4 h-4 text-mat-secondary flex-shrink-0 mt-0.5" />
+              <div className="bg-white p-2.5 rounded border border-[#DADCE0] flex items-start space-x-2">
+                <Volume2 className="w-4 h-4 text-[#4285F4] flex-shrink-0 mt-0.5" />
                 <div>
-                  <span className="text-[10px] font-medium text-mat-text-secondary block uppercase tracking-wider">
+                  <span className="text-[10px] font-medium text-[#5F6368] block uppercase tracking-wider">
                     Voice Note Audio Transcript
                   </span>
-                  <p className="text-[11px] text-mat-text-primary italic">
+                  <p className="text-[11px] text-[#202124] italic">
                     "{issue.voiceNoteTranscription}"
                   </p>
                 </div>
@@ -240,21 +243,21 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
 
           {/* Assigned Worker Info (If available) */}
           {issue.assignedWorkerName && (
-            <div className="bg-blue-50/70 border border-blue-200 rounded p-3.5 flex items-center justify-between">
+            <div className="bg-[#E8F0FE] border border-[#D2E3FC] rounded p-3.5 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-mat-low text-white flex items-center justify-center font-medium">
+                <div className="w-10 h-10 rounded-full bg-[#4285F4] text-white flex items-center justify-center font-medium">
                   <HardHat className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-medium uppercase text-mat-low tracking-wider">
+                  <span className="text-[10px] font-medium uppercase text-[#1A73E8] tracking-wider">
                     {t.assignedWorker}
                   </span>
-                  <h5 className="text-xs font-medium text-mat-text-primary">{issue.assignedWorkerName}</h5>
-                  <p className="text-[10px] text-mat-text-secondary">Target SLA: ~{issue.targetResolutionHours || 4} hours</p>
+                  <h5 className="text-xs font-medium text-[#202124]">{issue.assignedWorkerName}</h5>
+                  <p className="text-[10px] text-[#5F6368]">Target SLA: ~{issue.targetResolutionHours || 4} hours</p>
                 </div>
               </div>
 
-              <span className="text-[11px] bg-blue-100 text-mat-low font-medium px-2 py-1 rounded">
+              <span className="text-[11px] bg-white text-[#1A73E8] border border-[#D2E3FC] font-medium px-2 py-1 rounded">
                 On Field
               </span>
             </div>
@@ -262,22 +265,22 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
 
           {/* Timeline of Events */}
           <div className="space-y-2">
-            <h4 className="text-xs font-medium text-mat-text-primary flex items-center uppercase tracking-wider">
-              <Clock className="w-3.5 h-3.5 text-mat-text-secondary mr-1.5" />
+            <h4 className="text-xs font-medium text-[#202124] flex items-center uppercase tracking-wider">
+              <Clock className="w-3.5 h-3.5 text-[#5F6368] mr-1.5" />
               {t.timeline}
             </h4>
 
-            <div className="space-y-2 divide-y divide-gray-100 border border-gray-200 rounded p-3 bg-white">
+            <div className="space-y-2 divide-y divide-gray-100 border border-[#DADCE0] rounded p-3 bg-white">
               {issue.timeline.map((evt) => (
                 <div key={evt.id} className="pt-2 first:pt-0 flex items-start space-x-2.5">
-                  <div className="w-2 h-2 rounded-full bg-mat-secondary mt-1.5 flex-shrink-0" />
+                  <div className="w-2 h-2 rounded-full bg-[#4285F4] mt-1.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-mat-text-primary">{evt.title}</span>
-                      <span className="text-[10px] text-mat-text-secondary">{evt.timestamp}</span>
+                      <span className="text-xs font-medium text-[#202124]">{evt.title}</span>
+                      <span className="text-[10px] text-[#5F6368]">{evt.timestamp}</span>
                     </div>
-                    <p className="text-[11px] text-mat-text-secondary leading-snug">{evt.description}</p>
-                    <span className="text-[9px] text-mat-text-secondary block mt-0.5">By {evt.actor}</span>
+                    <p className="text-[11px] text-[#5F6368] leading-snug">{evt.description}</p>
+                    <span className="text-[9px] text-[#5F6368] block mt-0.5">By {evt.actor}</span>
                   </div>
                 </div>
               ))}
@@ -286,7 +289,7 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
         </div>
 
         {/* Footer Actions: Upvote / Boost & Close */}
-        <div className="p-3 bg-[#FAFAFA] border-t border-gray-200 flex items-center justify-end space-x-2 flex-shrink-0">
+        <div className="p-3 bg-[#F8F9FA] border-t border-[#DADCE0] flex items-center justify-end space-x-2 flex-shrink-0">
           <button
             onClick={(e) => {
               createRipple(e);
@@ -294,8 +297,8 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
             }}
             className={`flex-1 flex items-center justify-center space-x-1.5 py-2.5 rounded font-medium text-xs uppercase tracking-wider transition-all ripple-surface min-h-touch ${
               issue.hasUpvoted
-                ? 'bg-mat-secondary text-white shadow-elevation-2'
-                : 'bg-white border border-gray-300 text-mat-text-primary hover:bg-gray-50 shadow-elevation-1'
+                ? 'bg-[#4285F4] text-white shadow-elevation-2'
+                : 'bg-white border border-[#DADCE0] text-[#202124] hover:bg-[#F8F9FA] shadow-elevation-1'
             }`}
             aria-label={`Upvote issue. Currently ${issue.upvotes} votes`}
           >
@@ -310,7 +313,7 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
               createRipple(e);
               onClose();
             }}
-            className="px-5 py-2.5 text-mat-primary hover:bg-mat-primary/10 rounded text-xs font-medium uppercase tracking-wider transition-colors ripple-surface min-h-touch"
+            className="px-5 py-2.5 text-[#1A73E8] hover:bg-[#E8F0FE] rounded text-xs font-medium uppercase tracking-wider transition-colors ripple-surface min-h-touch"
           >
             {t.close}
           </button>

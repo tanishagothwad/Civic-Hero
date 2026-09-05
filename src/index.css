@@ -4,27 +4,40 @@
 
 @layer base {
   :root {
-    --mat-primary: #0B132B;
-    --mat-primary-dark: #050A17;
-    --mat-secondary: #2E7D32;
-    --mat-bg: #F5F5F5;
+    --mat-primary: #4285F4;
+    --mat-primary-dark: #1A73E8;
+    --mat-secondary: #34A853;
+    --mat-bg: #F8F9FA;
     --mat-surface: #FFFFFF;
+    --google-blue: #4285F4;
+    --google-red: #EA4335;
+    --google-yellow: #FBBC05;
+    --google-green: #34A853;
   }
 
   body {
-    background-color: #F5F5F5;
-    color: #212121;
+    background-color: #F8F9FA;
+    color: #202124;
     font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Material focus ring */
+  /* Google Blue focus ring */
   *:focus-visible {
-    outline: 2px solid #2E7D32;
+    outline: 2px solid #4285F4;
     outline-offset: 2px;
   }
+}
+
+/* Signature Google 4-Color Strip */
+.google-accent-bar {
+  background: linear-gradient(to right, #4285F4 25%, #EA4335 25% 50%, #FBBC05 50% 75%, #34A853 75% 100%);
+}
+
+.google-accent-ring {
+  background: conic-gradient(#4285F4, #EA4335, #FBBC05, #34A853, #4285F4);
 }
 
 /* Material Ink Ripple Effect */

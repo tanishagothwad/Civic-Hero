@@ -28,18 +28,18 @@ export const ComplaintMap: React.FC<ComplaintMapProps> = ({
     return matchCategory && matchSeverity;
   });
 
-  // Get Marker Color based on severity & status
+  // Get Marker Color based on severity & status (Google Brand Palette)
   const getMarkerColor = (issue: CivicIssue): string => {
-    if (issue.status === 'Resolved') return '#10B981'; // Green
+    if (issue.status === 'Resolved') return '#34A853'; // Google Green
     switch (issue.severity) {
       case 'Critical':
-        return '#EF4444'; // Red
+        return '#EA4335'; // Google Red
       case 'High':
-        return '#F97316'; // Orange
+        return '#F9AB00'; // Google Deep Yellow / Orange
       case 'Medium':
-        return '#F59E0B'; // Amber
+        return '#FBBC05'; // Google Yellow
       default:
-        return '#3B82F6'; // Blue
+        return '#4285F4'; // Google Blue
     }
   };
 
@@ -122,29 +122,29 @@ export const ComplaintMap: React.FC<ComplaintMapProps> = ({
       popupContent.className = 'p-3 text-slate-900 min-w-[220px] font-sans';
       popupContent.innerHTML = `
         <div class="flex items-center justify-between mb-1.5">
-          <span class="text-[10px] font-mono font-bold bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded">
+          <span class="text-[10px] font-mono font-bold bg-[#F1F3F4] text-[#202124] px-1.5 py-0.5 rounded">
             #${issue.ticketNumber}
           </span>
           <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${
             isResolved
-              ? 'bg-emerald-100 text-emerald-800'
+              ? 'bg-[#E6F4EA] text-[#137333]'
               : issue.severity === 'Critical'
-              ? 'bg-red-100 text-red-800'
-              : 'bg-amber-100 text-amber-800'
+              ? 'bg-[#FCE8E6] text-[#C5221F]'
+              : 'bg-[#FEF7E0] text-[#78350F]'
           }">
             ${issue.status}
           </span>
         </div>
-        <h4 class="font-bold text-xs text-slate-900 leading-snug mb-1">${issue.title}</h4>
-        <p class="text-[10px] text-slate-500 mb-2">${issue.location.address}</p>
-        <img src="${issue.photoUrl}" alt="${issue.title}" style="width: 100%; height: 90px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;" />
+        <h4 class="font-bold text-xs text-[#202124] leading-snug mb-1">${issue.title}</h4>
+        <p class="text-[10px] text-[#5F6368] mb-2">${issue.location.address}</p>
+        <img src="${issue.photoUrl}" alt="${issue.title}" style="width: 100%; height: 90px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;" />
         <div class="flex space-x-1.5">
-          <button id="btn-view-${issue.id}" class="flex-1 py-1.5 bg-[#0B132B] hover:bg-[#050A17] text-white rounded text-[11px] font-medium uppercase tracking-wider">
+          <button id="btn-view-${issue.id}" class="flex-1 py-1.5 bg-[#4285F4] hover:bg-[#1A73E8] text-white rounded text-[11px] font-medium uppercase tracking-wider">
             View
           </button>
           ${
             !isResolved && !issue.assignedWorkerName
-              ? `<button id="btn-assign-${issue.id}" class="flex-1 py-1.5 bg-[#2E7D32] hover:bg-emerald-800 text-white rounded text-[11px] font-medium uppercase tracking-wider">
+              ? `<button id="btn-assign-${issue.id}" class="flex-1 py-1.5 bg-[#34A853] hover:bg-[#2D9247] text-white rounded text-[11px] font-medium uppercase tracking-wider">
                   Assign
                 </button>`
               : ''
@@ -170,34 +170,34 @@ export const ComplaintMap: React.FC<ComplaintMapProps> = ({
   }, [filteredIssues, onSelectIssue, onAssignWorker]);
 
   return (
-    <div className="relative w-full h-[520px] rounded overflow-hidden border border-gray-200 shadow-elevation-1">
+    <div className="relative w-full h-[520px] rounded overflow-hidden border border-[#DADCE0] shadow-elevation-1">
       {/* Leaflet Map DOM Container */}
       <div ref={mapContainerRef} className="w-full h-full" />
 
       {/* Map Severity Heatmap Legend Overlay */}
-      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-xs p-3 rounded shadow-elevation-4 border border-gray-200 z-[1000] text-xs">
-        <h5 className="font-medium text-mat-text-primary mb-1.5 flex items-center justify-between uppercase tracking-wider text-[11px]">
+      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-xs p-3 rounded shadow-elevation-4 border border-[#DADCE0] z-[1000] text-xs">
+        <h5 className="font-medium text-[#202124] mb-1.5 flex items-center justify-between uppercase tracking-wider text-[11px]">
           <span>Complaint Severity & Density</span>
-          <span className="text-[10px] text-mat-text-secondary font-normal lowercase">
+          <span className="text-[10px] text-[#5F6368] font-normal lowercase">
             ({filteredIssues.length} pins)
           </span>
         </h5>
         <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[11px]">
           <div className="flex items-center space-x-1.5">
-            <span className="w-3 h-3 rounded-full bg-mat-critical shadow-xs" />
-            <span className="text-mat-text-secondary font-medium">Critical Priority</span>
+            <span className="w-3 h-3 rounded-full bg-[#EA4335] shadow-xs" />
+            <span className="text-[#5F6368] font-medium">Critical Priority</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-3 h-3 rounded-full bg-mat-high shadow-xs" />
-            <span className="text-mat-text-secondary font-medium">High Priority</span>
+            <span className="w-3 h-3 rounded-full bg-[#F9AB00] shadow-xs" />
+            <span className="text-[#5F6368] font-medium">High Priority</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-3 h-3 rounded-full bg-mat-medium shadow-xs" />
-            <span className="text-mat-text-secondary font-medium">Medium Priority</span>
+            <span className="w-3 h-3 rounded-full bg-[#FBBC05] shadow-xs" />
+            <span className="text-[#5F6368] font-medium">Medium Priority</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-3 h-3 rounded-full bg-mat-secondary shadow-xs" />
-            <span className="text-mat-text-secondary font-medium">Resolved Cleaned</span>
+            <span className="w-3 h-3 rounded-full bg-[#34A853] shadow-xs" />
+            <span className="text-[#5F6368] font-medium">Resolved Cleaned</span>
           </div>
         </div>
       </div>

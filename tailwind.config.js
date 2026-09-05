@@ -8,16 +8,41 @@ export default {
     extend: {
       colors: {
         mat: {
-          primary: '#0B132B',
-          primaryDark: '#050A17',
-          secondary: '#2E7D32',
-          secondaryDark: '#1B5E20',
+          primary: '#4285F4', // Google Blue
+          primaryDark: '#1A73E8', // Google Blue Darker
+          secondary: '#34A853', // Google Green
+          secondaryDark: '#1E8E3E', // Google Green Darker
+          surface: '#FFFFFF', // Google White
+          bg: '#F8F9FA', // Google Background Gray
+          critical: '#EA4335', // Google Red
+          high: '#F9AB00', // Google Deeper Yellow / Orange
+          medium: '#FBBC05', // Google Yellow
+          low: '#4285F4', // Google Blue
+          text: {
+            primary: '#202124', // Google Near Black
+            secondary: '#5F6368', // Google Gray
+          },
+          border: '#DADCE0', // Google Border Gray
+        },
+        google: {
+          blue: '#4285F4',
+          blueDark: '#1A73E8',
+          blueLight: '#E8F0FE',
+          red: '#EA4335',
+          redDark: '#D93025',
+          redLight: '#FCE8E6',
+          yellow: '#FBBC05',
+          yellowDark: '#F29900',
+          yellowLight: '#FEF7E0',
+          yellowDeep: '#F9AB00',
+          green: '#34A853',
+          greenDark: '#1E8E3E',
+          greenLight: '#E6F4EA',
+          bg: '#F8F9FA',
           surface: '#FFFFFF',
-          bg: '#F5F5F5',
-          critical: '#D32F2F',
-          high: '#F57C00',
-          medium: '#FBC02D',
-          low: '#1976D2',
+          text: '#202124',
+          textSecondary: '#5F6368',
+          border: '#DADCE0',
         },
         navy: {
           50: '#f0f6fc',
@@ -33,12 +58,12 @@ export default {
           950: '#050A17',
         },
         civic: {
-          primary: '#0B132B',
-          secondary: '#1E3A8A',
-          accent: '#2E7D32',
-          gold: '#FBC02D',
-          amber: '#F57C00',
-          crimson: '#D32F2F',
+          primary: '#4285F4',
+          secondary: '#1A73E8',
+          accent: '#34A853',
+          gold: '#FBBC05',
+          amber: '#F9AB00',
+          crimson: '#EA4335',
         }
       },
       fontFamily: {

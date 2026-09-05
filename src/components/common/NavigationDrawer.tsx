@@ -33,7 +33,7 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
   const { role, setRole, currentUser, logout, t } = useApp();
 
   const handleRoleSelect = (r: UserRole, e: React.MouseEvent<HTMLButtonElement>) => {
-    createRipple(e, 'rgba(46, 125, 50, 0.2)');
+    createRipple(e, 'rgba(66, 133, 244, 0.2)');
     setRole(r);
     onClose();
   };
@@ -78,48 +78,51 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
         aria-label="Main Navigation Drawer"
       >
         <div className="flex-1 overflow-y-auto">
-          {/* Drawer Header (Navy #0B132B) */}
-          <div className="bg-[#0B132B] text-white p-5 relative">
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 text-white/70 hover:text-white p-1 rounded transition-colors"
-              aria-label="Close navigation drawer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+          {/* Drawer Header (Google Blue #4285F4 with signature accent strip) */}
+          <div className="bg-[#4285F4] text-white relative">
+            <div className="google-accent-bar" />
+            <div className="p-5">
+              <button
+                onClick={onClose}
+                className="absolute top-5 right-4 text-white/80 hover:text-white p-1 rounded transition-colors"
+                aria-label="Close navigation drawer"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded bg-[#2E7D32] flex items-center justify-center shadow">
-                <Shield className="w-6 h-6 text-white" />
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 rounded bg-white/20 border border-white/30 flex items-center justify-center shadow">
+                  <Shield className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-base tracking-wide text-white leading-tight">
+                    {t.appName || 'Civic Hero'}
+                  </h2>
+                  <span className="text-[11px] text-white/80 uppercase tracking-wider font-medium">
+                    City Governance Portal
+                  </span>
+                </div>
               </div>
-              <div>
-                <h2 className="font-bold text-base tracking-wide text-white leading-tight">
-                  {t.appName || 'Civic Hero'}
-                </h2>
-                <span className="text-[11px] text-[#81C784] uppercase tracking-wider font-medium">
-                  Material City Portal
-                </span>
-              </div>
-            </div>
 
-            {/* Active User Card in Header */}
-            <div className="pt-2 border-t border-white/15 flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm border border-white/30">
-                {currentUser.name.charAt(0)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{currentUser.name}</p>
-                <p className="text-xs text-white/70 flex items-center mt-0.5 truncate">
-                  <MapPin className="w-3 h-3 text-[#81C784] mr-1 shrink-0" />
-                  {currentUser.ward}
-                </p>
+              {/* Active User Card in Header */}
+              <div className="pt-2 border-t border-white/20 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-white text-[#4285F4] flex items-center justify-center font-bold text-sm shadow-sm">
+                  {currentUser.name.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-white truncate">{currentUser.name}</p>
+                  <p className="text-xs text-white/80 flex items-center mt-0.5 truncate">
+                    <MapPin className="w-3 h-3 text-[#FBBC05] mr-1 shrink-0" />
+                    {currentUser.ward}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Navigation Section */}
           <div className="py-3 px-2 space-y-1">
-            <span className="px-3 text-[11px] font-medium uppercase tracking-wider text-black/60 block mb-1">
+            <span className="px-3 text-[11px] font-medium uppercase tracking-wider text-[#5F6368] block mb-1">
               Portals & Views
             </span>
 
@@ -131,19 +134,19 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
                   onClick={(e) => handleRoleSelect(item.role, e)}
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded text-sm font-medium transition-colors ripple-surface ${
                     isActive
-                      ? 'bg-[#2E7D32]/12 text-[#2E7D32] font-semibold'
-                      : 'text-black/87 hover:bg-black/5'
+                      ? 'bg-[#E8F0FE] text-[#1A73E8] font-semibold'
+                      : 'text-[#202124] hover:bg-[#F1F3F4]'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <span className={isActive ? 'text-[#2E7D32]' : 'text-black/60'}>
+                    <span className={isActive ? 'text-[#1A73E8]' : 'text-[#5F6368]'}>
                       {item.icon}
                     </span>
                     <span>{item.label}</span>
                   </div>
                   <span
-                    className={`text-[10px] px-2 py-0.5 rounded font-normal ${
-                      isActive ? 'bg-[#2E7D32] text-white' : 'bg-slate-100 text-slate-600'
+                    className={`text-[10px] px-2 py-0.5 rounded font-medium ${
+                      isActive ? 'bg-[#4285F4] text-white' : 'bg-[#F1F3F4] text-[#5F6368]'
                     }`}
                   >
                     {item.badge}
@@ -152,22 +155,22 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
               );
             })}
 
-            <div className="my-2 border-t border-slate-200" />
+            <div className="my-2 border-t border-[#DADCE0]" />
 
-            <span className="px-3 text-[11px] font-medium uppercase tracking-wider text-black/60 block mb-1">
+            <span className="px-3 text-[11px] font-medium uppercase tracking-wider text-[#5F6368] block mb-1">
               Actions & Settings
             </span>
 
             {onOpenReport && (
               <button
                 onClick={(e) => {
-                  createRipple(e, 'rgba(46, 125, 50, 0.2)');
+                  createRipple(e, 'rgba(66, 133, 244, 0.2)');
                   onOpenReport();
                   onClose();
                 }}
-                className="w-full flex items-center space-x-3 px-3.5 py-3 rounded text-sm font-medium text-black/87 hover:bg-black/5 transition-colors ripple-surface"
+                className="w-full flex items-center space-x-3 px-3.5 py-3 rounded text-sm font-medium text-[#202124] hover:bg-[#F1F3F4] transition-colors ripple-surface"
               >
-                <Camera className="w-5 h-5 text-[#2E7D32]" />
+                <Camera className="w-5 h-5 text-[#4285F4]" />
                 <span>{t.reportIssue || 'Report an Issue'}</span>
               </button>
             )}
@@ -175,17 +178,17 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
             {onOpenGamification && (
               <button
                 onClick={(e) => {
-                  createRipple(e, 'rgba(251, 192, 45, 0.2)');
+                  createRipple(e, 'rgba(251, 188, 5, 0.2)');
                   onOpenGamification();
                   onClose();
                 }}
-                className="w-full flex items-center justify-between px-3.5 py-3 rounded text-sm font-medium text-black/87 hover:bg-black/5 transition-colors ripple-surface"
+                className="w-full flex items-center justify-between px-3.5 py-3 rounded text-sm font-medium text-[#202124] hover:bg-[#F1F3F4] transition-colors ripple-surface"
               >
                 <div className="flex items-center space-x-3">
-                  <Trophy className="w-5 h-5 text-[#F57C00]" />
+                  <Trophy className="w-5 h-5 text-[#FBBC05]" />
                   <span>Citizen Badges & XP</span>
                 </div>
-                <span className="text-xs font-bold text-[#F57C00] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
+                <span className="text-xs font-bold text-[#B06000] bg-[#FEF7E0] border border-[#FBBC05]/40 px-2 py-0.5 rounded">
                   {currentUser.points} XP
                 </span>
               </button>
@@ -198,9 +201,9 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
                   onOpenLanguage();
                   onClose();
                 }}
-                className="w-full flex items-center space-x-3 px-3.5 py-3 rounded text-sm font-medium text-black/87 hover:bg-black/5 transition-colors ripple-surface"
+                className="w-full flex items-center space-x-3 px-3.5 py-3 rounded text-sm font-medium text-[#202124] hover:bg-[#F1F3F4] transition-colors ripple-surface"
               >
-                <Globe className="w-5 h-5 text-black/60" />
+                <Globe className="w-5 h-5 text-[#5F6368]" />
                 <span>Language / भाषा</span>
               </button>
             )}
@@ -208,16 +211,16 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
         </div>
 
         {/* Drawer Footer: Logout */}
-        <div className="p-3 border-t border-slate-200">
+        <div className="p-3 border-t border-[#DADCE0]">
           <button
             onClick={(e) => {
-              createRipple(e, 'rgba(211, 47, 47, 0.2)');
+              createRipple(e, 'rgba(234, 67, 53, 0.2)');
               logout();
               onClose();
             }}
-            className="w-full flex items-center space-x-3 px-3.5 py-3 rounded text-sm font-medium text-[#D32F2F] hover:bg-red-50 transition-colors ripple-surface"
+            className="w-full flex items-center space-x-3 px-3.5 py-3 rounded text-sm font-medium text-[#EA4335] hover:bg-red-50 transition-colors ripple-surface"
           >
-            <LogOut className="w-5 h-5 text-[#D32F2F]" />
+            <LogOut className="w-5 h-5 text-[#EA4335]" />
             <span>{t.logout || 'Log Out'}</span>
           </button>
         </div>

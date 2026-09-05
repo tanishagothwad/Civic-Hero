@@ -23,24 +23,24 @@ export const MunicipalDashboard: React.FC = () => {
   const [assigningIssue, setAssigningIssue] = useState<CivicIssue | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] text-mat-text-primary pb-12 font-sans">
+    <div className="min-h-screen bg-[#F8F9FA] text-[#202124] pb-12 font-sans">
       {/* Command Center Subheader */}
-      <div className="bg-white border-b border-gray-200 sticky top-[64px] z-20 shadow-elevation-1">
+      <div className="bg-white border-b border-[#DADCE0] sticky top-[64px] z-20 shadow-elevation-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded bg-mat-primary text-white flex items-center justify-center font-bold shadow-elevation-1">
-              <LayoutDashboard className="w-5 h-5 text-emerald-400" />
+            <div className="w-10 h-10 rounded bg-[#4285F4] text-white flex items-center justify-center font-bold shadow-elevation-1">
+              <LayoutDashboard className="w-5 h-5 text-white" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-base sm:text-lg font-medium text-mat-text-primary tracking-wide">
+                <h1 className="text-base sm:text-lg font-medium text-[#202124] tracking-wide">
                   {t.municipalCommand}
                 </h1>
-                <span className="bg-emerald-50 text-mat-secondary text-[10px] font-medium px-2 py-0.5 rounded border border-mat-secondary/30 flex items-center gap-1 uppercase tracking-wide">
-                  <span className="w-1.5 h-1.5 rounded-full bg-mat-secondary animate-pulse" /> Live Telemetry
+                <span className="bg-[#E6F4EA] text-[#137333] text-[10px] font-medium px-2 py-0.5 rounded border border-[#CEEAD6] flex items-center gap-1 uppercase tracking-wide">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#34A853] animate-pulse" /> Live Telemetry
                 </span>
               </div>
-              <p className="text-xs text-mat-text-secondary">
+              <p className="text-xs text-[#5F6368]">
                 Bengaluru Municipal Corporation • Indiranagar & Koramangala Zones
               </p>
             </div>
@@ -48,7 +48,7 @@ export const MunicipalDashboard: React.FC = () => {
 
           {/* View Toggle (Split / Map / Table) */}
           <div className="flex items-center space-x-2">
-            <div className="bg-gray-100 p-0.5 rounded border border-gray-200 flex items-center">
+            <div className="bg-gray-100 p-0.5 rounded border border-[#DADCE0] flex items-center">
               <button
                 onClick={(e) => {
                   createRipple(e);
@@ -56,8 +56,8 @@ export const MunicipalDashboard: React.FC = () => {
                 }}
                 className={`px-3 py-1.5 rounded text-xs font-medium uppercase tracking-wider transition-all ripple-surface ${
                   viewMode === 'split'
-                    ? 'bg-white text-mat-text-primary shadow-elevation-1'
-                    : 'text-mat-text-secondary hover:text-mat-text-primary'
+                    ? 'bg-white text-[#1A73E8] shadow-elevation-1'
+                    : 'text-[#5F6368] hover:text-[#202124]'
                 }`}
               >
                 Split View
@@ -69,8 +69,8 @@ export const MunicipalDashboard: React.FC = () => {
                 }}
                 className={`flex items-center space-x-1 px-3 py-1.5 rounded text-xs font-medium uppercase tracking-wider transition-all ripple-surface ${
                   viewMode === 'map'
-                    ? 'bg-white text-mat-text-primary shadow-elevation-1'
-                    : 'text-mat-text-secondary hover:text-mat-text-primary'
+                    ? 'bg-white text-[#1A73E8] shadow-elevation-1'
+                    : 'text-[#5F6368] hover:text-[#202124]'
                 }`}
               >
                 <MapIcon className="w-3.5 h-3.5" />
@@ -83,8 +83,8 @@ export const MunicipalDashboard: React.FC = () => {
                 }}
                 className={`flex items-center space-x-1 px-3 py-1.5 rounded text-xs font-medium uppercase tracking-wider transition-all ripple-surface ${
                   viewMode === 'table'
-                    ? 'bg-white text-mat-text-primary shadow-elevation-1'
-                    : 'text-mat-text-secondary hover:text-mat-text-primary'
+                    ? 'bg-white text-[#1A73E8] shadow-elevation-1'
+                    : 'text-[#5F6368] hover:text-[#202124]'
                 }`}
               >
                 <TableIcon className="w-3.5 h-3.5" />
@@ -106,8 +106,8 @@ export const MunicipalDashboard: React.FC = () => {
             {/* Left: Interactive Map (5 Cols) */}
             <div className="lg:col-span-5 space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-900 flex items-center space-x-1.5">
-                  <MapIcon className="w-4 h-4 text-emerald-600" />
+                <h3 className="text-sm font-bold text-[#202124] flex items-center space-x-1.5">
+                  <MapIcon className="w-4 h-4 text-[#4285F4]" />
                   <span>{t.densityHeatmap}</span>
                 </h3>
               </div>
@@ -122,8 +122,8 @@ export const MunicipalDashboard: React.FC = () => {
             {/* Right: Filterable Complaints Table (7 Cols) */}
             <div className="lg:col-span-7 space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-900 flex items-center space-x-1.5">
-                  <TableIcon className="w-4 h-4 text-emerald-600" />
+                <h3 className="text-sm font-bold text-[#202124] flex items-center space-x-1.5">
+                  <TableIcon className="w-4 h-4 text-[#4285F4]" />
                   <span>Complaints Queue & Dispatch</span>
                 </h3>
               </div>
@@ -141,8 +141,8 @@ export const MunicipalDashboard: React.FC = () => {
 
         {viewMode === 'map' && (
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-900 flex items-center space-x-1.5">
-              <MapIcon className="w-4 h-4 text-emerald-600" />
+            <h3 className="text-sm font-bold text-[#202124] flex items-center space-x-1.5">
+              <MapIcon className="w-4 h-4 text-[#4285F4]" />
               <span>Full Screen Geographic Complaint Heatmap</span>
             </h3>
             <ComplaintMap
@@ -156,8 +156,8 @@ export const MunicipalDashboard: React.FC = () => {
 
         {viewMode === 'table' && (
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-900 flex items-center space-x-1.5">
-              <TableIcon className="w-4 h-4 text-emerald-600" />
+            <h3 className="text-sm font-bold text-[#202124] flex items-center space-x-1.5">
+              <TableIcon className="w-4 h-4 text-[#4285F4]" />
               <span>Comprehensive Municipal Complaint Database</span>
             </h3>
             <ComplaintTable

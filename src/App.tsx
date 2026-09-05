@@ -33,9 +33,9 @@ const MainApp: React.FC = () => {
   // If not authenticated, present phone + OTP login screen
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#F5F5F5] flex flex-col justify-between">
+      <div className="min-h-screen bg-[#F8F9FA] flex flex-col justify-between">
         <LoginModal onOpenLanguage={() => setIsLanguageModalOpen(true)} />
-        <footer className="py-4 text-center text-xs text-black/60 bg-white border-t border-slate-200">
+        <footer className="py-4 text-center text-xs text-[#5F6368] bg-white border-t border-[#DADCE0]">
           Designed by Tanisha Gothwad
         </footer>
         <LanguagePicker
@@ -48,7 +48,7 @@ const MainApp: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] text-[#212121] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F8F9FA] text-[#202124] flex flex-col font-sans">
       {/* 1. Material App Bar */}
       <RoleSwitcherBar
         onOpenDrawer={() => setIsDrawerOpen(true)}
@@ -67,7 +67,7 @@ const MainApp: React.FC = () => {
       />
 
       {/* 3. Main Portal Content */}
-      <main className="flex-1 flex flex-col bg-[#F5F5F5]">
+      <main className="flex-1 flex flex-col bg-[#F8F9FA]">
         {role === 'citizen' && (
           <CitizenHome
             onOpenReport={() => setIsReportModalOpen(true)}
@@ -90,7 +90,7 @@ const MainApp: React.FC = () => {
       )}
 
       {/* Footer Credit */}
-      <footer className="py-4 text-center text-xs text-black/60 bg-white border-t border-slate-200 shadow-sm">
+      <footer className="py-4 text-center text-xs text-[#5F6368] bg-white border-t border-[#DADCE0] shadow-sm">
         Designed by Tanisha Gothwad
       </footer>
 

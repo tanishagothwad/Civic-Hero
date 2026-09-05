@@ -140,10 +140,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     <button
       type="button"
       onClick={toggleListening}
-      className={`inline-flex items-center justify-center space-x-2 px-3.5 py-2.5 rounded-2xl border font-semibold text-xs transition-all min-h-touch ${
+      className={`inline-flex items-center justify-center space-x-2 px-3.5 py-2.5 rounded border font-medium text-xs transition-all min-h-touch ripple-surface ${
         isListening
-          ? 'bg-rose-500 text-white border-rose-600 ring-4 ring-rose-400/30 animate-pulse'
-          : 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100 hover:border-emerald-400'
+          ? 'bg-[#EA4335] text-white border-[#D93025] ring-4 ring-[#EA4335]/30 animate-pulse'
+          : 'bg-[#E8F0FE] text-[#1A73E8] border-[#DADCE0] hover:bg-[#D2E3FC] hover:border-[#1A73E8]'
       } ${className}`}
       aria-label={isListening ? t.stopVoice : t.recordVoice}
       aria-pressed={isListening}
@@ -166,9 +166,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         </>
       ) : (
         <>
-          <Mic className="w-4 h-4 text-emerald-600" />
+          <Mic className="w-4 h-4 text-[#1A73E8]" />
           <span>{buttonText || t.recordVoice}</span>
-          <Volume2 className="w-3.5 h-3.5 text-emerald-500 opacity-80" />
+          <Volume2 className="w-3.5 h-3.5 text-[#4285F4] opacity-80" />
         </>
       )}
     </button>

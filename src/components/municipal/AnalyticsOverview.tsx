@@ -52,9 +52,9 @@ export const AnalyticsOverview: React.FC = () => {
       title: 'Citizen Satisfaction',
       value: '94.8%',
       subtext: 'Based on 420 ratings',
-      icon: <ShieldCheck className="w-5 h-5 text-emerald-700" />,
+      icon: <ShieldCheck className="w-5 h-5 text-mat-secondary" />,
       bg: 'bg-white border-gray-200',
-      textColor: 'text-emerald-700',
+      textColor: 'text-mat-secondary',
     },
   ];
 

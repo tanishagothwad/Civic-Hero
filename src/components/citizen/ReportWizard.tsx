@@ -212,47 +212,50 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 overflow-y-auto">
       <div className="relative w-full max-w-xl bg-white rounded shadow-elevation-8 overflow-hidden flex flex-col max-h-[92vh] border border-slate-200">
         
-        {/* Modal Top Header (Material Dialog Title) */}
-        <div className="bg-[#0B132B] text-white px-5 py-4 flex items-center justify-between border-b border-[#050A17]">
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="bg-[#2E7D32]/30 text-[#81C784] text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded border border-[#2E7D32]/50">
-                Community Listing
-              </span>
-              <span className="text-xs text-white/70">
-                Step {currentStep} of 3
-              </span>
+        {/* Modal Top Header (Google Styled Dialog Title) */}
+        <div className="bg-[#4285F4] text-white relative">
+          <div className="google-accent-bar" />
+          <div className="px-5 py-4 flex items-center justify-between">
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="bg-white/20 text-white text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded border border-white/30">
+                  Community Listing
+                </span>
+                <span className="text-xs text-white/80">
+                  Step {currentStep} of 3
+                </span>
+              </div>
+              <h2 className="text-base sm:text-lg font-bold tracking-normal text-white mt-0.5">
+                {currentStep === 1 && 'Post Civic Issue Listing'}
+                {currentStep === 2 && 'AI Inspection & Duplicate Match'}
+                {currentStep === 3 && 'Review & Publish to Ward'}
+              </h2>
             </div>
-            <h2 className="text-base sm:text-lg font-bold tracking-normal text-white mt-0.5">
-              {currentStep === 1 && 'Post Civic Issue Listing'}
-              {currentStep === 2 && 'AI Inspection & Duplicate Match'}
-              {currentStep === 3 && 'Review & Publish to Ward'}
-            </h2>
-          </div>
 
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-colors"
-            aria-label="Close modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded text-white/80 hover:text-white hover:bg-white/10 flex items-center justify-center transition-colors"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Stepper Progress Indicator (Material Stepper) */}
-        <div className="bg-slate-50 px-5 py-2.5 border-b border-slate-200 flex items-center justify-between text-xs font-medium text-black/60">
-          <div className={`flex items-center space-x-1.5 ${currentStep >= 1 ? 'text-[#2E7D32] font-semibold' : ''}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${currentStep >= 1 ? 'bg-[#2E7D32] text-white' : 'bg-slate-300 text-slate-700'}`}>1</span>
+        <div className="bg-[#F8F9FA] px-5 py-2.5 border-b border-[#DADCE0] flex items-center justify-between text-xs font-medium text-[#5F6368]">
+          <div className={`flex items-center space-x-1.5 ${currentStep >= 1 ? 'text-[#1A73E8] font-semibold' : ''}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${currentStep >= 1 ? 'bg-[#4285F4] text-white' : 'bg-slate-200 text-slate-700'}`}>1</span>
             <span>Details & Photos</span>
           </div>
           <ChevronRight className="w-4 h-4 text-slate-400" />
-          <div className={`flex items-center space-x-1.5 ${currentStep >= 2 ? 'text-[#2E7D32] font-semibold' : ''}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${currentStep >= 2 ? 'bg-[#2E7D32] text-white' : 'bg-slate-300 text-slate-700'}`}>2</span>
+          <div className={`flex items-center space-x-1.5 ${currentStep >= 2 ? 'text-[#1A73E8] font-semibold' : ''}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${currentStep >= 2 ? 'bg-[#4285F4] text-white' : 'bg-slate-200 text-slate-700'}`}>2</span>
             <span>AI Verification</span>
           </div>
           <ChevronRight className="w-4 h-4 text-slate-400" />
-          <div className={`flex items-center space-x-1.5 ${currentStep >= 3 ? 'text-[#2E7D32] font-semibold' : ''}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${currentStep === 3 ? 'bg-[#2E7D32] text-white' : 'bg-slate-300 text-slate-700'}`}>3</span>
+          <div className={`flex items-center space-x-1.5 ${currentStep >= 3 ? 'text-[#1A73E8] font-semibold' : ''}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${currentStep === 3 ? 'bg-[#4285F4] text-white' : 'bg-slate-200 text-slate-700'}`}>3</span>
             <span>Publish</span>
           </div>
         </div>
@@ -285,7 +288,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                       key={i}
                       type="button"
                       onClick={() => setTitle(sugg)}
-                      className="text-[11px] bg-gray-100 hover:bg-emerald-50 hover:text-mat-secondary text-mat-text-secondary px-2 py-0.5 rounded border border-gray-200 transition-colors truncate max-w-[280px]"
+                      className="text-[11px] bg-[#F1F3F4] hover:bg-[#E8F0FE] hover:text-[#1A73E8] text-[#5F6368] px-2 py-0.5 rounded border border-[#DADCE0] transition-colors truncate max-w-[280px]"
                     >
                       {sugg}
                     </button>
@@ -311,8 +314,8 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                         }}
                         className={`p-2.5 rounded border text-xs font-medium text-left transition-all flex items-center justify-between ripple-surface ${
                           isSelected
-                            ? 'bg-mat-secondary text-white border-mat-secondary shadow-elevation-1'
-                            : 'bg-white hover:bg-gray-50 text-mat-text-primary border-gray-300'
+                            ? 'bg-[#4285F4] text-white border-[#4285F4] shadow-elevation-1'
+                            : 'bg-white hover:bg-gray-50 text-[#202124] border-gray-300'
                         }`}
                       >
                         <span>{t.categories[cat]}</span>
@@ -333,7 +336,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                       value={customCategory}
                       onChange={(e) => setCustomCategory(e.target.value)}
                       placeholder="e.g. Broken park bench, Illegal banner, Fallen tree..."
-                      className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-xs text-mat-text-primary focus:outline-none focus:border-mat-secondary focus:ring-1 focus:ring-mat-secondary"
+                      className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-xs text-mat-text-primary focus:outline-none focus:border-[#4285F4] focus:ring-1 focus:ring-[#4285F4]"
                     />
                   </div>
                 )}
@@ -355,9 +358,9 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                     }}
                     onFocus={() => setShowAddressSuggestions(true)}
                     placeholder="Enter street name, landmark, area, city & pincode"
-                    className="w-full bg-white border border-gray-300 focus:border-mat-secondary focus:ring-1 focus:ring-mat-secondary rounded pl-10 pr-4 py-2.5 text-sm font-normal text-mat-text-primary placeholder:text-gray-400 focus:outline-none"
+                    className="w-full bg-white border border-gray-300 focus:border-[#4285F4] focus:ring-1 focus:ring-[#4285F4] rounded pl-10 pr-4 py-2.5 text-sm font-normal text-mat-text-primary placeholder:text-gray-400 focus:outline-none"
                   />
-                  <MapPin className="w-5 h-5 text-mat-secondary absolute left-3 top-1/2 -translate-y-1/2" />
+                  <MapPin className="w-5 h-5 text-[#4285F4] absolute left-3 top-1/2 -translate-y-1/2" />
                 </div>
 
                 {/* Autocomplete Suggestions Dropdown */}
@@ -381,9 +384,9 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                           setManualAddress(addr);
                           setShowAddressSuggestions(false);
                         }}
-                        className="w-full text-left px-3 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-900 border-b border-slate-100 last:border-b-0 flex items-start space-x-2"
+                        className="w-full text-left px-3 py-2 text-xs text-[#202124] hover:bg-[#E8F0FE] hover:text-[#1A73E8] border-b border-[#DADCE0] last:border-b-0 flex items-start space-x-2"
                       >
-                        <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <MapPin className="w-3.5 h-3.5 text-[#4285F4] shrink-0 mt-0.5" />
                         <span className="truncate">{addr}</span>
                       </button>
                     ))}
@@ -393,13 +396,13 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                 {/* Ward Selection & Auto-GPS Pin info */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                    <label className="block text-[10px] font-bold text-[#5F6368] uppercase mb-0.5">
                       Municipal Ward / Zone
                     </label>
                     <select
                       value={selectedWard}
                       onChange={(e) => setSelectedWard(e.target.value)}
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-emerald-500"
+                      className="w-full bg-[#F1F3F4] border border-[#DADCE0] rounded px-3 py-2 text-xs font-semibold text-[#202124] focus:outline-none focus:border-[#4285F4]"
                     >
                       {wardList.map((w) => (
                         <option key={w} value={w}>{w}</option>
@@ -408,12 +411,12 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                    <label className="block text-[10px] font-bold text-[#5F6368] uppercase mb-0.5">
                       GPS Tag Coordinates
                     </label>
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 text-xs font-mono text-emerald-800 flex items-center justify-between">
+                    <div className="bg-[#E8F0FE] border border-[#D2E3FC] rounded px-3 py-2 text-xs font-mono text-[#1A73E8] flex items-center justify-between">
                       <span>{gpsCoords.lat.toFixed(4)}° N, {gpsCoords.lng.toFixed(4)}° E</span>
-                      <span className="text-[9px] bg-emerald-200 text-emerald-950 px-1 rounded font-bold">±3m</span>
+                      <span className="text-[9px] bg-[#D2E3FC] text-[#174EA6] px-1 rounded font-bold">±3m</span>
                     </div>
                   </div>
                 </div>
@@ -434,7 +437,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the issue in your own words (e.g. depth of pothole, water overflow, pedestrian difficulty)..."
-                    className="w-full bg-white border border-gray-300 focus:border-mat-secondary focus:ring-1 focus:ring-mat-secondary rounded p-3 text-sm text-mat-text-primary placeholder:text-gray-400 focus:outline-none"
+                    className="w-full bg-white border border-gray-300 focus:border-[#4285F4] focus:ring-1 focus:ring-[#4285F4] rounded p-3 text-sm text-mat-text-primary placeholder:text-gray-400 focus:outline-none"
                   />
                   <div className="absolute right-2.5 bottom-2.5">
                     <VoiceInputButton
@@ -447,7 +450,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                 </div>
 
                 {voiceTranscription && (
-                  <div className="mt-1.5 p-2 bg-emerald-50 border border-emerald-200 rounded text-xs text-mat-secondary flex items-center space-x-2">
+                  <div className="mt-1.5 p-2 bg-[#E8F0FE] border border-[#D2E3FC] rounded text-xs text-[#1A73E8] flex items-center space-x-2">
                     <span className="text-xs font-medium">🎤 Voice captured:</span>
                     <span className="italic truncate text-mat-text-primary">{voiceTranscription}</span>
                   </div>
@@ -524,8 +527,8 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
 
                   {/* Add Photo Slot (if < 3) */}
                   {photos.length < 3 && (
-                    <label className="border-2 border-dashed border-gray-300 hover:border-mat-secondary rounded flex flex-col items-center justify-center p-2 cursor-pointer bg-[#FAFAFA] hover:bg-emerald-50/50 transition-colors aspect-video">
-                      <Plus className="w-5 h-5 text-mat-secondary mb-1" />
+                    <label className="border-2 border-dashed border-gray-300 hover:border-[#4285F4] rounded flex flex-col items-center justify-center p-2 cursor-pointer bg-[#FAFAFA] hover:bg-blue-50/50 transition-colors aspect-video">
+                      <Plus className="w-5 h-5 text-[#4285F4] mb-1" />
                       <span className="text-[10px] font-medium text-mat-text-secondary uppercase tracking-wider">Add Photo</span>
                       <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
                     </label>
@@ -544,7 +547,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                           createRipple(e);
                           addPresetPhoto(preset);
                         }}
-                        className="text-[11px] font-medium bg-white hover:bg-emerald-50 hover:text-mat-secondary text-mat-text-primary px-2.5 py-1 rounded border border-gray-300 transition-all flex items-center space-x-1 ripple-surface"
+                        className="text-[11px] font-medium bg-white hover:bg-blue-50 hover:text-[#1A73E8] text-mat-text-primary px-2.5 py-1 rounded border border-gray-300 transition-all flex items-center space-x-1 ripple-surface"
                       >
                         <span>📷</span>
                         <span>{preset.label}</span>
@@ -561,7 +564,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                   id="reporterContact"
                   checked={includeReporterContact}
                   onChange={(e) => setIncludeReporterContact(e.target.checked)}
-                  className="w-4 h-4 text-mat-secondary rounded mt-0.5 cursor-pointer accent-[#2E7D32]"
+                  className="w-4 h-4 rounded mt-0.5 cursor-pointer accent-[#4285F4]"
                 />
                 <label htmlFor="reporterContact" className="text-xs text-mat-text-secondary cursor-pointer">
                   <span className="font-medium text-mat-text-primary block">
@@ -581,7 +584,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
             <div className="space-y-5">
               {isAnalyzing ? (
                 <div className="text-center py-12 space-y-4">
-                  <div className="w-16 h-16 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin mx-auto" />
+                  <div className="w-16 h-16 rounded-full border-4 border-[#4285F4] border-t-transparent animate-spin mx-auto" />
                   <h3 className="text-lg font-black text-slate-900">AI Vision & NLP Analysis</h3>
                   <p className="text-xs text-slate-500 max-w-sm mx-auto">
                     Analyzing photo evidence, extracting civic hazard severity, and cross-referencing nearby ward reports...
@@ -590,24 +593,24 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
               ) : (
                 <div className="space-y-4">
                   {/* AI Results Card */}
-                  <div className="bg-emerald-50/60 p-4 rounded border border-emerald-200 space-y-3 shadow-elevation-1">
-                    <div className="flex items-center space-x-2 text-mat-secondary">
-                      <Sparkles className="w-5 h-5 text-mat-secondary" />
+                  <div className="bg-[#E8F0FE] p-4 rounded border border-[#D2E3FC] space-y-3 shadow-elevation-1">
+                    <div className="flex items-center space-x-2 text-[#1A73E8]">
+                      <Sparkles className="w-5 h-5 text-[#4285F4]" />
                       <span className="font-medium text-xs uppercase tracking-wider">AI Vision Classification</span>
                     </div>
 
-                    <p className="text-xs text-mat-text-primary leading-relaxed font-normal">
+                    <p className="text-xs text-[#202124] leading-relaxed font-normal">
                       {aiSummary}
                     </p>
 
                     <div className="flex flex-wrap gap-2 pt-1">
-                      <span className="bg-white px-2.5 py-1 rounded text-xs font-medium text-mat-secondary border border-emerald-200">
+                      <span className="bg-white px-2.5 py-1 rounded text-xs font-medium text-[#1A73E8] border border-[#D2E3FC]">
                         Category: {category}
                       </span>
-                      <span className="bg-white px-2.5 py-1 rounded text-xs font-medium text-mat-secondary border border-emerald-200">
+                      <span className="bg-white px-2.5 py-1 rounded text-xs font-medium text-[#1A73E8] border border-[#D2E3FC]">
                         Severity: {severity}
                       </span>
-                      <span className="bg-white px-2.5 py-1 rounded text-xs font-medium text-mat-secondary border border-emerald-200">
+                      <span className="bg-white px-2.5 py-1 rounded text-xs font-medium text-[#1A73E8] border border-[#D2E3FC]">
                         Confidence: {aiConfidence}%
                       </span>
                     </div>
@@ -615,7 +618,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                     {aiTags.length > 0 && (
                       <div className="flex flex-wrap gap-1 pt-1">
                         {aiTags.map((tag, idx) => (
-                          <span key={idx} className="text-[10px] bg-emerald-100 text-mat-secondary font-medium px-2 py-0.5 rounded">
+                          <span key={idx} className="text-[10px] bg-white text-[#1A73E8] border border-[#D2E3FC] font-medium px-2 py-0.5 rounded">
                             #{tag}
                           </span>
                         ))}
@@ -625,22 +628,22 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
 
                   {/* DUPLICATE WARNING / MERGE FLOW */}
                   {nearbyDuplicate ? (
-                    <div className="bg-amber-50 border border-amber-300 rounded p-4 space-y-3 shadow-elevation-1 animate-fade-in">
+                    <div className="bg-[#FEF7E0] border border-[#FEEFC3] rounded p-4 space-y-3 shadow-elevation-1 animate-fade-in">
                       <div className="flex items-start space-x-3">
-                        <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                        <AlertTriangle className="w-5 h-5 text-[#B06000] shrink-0 mt-0.5" />
                         <div>
-                          <h4 className="text-sm font-medium text-amber-950 uppercase tracking-wide">{t.duplicateTitle}</h4>
-                          <p className="text-xs text-amber-900 mt-0.5">
+                          <h4 className="text-sm font-medium text-[#78350F] uppercase tracking-wide">{t.duplicateTitle}</h4>
+                          <p className="text-xs text-[#78350F] mt-0.5">
                             Matching report found within <strong>{nearbyDuplicate.distanceMeters}m</strong>: "{nearbyDuplicate.duplicate.title}".
                           </p>
                         </div>
                       </div>
 
-                      <div className="bg-white p-3 rounded border border-amber-200 flex items-center space-x-3">
+                      <div className="bg-white p-3 rounded border border-[#DADCE0] flex items-center space-x-3">
                         <img src={nearbyDuplicate.duplicate.photoUrl} alt="Existing" className="w-12 h-12 rounded object-cover border border-gray-200" />
                         <div className="text-xs min-w-0">
-                          <p className="font-medium text-mat-text-primary truncate">{nearbyDuplicate.duplicate.title}</p>
-                          <p className="text-mat-text-secondary text-[11px] truncate">{nearbyDuplicate.duplicate.location.address}</p>
+                          <p className="font-medium text-[#202124] truncate">{nearbyDuplicate.duplicate.title}</p>
+                          <p className="text-[#5F6368] text-[11px] truncate">{nearbyDuplicate.duplicate.location.address}</p>
                         </div>
                       </div>
 
@@ -651,7 +654,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                             createRipple(e);
                             handleMerge();
                           }}
-                          className="bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs uppercase tracking-wider py-2.5 px-3 rounded shadow-elevation-1 transition-all flex items-center justify-center space-x-1 ripple-surface"
+                          className="bg-[#FBBC05] hover:bg-[#F9AB00] text-[#202124] font-semibold text-xs uppercase tracking-wider py-2.5 px-3 rounded shadow-elevation-1 transition-all flex items-center justify-center space-x-1 ripple-surface"
                         >
                           <span>{t.mergeReport}</span>
                         </button>
@@ -661,15 +664,15 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                             createRipple(e);
                             setCurrentStep(3);
                           }}
-                          className="bg-white hover:bg-gray-50 text-mat-text-primary border border-gray-300 font-medium text-xs uppercase tracking-wider py-2.5 px-3 rounded transition-all ripple-surface"
+                          className="bg-white hover:bg-gray-50 text-[#202124] border border-gray-300 font-medium text-xs uppercase tracking-wider py-2.5 px-3 rounded transition-all ripple-surface"
                         >
                           <span>Submit as New</span>
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded p-3 flex items-center space-x-2 text-mat-secondary text-xs font-medium">
-                      <CheckCircle2 className="w-4 h-4 text-mat-secondary" />
+                    <div className="bg-[#E6F4EA] border border-[#CEEAD6] rounded p-3 flex items-center space-x-2 text-[#137333] text-xs font-medium">
+                      <CheckCircle2 className="w-4 h-4 text-[#34A853]" />
                       <span>No duplicate complaints found nearby. Ready to publish as new listing!</span>
                     </div>
                   )}
@@ -681,27 +684,27 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
           {/* STEP 3: REVIEW & PUBLISH */}
           {currentStep === 3 && (
             <div className="space-y-4">
-              <div className="bg-[#FAFAFA] p-4 rounded border border-gray-200 space-y-3 shadow-elevation-1">
+              <div className="bg-[#FAFAFA] p-4 rounded border border-[#DADCE0] space-y-3 shadow-elevation-1">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-medium text-mat-secondary uppercase tracking-wider bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-medium text-[#1A73E8] uppercase tracking-wider bg-[#E8F0FE] border border-[#D2E3FC] px-2 py-0.5 rounded">
                       {category === 'Other' && customCategory ? customCategory : category}
                     </span>
-                    <h3 className="text-sm sm:text-base font-medium text-mat-text-primary mt-1.5">{title || 'Civic Issue Listing'}</h3>
+                    <h3 className="text-sm sm:text-base font-medium text-[#202124] mt-1.5">{title || 'Civic Issue Listing'}</h3>
                   </div>
                   <span className={`text-[10px] font-medium px-2 py-0.5 rounded uppercase tracking-wider ${
-                    severity === 'Critical' ? 'bg-red-50 text-mat-critical border border-mat-critical/30' : 'bg-amber-50 text-amber-800 border border-mat-medium/40'
+                    severity === 'Critical' ? 'bg-[#FCE8E6] text-[#C5221F] border border-[#FAD2CF]' : 'bg-[#FEF7E0] text-[#78350F] border border-[#FBBC05]/40'
                   }`}>
                     {severity} Priority
                   </span>
                 </div>
 
-                <div className="flex items-start space-x-2 text-xs text-mat-text-secondary">
-                  <MapPin className="w-4 h-4 text-mat-secondary shrink-0 mt-0.5" />
+                <div className="flex items-start space-x-2 text-xs text-[#5F6368]">
+                  <MapPin className="w-4 h-4 text-[#4285F4] shrink-0 mt-0.5" />
                   <span>{manualAddress} ({selectedWard})</span>
                 </div>
 
-                <p className="text-xs text-mat-text-primary bg-white p-3 rounded border border-gray-200">
+                <p className="text-xs text-[#202124] bg-white p-3 rounded border border-[#DADCE0]">
                   {description || 'No written description provided.'}
                 </p>
 
@@ -712,14 +715,14 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                   ))}
                 </div>
 
-                <div className="text-[11px] text-mat-text-secondary flex items-center justify-between pt-1 border-t border-gray-200">
-                  <span>Reporter: <strong className="text-mat-text-primary font-medium">{currentUser.name}</strong></span>
-                  <span>Target SLA: <strong className="text-mat-text-primary font-medium">{severity === 'Critical' ? '4 Hours' : '24 Hours'}</strong></span>
+                <div className="text-[11px] text-[#5F6368] flex items-center justify-between pt-1 border-t border-[#DADCE0]">
+                  <span>Reporter: <strong className="text-[#202124] font-medium">{currentUser.name}</strong></span>
+                  <span>Target SLA: <strong className="text-[#202124] font-medium">{severity === 'Critical' ? '4 Hours' : '24 Hours'}</strong></span>
                 </div>
               </div>
 
-              <div className="bg-amber-50 border border-amber-300 p-3 rounded flex items-center space-x-2 text-xs text-amber-900 font-medium">
-                <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+              <div className="bg-[#FEF7E0] border border-[#FBBC05]/40 p-3 rounded flex items-center space-x-2 text-xs text-[#78350F] font-medium">
+                <Sparkles className="w-4 h-4 text-[#FBBC05] shrink-0" />
                 <span>Publishing this listing will award you <strong>+25 XP Points</strong> and alert nearby citizens!</span>
               </div>
             </div>
@@ -728,7 +731,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
         </div>
 
         {/* Modal Bottom Actions */}
-        <div className="bg-slate-50 px-5 py-4 border-t border-slate-200 flex items-center justify-between">
+        <div className="bg-[#F8F9FA] px-5 py-4 border-t border-[#DADCE0] flex items-center justify-between">
           {currentStep > 1 ? (
             <button
               type="button"
@@ -736,7 +739,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                 createRipple(e, 'rgba(0, 0, 0, 0.1)');
                 setCurrentStep((prev) => prev - 1);
               }}
-              className="px-4 py-2.5 rounded border border-slate-300 text-black/87 hover:bg-slate-100 font-medium text-xs uppercase tracking-wider flex items-center space-x-1 transition-colors ripple-surface"
+              className="px-4 py-2.5 rounded text-[#5F6368] hover:text-[#202124] hover:bg-black/5 font-medium text-xs uppercase tracking-wider flex items-center space-x-1 transition-colors ripple-surface"
             >
               <ChevronLeft className="w-4 h-4" />
               <span>Back</span>
@@ -748,7 +751,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                 createRipple(e, 'rgba(0, 0, 0, 0.1)');
                 onClose();
               }}
-              className="px-4 py-2.5 rounded text-black/60 hover:text-black/87 hover:bg-black/5 font-medium text-xs uppercase tracking-wider transition-colors ripple-surface"
+              className="px-4 py-2.5 rounded text-[#5F6368] hover:text-[#202124] hover:bg-black/5 font-medium text-xs uppercase tracking-wider transition-colors ripple-surface"
             >
               Cancel
             </button>
@@ -761,7 +764,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                 createRipple(e, 'rgba(255, 255, 255, 0.3)');
                 runAiDetection();
               }}
-              className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-medium text-xs uppercase tracking-wider py-2.5 px-5 rounded shadow-elevation-2 hover:shadow-elevation-4 flex items-center space-x-2 transition-all ripple-surface"
+              className="bg-[#4285F4] hover:bg-[#1A73E8] text-white font-medium text-xs uppercase tracking-wider py-2.5 px-5 rounded shadow-elevation-2 hover:shadow-elevation-4 flex items-center space-x-2 transition-all ripple-surface"
             >
               <span>Verify & Check Duplicates</span>
               <ChevronRight className="w-4 h-4" />
@@ -776,7 +779,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                 setCurrentStep(3);
               }}
               disabled={isAnalyzing}
-              className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-medium text-xs uppercase tracking-wider py-2.5 px-5 rounded shadow-elevation-2 hover:shadow-elevation-4 flex items-center space-x-2 transition-all ripple-surface disabled:opacity-50"
+              className="bg-[#4285F4] hover:bg-[#1A73E8] text-white font-medium text-xs uppercase tracking-wider py-2.5 px-5 rounded shadow-elevation-2 hover:shadow-elevation-4 flex items-center space-x-2 transition-all ripple-surface disabled:opacity-50"
             >
               <span>Proceed to Review</span>
               <ChevronRight className="w-4 h-4" />
@@ -790,7 +793,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
                 createRipple(e, 'rgba(255, 255, 255, 0.3)');
                 handleSubmitNew();
               }}
-              className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-medium text-xs uppercase tracking-wider py-3 px-6 rounded shadow-elevation-2 hover:shadow-elevation-4 flex items-center space-x-2 transition-all ripple-surface"
+              className="bg-[#4285F4] hover:bg-[#1A73E8] text-white font-medium text-xs uppercase tracking-wider py-3 px-6 rounded shadow-elevation-2 hover:shadow-elevation-4 flex items-center space-x-2 transition-all ripple-surface"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>Publish Community Listing (+25 XP)</span>

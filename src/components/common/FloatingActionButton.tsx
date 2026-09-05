@@ -19,7 +19,7 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-6 right-6 z-40 bg-[#2E7D32] hover:bg-[#1B5E20] text-white h-14 px-4 sm:px-5 rounded-full shadow-elevation-6 hover:shadow-elevation-8 active:scale-98 transition-all flex items-center space-x-2.5 ripple-surface group focus:outline-none focus:ring-4 focus:ring-[#81C784]/50"
+      className="fixed bottom-6 right-6 z-40 bg-[#4285F4] hover:bg-[#1A73E8] text-white h-14 px-4 sm:px-5 rounded-full shadow-elevation-6 hover:shadow-elevation-8 active:scale-98 transition-all flex items-center space-x-2.5 ripple-surface group focus:outline-none focus:ring-4 focus:ring-[#4285F4]/40"
       aria-label={label}
       title={label}
     >
@@ -27,7 +27,7 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
       <span className="font-medium text-sm tracking-wider uppercase hidden sm:inline-block">
         {label}
       </span>
-      <span className="bg-[#FBC02D] text-[#212121] text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm ml-1 hidden md:inline-block">
+      <span className="bg-[#FBBC05] text-[#202124] text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm ml-1 hidden md:inline-block">
         +25 XP
       </span>
     </button>
