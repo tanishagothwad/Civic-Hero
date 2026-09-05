@@ -102,9 +102,9 @@ export const MunicipalDashboard: React.FC = () => {
 
         {/* Dynamic Views */}
         {viewMode === 'split' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full max-w-full min-w-0">
             {/* Left: Interactive Map (5 Cols) */}
-            <div className="lg:col-span-5 space-y-3">
+            <div className="lg:col-span-5 min-w-0 max-w-full space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-[#202124] flex items-center space-x-1.5">
                   <MapIcon className="w-4 h-4 text-[#4285F4]" />
@@ -116,11 +116,12 @@ export const MunicipalDashboard: React.FC = () => {
                 onAssignWorker={(issue) => setAssigningIssue(issue)}
                 selectedCategory={categoryFilter}
                 selectedSeverity={severityFilter}
+                heightClassName="h-[380px] sm:h-[420px] lg:h-[460px]"
               />
             </div>
 
             {/* Right: Filterable Complaints Table (7 Cols) */}
-            <div className="lg:col-span-7 space-y-3">
+            <div className="lg:col-span-7 min-w-0 max-w-full space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-[#202124] flex items-center space-x-1.5">
                   <TableIcon className="w-4 h-4 text-[#4285F4]" />
@@ -140,7 +141,7 @@ export const MunicipalDashboard: React.FC = () => {
         )}
 
         {viewMode === 'map' && (
-          <div className="space-y-3">
+          <div className="w-full max-w-full min-w-0 space-y-3">
             <h3 className="text-sm font-bold text-[#202124] flex items-center space-x-1.5">
               <MapIcon className="w-4 h-4 text-[#4285F4]" />
               <span>Full Screen Geographic Complaint Heatmap</span>
@@ -150,12 +151,13 @@ export const MunicipalDashboard: React.FC = () => {
               onAssignWorker={(issue) => setAssigningIssue(issue)}
               selectedCategory={categoryFilter}
               selectedSeverity={severityFilter}
+              heightClassName="h-[520px] sm:h-[600px]"
             />
           </div>
         )}
 
         {viewMode === 'table' && (
-          <div className="space-y-3">
+          <div className="w-full max-w-full min-w-0 space-y-3">
             <h3 className="text-sm font-bold text-[#202124] flex items-center space-x-1.5">
               <TableIcon className="w-4 h-4 text-[#4285F4]" />
               <span>Comprehensive Municipal Complaint Database</span>

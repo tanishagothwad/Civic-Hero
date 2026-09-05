@@ -59,19 +59,27 @@ export const AnalyticsOverview: React.FC = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 w-full min-w-0 pt-1">
       {cards.map((card, idx) => (
         <div
           key={idx}
-          className={`p-4 rounded border shadow-elevation-1 transition-all hover:shadow-elevation-2 ${card.bg}`}
+          className="relative p-4 sm:p-5 rounded-xl border border-[#DADCE0] bg-white shadow-elevation-1 hover:shadow-elevation-2 transition-all flex flex-col justify-between overflow-visible min-w-0"
         >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-mat-text-secondary uppercase tracking-wider">{card.title}</span>
-            <div className="p-1.5 rounded bg-gray-50 border border-gray-100">{card.icon}</div>
+          <div className="flex items-start justify-between gap-2 mb-2">
+            <span className="text-[11px] sm:text-xs font-medium text-[#5F6368] uppercase tracking-wider leading-snug">
+              {card.title}
+            </span>
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#F8F9FA] border border-[#DADCE0] flex items-center justify-center shrink-0 shadow-xs">
+              {card.icon}
+            </div>
           </div>
-          <div className="mt-2">
-            <h3 className={`text-xl sm:text-2xl font-bold ${card.textColor}`}>{card.value}</h3>
-            <p className="text-[11px] text-mat-text-secondary font-normal mt-0.5">{card.subtext}</p>
+          <div className="mt-1">
+            <h3 className={`text-xl sm:text-2xl font-bold tracking-tight ${card.textColor}`}>
+              {card.value}
+            </h3>
+            <p className="text-[11px] text-[#5F6368] font-normal mt-0.5 truncate">
+              {card.subtext}
+            </p>
           </div>
         </div>
       ))}

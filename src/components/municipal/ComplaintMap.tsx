@@ -8,6 +8,7 @@ interface ComplaintMapProps {
   onAssignWorker: (issue: CivicIssue) => void;
   selectedCategory: string;
   selectedSeverity: string;
+  heightClassName?: string;
 }
 
 export const ComplaintMap: React.FC<ComplaintMapProps> = ({
@@ -15,6 +16,7 @@ export const ComplaintMap: React.FC<ComplaintMapProps> = ({
   onAssignWorker,
   selectedCategory,
   selectedSeverity,
+  heightClassName = 'h-[360px] sm:h-[400px] lg:h-[420px]',
 }) => {
   const { issues } = useApp();
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -61,14 +63,25 @@ export const ComplaintMap: React.FC<ComplaintMapProps> = ({
 
       markersLayerRef.current = L.layerGroup().addTo(map);
       mapInstanceRef.current = map;
-    }
 
-    return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-    };
+      // Invalidate size once rendered
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 250);
+
+      const handleResize = () => {
+        map.invalidateSize();
+      };
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.remove();
+          mapInstanceRef.current = null;
+        }
+      };
+    }
   }, []);
 
   // Update Markers when filtered issues change
@@ -170,7 +183,7 @@ export const ComplaintMap: React.FC<ComplaintMapProps> = ({
   }, [filteredIssues, onSelectIssue, onAssignWorker]);
 
   return (
-    <div className="relative w-full h-[520px] rounded overflow-hidden border border-[#DADCE0] shadow-elevation-1">
+    <div className={`relative w-full ${heightClassName} rounded-xl overflow-hidden border border-[#DADCE0] shadow-elevation-1`}>
       {/* Leaflet Map DOM Container */}
       <div ref={mapContainerRef} className="w-full h-full" />
 

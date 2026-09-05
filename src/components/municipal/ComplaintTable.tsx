@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { CivicIssue } from '../../types';
 import { getAssetUrl } from '../../utils/assetUrl';
@@ -9,6 +9,8 @@ import {
   ArrowUpDown,
   ThumbsUp,
   HardHat,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 interface ComplaintTableProps {
@@ -33,6 +35,13 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [wardFilter, setWardFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date' | 'priority' | 'upvotes'>('date');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 8;
+
+  // Reset to page 1 whenever filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter, wardFilter, categoryFilter, severityFilter, sortBy]);
 
   // Distinct wards from issues
   const wards = Array.from(new Set(issues.map((i) => i.location.ward)));
@@ -65,6 +74,10 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
     return 0; // default initial order
   });
 
+  // Pagination
+  const totalPages = Math.ceil(sorted.length / pageSize) || 1;
+  const paginatedIssues = sorted.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
   const getSeverityBadge = (sev: string) => {
     switch (sev) {
       case 'Critical':
@@ -92,7 +105,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
   };
 
   return (
-    <div className="bg-white rounded border border-[#DADCE0] shadow-elevation-1 overflow-hidden flex flex-col">
+    <div className="w-full max-w-full min-w-0 bg-white rounded-xl border border-[#DADCE0] shadow-elevation-1 overflow-hidden flex flex-col">
       {/* Search & Filter Bar */}
       <div className="p-4 border-b border-[#DADCE0] space-y-3 bg-[#FAFAFA]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -104,18 +117,18 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by ticket #, keyword, ward, or citizen..."
-              className="w-full pl-9 pr-4 py-2 bg-white border border-[#DADCE0] rounded text-xs text-[#202124] placeholder:text-gray-400 focus:outline-none focus:border-[#4285F4] focus:ring-1 focus:ring-[#4285F4] transition-all"
+              className="w-full pl-9 pr-4 py-2 bg-white border border-[#DADCE0] rounded-lg text-xs text-[#202124] placeholder:text-gray-400 focus:outline-none focus:border-[#4285F4] focus:ring-1 focus:ring-[#4285F4] transition-all"
             />
           </div>
 
           {/* Sort Selector */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 shrink-0">
             <ArrowUpDown className="w-3.5 h-3.5 text-[#5F6368]" />
             <span className="text-xs text-[#5F6368] font-medium">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
+              className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded-lg text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
             >
               <option value="date">Most Recent</option>
               <option value="priority">Highest Severity</option>
@@ -130,7 +143,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
+            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded-lg text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
           >
             <option value="all">All Statuses</option>
             <option value="Submitted">Submitted</option>
@@ -143,7 +156,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
+            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded-lg text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
           >
             <option value="all">All Categories</option>
             <option value="Garbage">Garbage & Waste</option>
@@ -158,7 +171,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
           <select
             value={severityFilter}
             onChange={(e) => setSeverityFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
+            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded-lg text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
           >
             <option value="all">All Priorities</option>
             <option value="Critical">Critical</option>
@@ -171,7 +184,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
           <select
             value={wardFilter}
             onChange={(e) => setWardFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
+            className="px-2.5 py-1.5 bg-white border border-[#DADCE0] rounded-lg text-xs font-medium text-[#202124] focus:outline-none focus:border-[#4285F4]"
           >
             <option value="all">All Wards</option>
             {wards.map((w) => (
@@ -181,47 +194,47 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
             ))}
           </select>
 
-          <span className="text-[11px] text-[#5F6368] ml-auto font-medium">
+          <span className="text-[11px] text-[#5F6368] ml-auto font-medium shrink-0">
             Showing {sorted.length} of {issues.length} complaints
           </span>
         </div>
       </div>
 
-      {/* Table Content */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs text-[#5F6368]">
+      {/* Responsive Horizontal Scroll Table Container */}
+      <div className="w-full max-w-full overflow-x-auto">
+        <table className="w-full table-auto text-left text-xs text-[#5F6368] min-w-[720px]">
           <thead className="bg-[#FAFAFA] text-[#5F6368] font-medium uppercase text-[10px] tracking-wider border-b border-[#DADCE0]">
             <tr>
-              <th className="py-3 px-4">Ticket & Photo</th>
-              <th className="py-3 px-4">Category / Issue</th>
-              <th className="py-3 px-4">Ward Location</th>
-              <th className="py-3 px-4">Severity</th>
-              <th className="py-3 px-4">Status</th>
-              <th className="py-3 px-4">Assigned Worker</th>
-              <th className="py-3 px-4 text-right">Actions</th>
+              <th className="py-3 px-4 min-w-[150px] whitespace-nowrap">Ticket & Photo</th>
+              <th className="py-3 px-4 min-w-[180px]">Category / Issue</th>
+              <th className="py-3 px-4 min-w-[140px]">Ward Location</th>
+              <th className="py-3 px-4 min-w-[110px] whitespace-nowrap">Severity</th>
+              <th className="py-3 px-4 min-w-[110px] whitespace-nowrap">Status</th>
+              <th className="py-3 px-4 min-w-[140px] whitespace-nowrap">Assigned Worker</th>
+              <th className="py-3 px-4 min-w-[90px] text-right whitespace-nowrap">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#DADCE0]">
-            {sorted.length === 0 ? (
+            {paginatedIssues.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-8 text-center text-[#5F6368]">
+                <td colSpan={7} className="py-12 text-center text-[#5F6368]">
                   No matching complaints found.
                 </td>
               </tr>
             ) : (
-              sorted.map((issue) => (
+              paginatedIssues.map((issue) => (
                 <tr
                   key={issue.id}
                   className="hover:bg-gray-50/80 transition-colors cursor-pointer group"
                   onClick={() => onSelectIssue(issue)}
                 >
                   {/* Photo & Ticket */}
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 min-w-[150px]">
                     <div className="flex items-center space-x-2.5">
                       <img
                         src={issue.photoUrl}
                         alt={issue.title}
-                        className="w-10 h-10 rounded object-cover border border-[#DADCE0] flex-shrink-0"
+                        className="w-10 h-10 rounded-lg object-cover border border-[#DADCE0] flex-shrink-0"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           const fallback = getAssetUrl('issues/garbage.jpg');
@@ -240,7 +253,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                   </td>
 
                   {/* Title & Category */}
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 min-w-[180px]">
                     <div className="max-w-xs">
                       <span className="text-[10px] font-medium text-[#1A73E8] bg-[#E8F0FE] px-1.5 py-0.5 rounded border border-[#D2E3FC] uppercase tracking-wide">
                         {t.categories[issue.category]}
@@ -254,7 +267,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                   </td>
 
                   {/* Location */}
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 min-w-[140px]">
                     <div className="max-w-[180px]">
                       <span className="font-medium text-[#202124] text-[11px] block truncate">
                         {issue.location.ward}
@@ -265,30 +278,30 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                     </div>
                   </td>
 
-                  {/* Severity */}
-                  <td className="py-3 px-4">
+                  {/* Severity (Guaranteed min-width and whitespace-nowrap, never truncates!) */}
+                  <td className="py-3 px-4 min-w-[110px] whitespace-nowrap">
                     <span
-                      className={`text-[10px] font-medium px-2 py-0.5 rounded border uppercase tracking-wider ${getSeverityBadge(
+                      className={`inline-block text-[10px] font-semibold px-2.5 py-0.5 rounded border uppercase tracking-wider whitespace-nowrap ${getSeverityBadge(
                         issue.severity
                       )}`}
                     >
-                      {t.severities[issue.severity]}
+                      {t.severities[issue.severity] || issue.severity}
                     </span>
                   </td>
 
-                  {/* Status */}
-                  <td className="py-3 px-4">
+                  {/* Status (Guaranteed min-width and whitespace-nowrap, never truncates!) */}
+                  <td className="py-3 px-4 min-w-[110px] whitespace-nowrap">
                     <span
-                      className={`text-[10px] font-medium px-2 py-0.5 rounded border uppercase tracking-wider ${getStatusBadge(
+                      className={`inline-block text-[10px] font-semibold px-2.5 py-0.5 rounded border uppercase tracking-wider whitespace-nowrap ${getStatusBadge(
                         issue.status
                       )}`}
                     >
-                      {t.statuses[issue.status]}
+                      {t.statuses[issue.status] || issue.status}
                     </span>
                   </td>
 
                   {/* Assigned Officer */}
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 min-w-[140px] whitespace-nowrap">
                     {issue.assignedWorkerName ? (
                       <div className="flex items-center space-x-1.5 text-[#1A73E8] font-medium">
                         <HardHat className="w-3.5 h-3.5 text-[#4285F4] flex-shrink-0" />
@@ -300,9 +313,9 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                   </td>
 
                   {/* Action Buttons */}
-                  <td className="py-3 px-4 text-right">
+                  <td className="py-3 px-4 text-right min-w-[90px] whitespace-nowrap">
                     <div
-                      className="flex items-center justify-end space-x-1"
+                      className="flex items-center justify-end space-x-1.5"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <button
@@ -310,7 +323,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                           createRipple(e);
                           onSelectIssue(issue);
                         }}
-                        className="p-1.5 text-[#5F6368] hover:text-[#202124] hover:bg-gray-100 rounded transition-colors ripple-surface"
+                        className="p-1.5 text-[#5F6368] hover:text-[#202124] hover:bg-gray-100 rounded-lg transition-colors ripple-surface"
                         title="View issue timeline"
                         aria-label="View issue"
                       >
@@ -337,6 +350,41 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Footer */}
+      {sorted.length > 0 && (
+        <div className="px-4 py-3 border-t border-[#DADCE0] bg-[#FAFAFA] flex flex-wrap items-center justify-between gap-3 text-xs text-[#5F6368]">
+          <span>
+            Showing {Math.min((currentPage - 1) * pageSize + 1, sorted.length)}-{Math.min(currentPage * pageSize, sorted.length)} of {sorted.length} complaints
+          </span>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-2.5 py-1 rounded border border-[#DADCE0] bg-white text-xs font-medium text-[#202124] hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
+              aria-label="Previous Page"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Previous</span>
+            </button>
+            <span className="px-2 text-xs font-semibold text-[#202124]">
+              {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-2.5 py-1 rounded border border-[#DADCE0] bg-white text-xs font-medium text-[#202124] hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
+              aria-label="Next Page"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
+export default ComplaintTable;
