@@ -71,11 +71,11 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
   const activeRoleObj = roles.find((r) => r.key === role) || roles[0];
 
   return (
-    <header className="bg-white text-[#202124] sticky top-0 z-40 border-b border-[#DADCE0] shadow-xs">
+    <header className="fixed top-0 left-0 right-0 h-14 sm:h-16 z-40 bg-white text-[#202124] border-b border-[#DADCE0] shadow-xs">
       {/* Signature Google 4-Color Accent Strip */}
       <div className="google-accent-bar" />
 
-      <div className="w-full px-3 sm:px-5 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="w-full px-3 sm:px-5 h-full flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Hamburger menu toggle + Logo and Name */}
         <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
           {onToggleRail && (

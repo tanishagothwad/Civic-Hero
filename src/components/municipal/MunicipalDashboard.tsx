@@ -23,9 +23,9 @@ export const MunicipalDashboard: React.FC = () => {
   const [assigningIssue, setAssigningIssue] = useState<CivicIssue | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-[#202124] pb-12 font-sans">
+    <div className="w-full bg-[#F8F9FA] text-[#202124] pb-12 font-sans">
       {/* Command Center Subheader */}
-      <div className="bg-white border-b border-[#DADCE0] sticky top-[64px] z-20 shadow-elevation-1">
+      <div className="bg-white border-b border-[#DADCE0] sticky top-14 sm:top-16 z-20 shadow-elevation-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded bg-[#4285F4] text-white flex items-center justify-center font-bold shadow-elevation-1">

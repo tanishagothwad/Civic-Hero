@@ -59,10 +59,19 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
   };
 
   return (
-    <aside
-      className="w-full lg:w-[420px] xl:w-[460px] bg-white border-l border-[#DADCE0] shadow-elevation-3 flex flex-col h-full overflow-hidden transition-all duration-300 z-30 shrink-0"
-      aria-label="Issue Details Reading Pane"
-    >
+    <>
+      {/* Mobile Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Detail Panel Container */}
+      <aside
+        className="fixed top-14 sm:top-16 right-0 bottom-0 z-40 lg:z-30 w-full sm:w-[420px] xl:w-[460px] bg-white border-l border-[#DADCE0] shadow-elevation-4 lg:shadow-elevation-2 flex flex-col overflow-hidden transition-all duration-300"
+        aria-label="Issue Details Reading Pane"
+      >
       {/* 1. Header with Google Blue and Accent Bar */}
       <div className="bg-[#4285F4] text-white flex-shrink-0 relative">
         <div className="google-accent-bar" />
@@ -333,7 +342,8 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
         </span>
       </div>
     </aside>
-  );
+  </>
+);
 };
 
 export default IssueDetailPanel;

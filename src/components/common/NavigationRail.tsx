@@ -26,6 +26,8 @@ interface NavigationRailProps {
   onToggleCollapse: () => void;
   onOpenReport: () => void;
   onOpenLanguage: () => void;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 export const NavigationRail: React.FC<NavigationRailProps> = ({
@@ -35,6 +37,8 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({
   onToggleCollapse,
   onOpenReport,
   onOpenLanguage,
+  isMobileOpen = false,
+  onCloseMobile,
 }) => {
   const { role, setRole, issues, currentUser, logout, t } = useApp();
 
@@ -95,12 +99,27 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({
   ];
 
   return (
-    <aside
-      className={`bg-white border-r border-[#DADCE0] transition-all duration-300 ease-in-out flex flex-col justify-between shrink-0 h-[calc(100vh-56px)] sm:h-[calc(100vh-64px)] sticky top-14 sm:top-16 z-30 select-none ${
-        isCollapsed ? 'w-16 sm:w-18' : 'w-60 sm:w-64'
-      }`}
-      aria-label="Navigation rail"
-    >
+    <>
+      {/* Mobile Drawer Backdrop */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          onClick={onCloseMobile}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Navigation Rail Container */}
+      <aside
+        className={`fixed top-14 sm:top-16 bottom-0 left-0 z-30 bg-white border-r border-[#DADCE0] transition-all duration-300 ease-in-out flex flex-col justify-between select-none ${
+          isCollapsed ? 'md:w-18' : 'md:w-64'
+        } w-64 ${
+          isMobileOpen
+            ? 'translate-x-0 shadow-elevation-8'
+            : '-translate-x-full md:translate-x-0'
+        }`}
+        aria-label="Navigation rail"
+      >
       <div className="flex-1 overflow-y-auto overflow-x-hidden pt-3 px-2 sm:px-3 space-y-4">
         {/* 1. Gmail-Style "+ Compose" / Google Drive "+ New" Pill Action Button */}
         <div className="mb-2">
@@ -281,7 +300,8 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({
         </button>
       </div>
     </aside>
-  );
+  </>
+);
 };
 
 export default NavigationRail;
