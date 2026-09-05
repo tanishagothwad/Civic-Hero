@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { RoleSwitcherBar } from './components/common/RoleSwitcherBar';
-import { DeviceFrame } from './components/common/DeviceFrame';
-import { Header } from './components/common/Header';
 import { LanguagePicker } from './components/common/LanguagePicker';
 import { ToastNotification } from './components/common/ToastNotification';
-import { InstallPromptBanner } from './components/common/InstallPromptBanner';
 import { LoginModal } from './components/auth/LoginModal';
 import { CitizenHome } from './components/citizen/CitizenHome';
 import { ReportWizard } from './components/citizen/ReportWizard';
@@ -49,45 +46,30 @@ const MainApp: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-900 flex flex-col font-sans">
-      {/* PWA Install Banner */}
-      <InstallPromptBanner />
-
-      {/* 1. Sticky Role & Persona Switcher */}
-      <RoleSwitcherBar onOpenLanguage={() => setIsLanguageModalOpen(true)} />
+      {/* 1. Sticky Role & Website Navigation Bar */}
+      <RoleSwitcherBar
+        onOpenLanguage={() => setIsLanguageModalOpen(true)}
+        onOpenNotifications={() => setIsNotificationsOpen(true)}
+        onOpenGamification={() => setIsGamificationModalOpen(true)}
+      />
 
       {/* 2. Persona Content */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col bg-slate-100">
         {role === 'citizen' && (
-          <DeviceFrame>
-            <Header
-              onOpenNotifications={() => setIsNotificationsOpen(true)}
-              onOpenGamification={() => setIsGamificationModalOpen(true)}
-              onOpenLanguage={() => setIsLanguageModalOpen(true)}
-            />
-            <CitizenHome
-              onOpenReport={() => setIsReportModalOpen(true)}
-              onSelectIssue={(issue) => setSelectedIssueForTracking(issue)}
-              onOpenGamification={() => setIsGamificationModalOpen(true)}
-            />
-          </DeviceFrame>
+          <CitizenHome
+            onOpenReport={() => setIsReportModalOpen(true)}
+            onSelectIssue={(issue) => setSelectedIssueForTracking(issue)}
+            onOpenGamification={() => setIsGamificationModalOpen(true)}
+          />
         )}
 
         {role === 'municipal' && <MunicipalDashboard />}
 
-        {role === 'worker' && (
-          <DeviceFrame>
-            <Header
-              onOpenNotifications={() => setIsNotificationsOpen(true)}
-              onOpenGamification={() => setIsGamificationModalOpen(true)}
-              onOpenLanguage={() => setIsLanguageModalOpen(true)}
-            />
-            <FieldWorkerApp />
-          </DeviceFrame>
-        )}
+        {role === 'worker' && <FieldWorkerApp />}
       </main>
 
       {/* Footer Credit */}
-      <footer className="py-4 text-center text-xs text-slate-500">
+      <footer className="py-4 text-center text-xs text-slate-500 bg-navy-950 border-t border-navy-900">
         Designed by Tanisha Gothwad
       </footer>
 

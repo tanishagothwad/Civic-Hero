@@ -48,8 +48,6 @@ interface AppContextType {
   notifications: NotificationItem[];
   unreadNotificationCount: number;
   toasts: ToastData[];
-  showDeviceFrame: boolean;
-  setShowDeviceFrame: (val: boolean) => void;
   selectedIssueForTracking: CivicIssue | null;
   setSelectedIssueForTracking: (issue: CivicIssue | null) => void;
   isReportModalOpen: boolean;
@@ -127,7 +125,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
   const [fieldWorkers, setFieldWorkers] = useState<FieldWorker[]>(initialFieldWorkers);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(initialLeaderboard);
-  const [showDeviceFrame, setShowDeviceFrame] = useState<boolean>(true);
   const [selectedIssueForTracking, setSelectedIssueForTracking] = useState<CivicIssue | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
   const [toasts, setToasts] = useState<ToastData[]>([]);
@@ -709,8 +706,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         notifications,
         unreadNotificationCount,
         toasts,
-        showDeviceFrame,
-        setShowDeviceFrame,
         selectedIssueForTracking,
         setSelectedIssueForTracking,
         isReportModalOpen,
