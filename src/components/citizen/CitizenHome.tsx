@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
 import { CivicIssue } from '../../types';
 import { getAssetUrl } from '../../utils/assetUrl';
 import { createRipple } from '../common/MaterialRipple';
+import { GoogleSearchHero } from './GoogleSearchHero';
 import {
   Camera,
   Trophy,
@@ -10,29 +11,74 @@ import {
   MapPin,
   ThumbsUp,
   ChevronRight,
-  AlertCircle,
-  Sparkles,
-  ArrowRight,
+  Search,
+  CheckCircle2,
 } from 'lucide-react';
+import { NavSection } from '../common/NavigationRail';
 
 interface CitizenHomeProps {
+  activeSection: NavSection;
+  onSelectSection: (section: NavSection) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
   onOpenReport: () => void;
   onSelectIssue: (issue: CivicIssue) => void;
   onOpenGamification: () => void;
+  selectedIssueId?: string | null;
 }
 
 export const CitizenHome: React.FC<CitizenHomeProps> = ({
+  activeSection,
+  onSelectSection,
+  searchQuery,
+  onSearchChange,
   onOpenReport,
   onSelectIssue,
   onOpenGamification,
+  selectedIssueId,
 }) => {
   const { currentUser, issues, upvoteReport, t } = useApp();
-  const [feedTab, setFeedTab] = useState<'my' | 'community'>('community');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  const myReports = issues.filter((i) => i.citizenId === currentUser.id);
-  const communityReports = issues;
+  // Filter issues based on activeSection, search query, and category filters
+  const filteredIssues = useMemo(() => {
+    let list = issues;
 
-  const currentList = feedTab === 'my' ? myReports : communityReports;
+    // Filter by tab
+    if (activeSection === 'my-reports') {
+      list = list.filter((i) => i.citizenId === currentUser.id);
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(
+        (i) =>
+          i.title.toLowerCase().includes(q) ||
+          i.ticketNumber.toLowerCase().includes(q) ||
+          i.location.ward.toLowerCase().includes(q) ||
+          i.location.address.toLowerCase().includes(q) ||
+          i.category.toLowerCase().includes(q) ||
+          i.description.toLowerCase().includes(q)
+      );
+    }
+
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      list = list.filter((i) => i.category === selectedCategory);
+    }
+
+    return list;
+  }, [issues, activeSection, currentUser.id, searchQuery, selectedCategory]);
+
+  const categories: { key: string; label: string }[] = [
+    { key: 'all', label: 'All Categories' },
+    { key: 'Pothole', label: 'Potholes' },
+    { key: 'Water Leak', label: 'Water Leaks' },
+    { key: 'Garbage', label: 'Garbage' },
+    { key: 'Street Light', label: 'Street Lights' },
+    { key: 'Drainage', label: 'Drainage' },
+  ];
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -61,176 +107,136 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 py-6 space-y-6">
-      {/* 1. Google Hero Section & Gamification Summary */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-        {/* Main Hero Card (Google styled with top 4-color strip) */}
-        <div className="lg:col-span-2 bg-white text-[#202124] rounded shadow-elevation-1 border border-[#DADCE0] flex flex-col justify-between relative overflow-hidden">
-          <div className="google-accent-bar" />
-          <div className="p-6 sm:p-8 space-y-3">
-            <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-[#E8F0FE] text-[#1A73E8] text-xs font-medium uppercase tracking-wider border border-[#D2E3FC]">
-              <Sparkles className="w-3.5 h-3.5 text-[#4285F4]" />
-              <span>Civic Engagement Platform</span>
-            </div>
+    <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+      {/* SECTION 1: Google Search Centered Minimal Landing Hero (Shown on 'home' tab) */}
+      {activeSection === 'home' && (
+        <>
+          <GoogleSearchHero
+            searchQuery={searchQuery}
+            onSearchChange={onSearchChange}
+            onOpenReport={onOpenReport}
+            onBrowseCommunity={() => onSelectSection('community')}
+          />
 
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-normal text-[#202124]">
-              {t.tagline}
-            </h1>
-            <p className="text-sm sm:text-base text-[#5F6368] max-w-2xl font-normal leading-relaxed">
-              {t.taglineSub}
-            </p>
-          </div>
-
-          {/* Material Contained Primary Button for Reporting (Google Blue) */}
-          <div className="px-6 sm:px-8 pb-6 sm:pb-8 pt-4 border-t border-[#DADCE0] flex flex-wrap items-center gap-3 bg-[#F8F9FA]">
-            <button
-              onClick={(e) => {
-                createRipple(e, 'rgba(255, 255, 255, 0.4)');
-                onOpenReport();
-              }}
-              className="bg-[#4285F4] hover:bg-[#1A73E8] text-white font-medium uppercase tracking-wider text-xs sm:text-sm px-6 py-3.5 rounded shadow-elevation-2 hover:shadow-elevation-4 transition-all flex items-center space-x-2.5 ripple-surface focus:ring-2 focus:ring-[#4285F4]/50"
-              aria-label="Report a civic problem"
-            >
-              <Camera className="w-5 h-5 shrink-0" />
-              <span>{t.reportIssue}</span>
-              <span className="bg-[#FBBC05] text-[#202124] text-[10px] font-bold px-2 py-0.5 rounded-full ml-1 shadow-xs">
-                +25 XP
-              </span>
-            </button>
-            <span className="text-xs text-[#5F6368] font-normal">
-              Pothole • Water Leak • Garbage • Streetlight • Drain
-            </span>
-          </div>
-        </div>
-
-        {/* Gamification Summary Card (Surface #FFFFFF, Google Yellow XP highlights) */}
-        <div
-          onClick={(e) => {
-            createRipple(e, 'rgba(66, 133, 244, 0.1)');
-            onOpenGamification();
-          }}
-          className="bg-white text-[#202124] p-6 rounded shadow-elevation-1 hover:shadow-elevation-3 transition-shadow cursor-pointer flex flex-col justify-between border border-[#DADCE0] ripple-surface group"
-          role="button"
-          aria-label="View points and rewards"
-        >
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded bg-[#FEF7E0] border border-[#FEEFC3] text-[#B06000] flex items-center justify-center shadow-sm">
-                <Trophy className="w-6 h-6 fill-[#FBBC05] text-[#B06000]" />
+          {/* Gamification & Neighborhood Rewards Summary Card */}
+          <div className="bg-white rounded-xl border border-[#DADCE0] shadow-elevation-1 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#FEF7E0] border border-[#FEEFC3] text-[#B06000] flex items-center justify-center shadow-xs shrink-0">
+                <Trophy className="w-7 h-7 fill-[#FBBC05] text-[#B06000]" />
               </div>
-              <span className="text-xs font-medium text-[#1A73E8] flex items-center uppercase tracking-wider group-hover:translate-x-1 transition-transform">
-                Rewards Hub <ArrowRight className="w-4 h-4 ml-1" />
-              </span>
-            </div>
-
-            <div>
-              <span className="text-xs uppercase font-medium tracking-wider text-[#5F6368] block">
-                {currentUser.levelName} • Level {currentUser.level}
-              </span>
-              <h3 className="text-2xl font-bold text-[#202124] mt-0.5">
-                {currentUser.points} <span className="text-sm font-normal text-[#5F6368]">XP Points</span>
-              </h3>
-            </div>
-
-            {/* Material Linear Progress Bar (Google Yellow accent) */}
-            <div>
-              <div className="flex justify-between text-xs text-[#5F6368] mb-1.5 font-normal">
-                <span>Next Tier Progress</span>
-                <span className="font-medium text-[#202124]">{currentUser.points % 200} / 200 XP</span>
-              </div>
-              <div className="w-full bg-[#F1F3F4] rounded-full h-2 overflow-hidden">
-                <div
-                  className="bg-[#FBBC05] h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      Math.round(((currentUser.points % 200) / 200) * 100)
-                    )}%`,
-                  }}
-                />
+              <div>
+                <span className="text-xs uppercase font-medium tracking-wider text-[#5F6368]">
+                  {currentUser.ward} • {currentUser.levelName}
+                </span>
+                <h3 className="text-xl font-bold text-[#202124] mt-0.5">
+                  {currentUser.points} <span className="text-sm font-normal text-[#5F6368]">Citizen XP Points</span>
+                </h3>
+                <p className="text-xs text-[#5F6368] mt-0.5">
+                  Level {currentUser.level} Citizen • {currentUser.badges.filter((b) => b.unlocked).length} of {currentUser.badges.length} badges unlocked
+                </p>
               </div>
             </div>
-          </div>
 
-          <div className="mt-4 pt-3 border-t border-[#DADCE0] flex items-center justify-between text-xs text-[#5F6368]">
-            <span>Badges Unlocked</span>
-            <span className="font-medium text-[#137333] bg-[#E6F4EA] border border-[#CEEAD6] px-2 py-0.5 rounded">
-              {currentUser.badges.filter((b) => b.unlocked).length} / {currentUser.badges.length}
-            </span>
+            <div className="flex items-center space-x-3 w-full md:w-auto">
+              <button
+                onClick={(e) => {
+                  createRipple(e, 'rgba(66, 133, 244, 0.15)');
+                  onOpenGamification();
+                }}
+                className="flex-1 md:flex-none px-4 py-2 rounded-lg border border-[#DADCE0] hover:bg-[#F8F9FA] text-xs font-medium text-[#202124] transition-colors ripple-surface"
+              >
+                View Badges & Perks
+              </button>
+              <button
+                onClick={(e) => {
+                  createRipple(e, 'rgba(255, 255, 255, 0.3)');
+                  onOpenReport();
+                }}
+                className="flex-1 md:flex-none px-5 py-2 rounded-lg bg-[#4285F4] hover:bg-[#1A73E8] text-white text-xs font-medium transition-colors shadow-elevation-1 ripple-surface flex items-center justify-center space-x-1.5"
+              >
+                <Camera className="w-4 h-4" />
+                <span>Report an Issue</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
 
-      {/* 2. Google Material Tabs & Filter Section */}
+      {/* SECTION 2: Filter Toolbar (Google Workspace-style Pills) */}
       <div className="space-y-4">
-        <div className="bg-white rounded shadow-elevation-1 border border-[#DADCE0] px-4 py-2 flex flex-wrap items-center justify-between gap-3">
-          {/* Flat Tabs with active indicator */}
-          <div className="flex space-x-1 sm:space-x-4 border-b border-transparent">
-            <button
-              onClick={(e) => {
-                createRipple(e, 'rgba(66, 133, 244, 0.15)');
-                setFeedTab('community');
-              }}
-              className={`py-2 px-3 rounded-t text-sm font-medium transition-colors relative ripple-surface ${
-                feedTab === 'community'
-                  ? 'text-[#1A73E8] font-semibold'
-                  : 'text-[#5F6368] hover:text-[#202124]'
-              }`}
-            >
-              {t.communityFeed} ({communityReports.length})
-              {feedTab === 'community' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#4285F4]" />
-              )}
-            </button>
-
-            <button
-              onClick={(e) => {
-                createRipple(e, 'rgba(66, 133, 244, 0.15)');
-                setFeedTab('my');
-              }}
-              className={`py-2 px-3 rounded-t text-sm font-medium transition-colors relative ripple-surface ${
-                feedTab === 'my'
-                  ? 'text-[#1A73E8] font-semibold'
-                  : 'text-[#5F6368] hover:text-[#202124]'
-              }`}
-            >
-              {t.myReports} ({myReports.length})
-              {feedTab === 'my' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#4285F4]" />
-              )}
-            </button>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#DADCE0]">
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold text-[#202124]">
+              {activeSection === 'home'
+                ? 'Recent Community Issues'
+                : activeSection === 'my-reports'
+                ? 'My Reported Issues'
+                : activeSection === 'leaderboard'
+                ? 'Civic Leaderboard & Rankings'
+                : 'Community Issues Feed'}
+            </h2>
+            <p className="text-xs text-[#5F6368] mt-0.5">
+              {filteredIssues.length} reports in {currentUser.ward.split('-')[0]}
+            </p>
           </div>
 
-          <div className="flex items-center space-x-2 text-xs text-[#5F6368] font-medium">
-            <span className="w-2 h-2 rounded-full bg-[#34A853]" />
-            <span>Zone: {currentUser.ward.split('-')[0]}</span>
-            <span>•</span>
-            <span>{currentList.length} Listings</span>
+          {/* Category Filter Pills */}
+          <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
+            {categories.map((cat) => (
+              <button
+                key={cat.key}
+                onClick={(e) => {
+                  createRipple(e, 'rgba(66, 133, 244, 0.15)');
+                  setSelectedCategory(cat.key);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border ${
+                  selectedCategory === cat.key
+                    ? 'bg-[#E8F0FE] text-[#1A73E8] border-[#4285F4]'
+                    : 'bg-white text-[#5F6368] border-[#DADCE0] hover:bg-[#F8F9FA]'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* 3. Material Card Grid */}
-        {currentList.length === 0 ? (
-          <div className="bg-white rounded p-12 text-center shadow-elevation-1 border border-[#DADCE0] space-y-3">
-            <AlertCircle className="w-12 h-12 mx-auto text-[#5F6368]/60" />
-            <h3 className="text-base font-medium text-[#202124]">{t.noReportsYet}</h3>
-            <p className="text-xs text-[#5F6368] max-w-sm mx-auto">
-              Be the first citizen in your ward to report an issue and earn +25 XP!
-            </p>
-            <button
-              onClick={(e) => {
-                createRipple(e, 'rgba(255, 255, 255, 0.4)');
-                onOpenReport();
-              }}
-              className="mt-2 bg-[#4285F4] hover:bg-[#1A73E8] text-white font-medium uppercase tracking-wider text-xs px-5 py-2.5 rounded shadow-elevation-1 transition-all ripple-surface"
-            >
-              {t.reportProblem}
-            </button>
+        {/* SECTION 3: 12-Column Responsive Grid Content Area */}
+        {filteredIssues.length === 0 ? (
+          /* Google-Style Empty State: Centered Icon, Clear Copy, Single Action Button */
+          <div className="bg-white rounded-xl p-12 text-center shadow-elevation-1 border border-[#DADCE0] max-w-md mx-auto my-8 space-y-4">
+            <div className="w-16 h-16 rounded-full bg-[#E8F0FE] text-[#1A73E8] flex items-center justify-center mx-auto shadow-xs">
+              <Search className="w-8 h-8 text-[#4285F4]" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-[#202124]">
+                {searchQuery ? 'No matching issues found' : 'No issues reported yet'}
+              </h3>
+              <p className="text-xs text-[#5F6368] leading-relaxed">
+                {searchQuery
+                  ? `We couldn't find anything matching "${searchQuery}". Try searching a different ward, landmark, or category.`
+                  : 'Be the first citizen in your neighborhood to report an issue and earn +25 XP!'}
+              </p>
+            </div>
+            <div className="pt-2">
+              <button
+                onClick={(e) => {
+                  createRipple(e, 'rgba(255, 255, 255, 0.3)');
+                  if (searchQuery) onSearchChange('');
+                  else onOpenReport();
+                }}
+                className="bg-[#4285F4] hover:bg-[#1A73E8] text-white font-medium text-xs px-6 py-2.5 rounded-full shadow-elevation-1 hover:shadow-elevation-2 transition-all ripple-surface"
+              >
+                {searchQuery ? 'Clear Search Filter' : 'Report an Issue (+25 XP)'}
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {currentList.map((issue) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredIssues.map((issue) => {
               const isResolved = issue.status === 'Resolved';
+              const isSelected = selectedIssueId === issue.id;
+
               return (
                 <div
                   key={issue.id}
@@ -238,14 +244,18 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                     createRipple(e, 'rgba(66, 133, 244, 0.1)');
                     onSelectIssue(issue);
                   }}
-                  className="bg-white rounded shadow-elevation-1 hover:shadow-elevation-3 transition-shadow duration-200 border border-[#DADCE0] cursor-pointer flex flex-col justify-between overflow-hidden group ripple-surface"
+                  className={`bg-white rounded-xl shadow-elevation-1 hover:shadow-elevation-3 transition-all duration-200 border flex flex-col justify-between overflow-hidden cursor-pointer group ripple-surface ${
+                    isSelected
+                      ? 'border-[#4285F4] ring-2 ring-[#4285F4]/30 shadow-elevation-3'
+                      : 'border-[#DADCE0]'
+                  }`}
                 >
                   {/* Card Media Header */}
-                  <div className="relative aspect-video w-full bg-slate-100 overflow-hidden">
+                  <div className="relative aspect-video w-full bg-gray-100 overflow-hidden">
                     <img
                       src={isResolved && issue.afterPhotoUrl ? issue.afterPhotoUrl : issue.photoUrl}
                       alt={issue.title}
-                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
                       loading="lazy"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
@@ -263,31 +273,36 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                         #{issue.ticketNumber}
                       </span>
                       <span
-                        className={`text-[10px] font-medium px-2 py-0.5 rounded uppercase tracking-wider shadow-sm ${getStatusBadge(
+                        className={`text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm ${getStatusBadge(
                           issue.status
                         )}`}
                       >
-                        {t.statuses[issue.status]}
+                        {t.statuses[issue.status] || issue.status}
                       </span>
                     </div>
 
                     {isResolved && (
-                      <span className="absolute bottom-2.5 right-2.5 bg-[#34A853] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
-                        RESOLVED ✓
+                      <span className="absolute bottom-2.5 right-2.5 bg-[#34A853] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow flex items-center space-x-1">
+                        <CheckCircle2 className="w-3 h-3" />
+                        <span>RESOLVED</span>
                       </span>
                     )}
 
                     <div className="absolute bottom-2.5 left-2.5 flex items-center space-x-1.5">
                       <span className="text-xs font-bold text-white drop-shadow">
-                        {t.categories[issue.category]}
+                        {t.categories[issue.category] || issue.category}
                       </span>
-                      <span className={`text-[9px] font-medium px-1.5 py-0.2 rounded shadow-xs ${getSeverityChip(issue.severity)}`}>
+                      <span
+                        className={`text-[9px] font-medium px-1.5 py-0.2 rounded shadow-xs ${getSeverityChip(
+                          issue.severity
+                        )}`}
+                      >
                         {issue.severity}
                       </span>
                     </div>
                   </div>
 
-                  {/* Card Body */}
+                  {/* Card Content */}
                   <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                     <div>
                       <h4 className="text-sm font-medium text-[#202124] line-clamp-2 leading-snug group-hover:text-[#1A73E8] transition-colors">
@@ -295,14 +310,15 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                       </h4>
                       <p className="text-xs text-[#5F6368] mt-1 flex items-start">
                         <MapPin className="w-3.5 h-3.5 text-[#4285F4] mr-1 shrink-0 mt-0.5" />
-                        <span className="line-clamp-2">{issue.location.address}</span>
+                        <span className="line-clamp-1">{issue.location.address}</span>
                       </p>
                     </div>
 
+                    {/* Footer Row */}
                     <div className="space-y-2 pt-2 border-t border-[#DADCE0]/60">
                       <div className="flex items-center justify-between text-xs text-[#5F6368]">
                         <span className="flex items-center">
-                          <Clock className="w-3.5 h-3.5 mr-1 text-[#5F6368]" />
+                          <Clock className="w-3.5 h-3.5 mr-1" />
                           {issue.createdAt}
                         </span>
                         {issue.assignedWorkerName && (
@@ -312,7 +328,6 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                         )}
                       </div>
 
-                      {/* Card Actions: Outlined Upvote & Text View Button */}
                       <div className="flex items-center justify-between pt-1">
                         <button
                           type="button"
@@ -337,18 +352,9 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                           )}
                         </button>
 
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            createRipple(e, 'rgba(66, 133, 244, 0.15)');
-                            onSelectIssue(issue);
-                          }}
-                          className="text-[#1A73E8] hover:bg-[#E8F0FE] px-2 py-1 rounded text-xs font-medium uppercase tracking-wider flex items-center transition-colors ripple-surface"
-                        >
-                          <span>{t.viewTracking}</span>
-                          <ChevronRight className="w-4 h-4 ml-0.5" />
-                        </button>
+                        <span className="text-xs text-[#1A73E8] font-medium group-hover:underline flex items-center">
+                          Inspect Details <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
+                        </span>
                       </div>
                     </div>
                   </div>

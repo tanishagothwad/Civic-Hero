@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { UserRole } from '../../types';
 import { createRipple } from './MaterialRipple';
@@ -12,18 +12,25 @@ import {
   LogOut,
   Bell,
   Trophy,
+  Search,
+  X,
+  ChevronDown,
 } from 'lucide-react';
 import { languageList } from '../../i18n/translations';
 
 interface RoleSwitcherBarProps {
-  onOpenDrawer?: () => void;
+  onToggleRail?: () => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
   onOpenLanguage: () => void;
   onOpenNotifications?: () => void;
   onOpenGamification?: () => void;
 }
 
 export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
-  onOpenDrawer,
+  onToggleRail,
+  searchQuery,
+  onSearchChange,
   onOpenLanguage,
   onOpenNotifications,
   onOpenGamification,
@@ -38,6 +45,9 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
     unreadNotificationCount,
     t,
   } = useApp();
+
+  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const roles: { key: UserRole; label: string; icon: React.ReactNode }[] = [
     {
@@ -58,85 +68,126 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
   ];
 
   const currentLangObj = languageList.find((l) => l.code === language);
+  const activeRoleObj = roles.find((r) => r.key === role) || roles[0];
 
   return (
-    <header className="bg-[#4285F4] text-white sticky top-0 z-40 shadow-elevation-4">
-      {/* Google Signature 4-Color Accent Line at top of App Bar */}
-      <div className="h-1 w-full google-accent-bar" />
+    <header className="bg-white text-[#202124] sticky top-0 z-40 border-b border-[#DADCE0] shadow-xs">
+      {/* Signature Google 4-Color Accent Strip */}
+      <div className="google-accent-bar" />
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
-        {/* Left: Hamburger button + Brand */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          {onOpenDrawer && (
+      <div className="w-full px-3 sm:px-5 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+        {/* Left: Hamburger menu toggle + Logo and Name */}
+        <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+          {onToggleRail && (
             <button
               onClick={(e) => {
-                createRipple(e, 'rgba(255, 255, 255, 0.3)');
-                onOpenDrawer();
+                createRipple(e, 'rgba(0, 0, 0, 0.1)');
+                onToggleRail();
               }}
-              className="w-10 h-10 rounded flex items-center justify-center text-white/90 hover:text-white hover:bg-white/10 transition-colors ripple-surface"
-              aria-label="Open navigation drawer"
-              title="Navigation Menu"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-[#5F6368] hover:text-[#202124] hover:bg-[#F1F3F4] transition-colors ripple-surface"
+              aria-label="Toggle navigation rail"
+              title="Main menu"
             >
               <Menu className="w-5 h-5" />
             </button>
           )}
 
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded bg-white flex items-center justify-center shadow-sm">
-              <Shield className="w-5 h-5 text-[#4285F4] stroke-[2.4]" />
+          <div className="flex items-center space-x-2.5 cursor-pointer select-none">
+            <div className="w-9 h-9 rounded-xl bg-[#4285F4] flex items-center justify-center shadow-elevation-1 text-white">
+              <Shield className="w-5 h-5 stroke-[2.4]" />
             </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-bold text-base sm:text-lg tracking-wide text-white">
-                  {t.appName || 'Civic Hero'}
+            <div className="hidden min-[420px]:block">
+              <div className="flex items-center space-x-1.5 leading-tight">
+                <span className="font-bold text-base sm:text-lg tracking-tight text-[#202124]">
+                  Civic<span className="text-[#4285F4]">Hero</span>
+                </span>
+                <span className="text-[10px] font-medium bg-[#E8F0FE] text-[#1A73E8] px-1.5 py-0.2 rounded border border-[#D2E3FC]">
+                  BBMP
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Center: Material Tabs for Portals */}
-        <nav className="flex items-center space-x-1 h-full overflow-x-auto" aria-label="Portals">
-          {roles.map((r) => {
-            const isActive = role === r.key;
-            return (
+        {/* Center: Google-Style Pill Search Bar */}
+        <div className="flex-1 max-w-2xl mx-2 sm:mx-4">
+          <div className="relative flex items-center bg-[#F1F3F4] hover:bg-[#E8EAED] focus-within:bg-white rounded-full border border-transparent focus-within:border-[#DADCE0] focus-within:shadow-elevation-2 transition-all duration-200">
+            <div className="pl-3.5 sm:pl-4 pr-2 text-[#5F6368] focus-within:text-[#4285F4]">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Search issues, ward, ticket #, pothole, street light..."
+              className="w-full py-2 sm:py-2.5 text-xs sm:text-sm text-[#202124] placeholder:text-[#5F6368] bg-transparent focus:outline-none"
+              aria-label="Search issues across wards"
+            />
+            {searchQuery && (
               <button
-                key={r.key}
-                onClick={(e) => {
-                  createRipple(e, 'rgba(255, 255, 255, 0.3)');
-                  setRole(r.key);
-                }}
-                className={`relative h-full px-3 sm:px-4 flex items-center space-x-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ripple-surface ${
-                  isActive
-                    ? 'text-white font-bold bg-white/10'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`}
-                aria-label={`Switch to ${r.label}`}
+                onClick={() => onSearchChange('')}
+                className="p-1 mr-2 text-[#5F6368] hover:text-[#202124] rounded-full hover:bg-gray-200 transition-colors"
+                aria-label="Clear search"
               >
-                <span>{r.icon}</span>
-                <span className="hidden sm:inline">{r.label}</span>
-                {/* Active Underline Indicator */}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-white rounded-t" />
-                )}
+                <X className="w-4 h-4" />
               </button>
-            );
-          })}
-        </nav>
+            )}
+          </div>
+        </div>
 
-        {/* Right: Gamification + Notification + Language + User Menu */}
-        <div className="flex items-center space-x-1 sm:space-x-2">
-          {/* Gamification XP Chip */}
+        {/* Right: Role Switcher Dropdown, XP Chip, Notifications, Profile */}
+        <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
+          {/* Role Switcher Dropdown Pill */}
+          <div className="relative">
+            <button
+              onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
+              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-full border border-[#DADCE0] hover:bg-[#F1F3F4] text-xs font-medium text-[#202124] transition-colors"
+              title="Switch portal view"
+              aria-label="Switch portal view"
+            >
+              <span className="text-[#4285F4]">{activeRoleObj.icon}</span>
+              <span className="hidden md:inline font-semibold">{activeRoleObj.label}</span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#5F6368]" />
+            </button>
+
+            {isRoleDropdownOpen && (
+              <div className="absolute right-0 mt-1.5 w-52 bg-white rounded-xl shadow-elevation-4 border border-[#DADCE0] p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <span className="px-3 py-1 text-[10px] font-semibold text-[#5F6368] uppercase tracking-wider block">
+                  Switch Active Portal
+                </span>
+                {roles.map((r) => (
+                  <button
+                    key={r.key}
+                    onClick={(e) => {
+                      createRipple(e);
+                      setRole(r.key);
+                      setIsRoleDropdownOpen(false);
+                    }}
+                    className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors text-left ${
+                      role === r.key
+                        ? 'bg-[#E8F0FE] text-[#1A73E8] font-bold'
+                        : 'text-[#202124] hover:bg-[#F1F3F4]'
+                    }`}
+                  >
+                    <span>{r.icon}</span>
+                    <span>{r.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Gamification XP Pill */}
           {role === 'citizen' && onOpenGamification && (
             <button
               onClick={(e) => {
                 createRipple(e, 'rgba(251, 188, 5, 0.3)');
                 onOpenGamification();
               }}
-              className="hidden md:flex items-center space-x-1.5 bg-[#FBBC05] text-[#202124] px-2.5 py-1.5 rounded text-xs font-bold transition-colors ripple-surface shadow-xs hover:bg-[#F29900]"
-              title="View your XP points & badges"
+              className="hidden lg:flex items-center space-x-1.5 bg-[#FEF7E0] hover:bg-[#FEEFC3] text-[#78350F] border border-[#FBBC05]/40 px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors ripple-surface"
+              title="Your Citizen XP points"
             >
-              <Trophy className="w-3.5 h-3.5 fill-[#202124]" />
+              <Trophy className="w-3.5 h-3.5 fill-[#FBBC05] text-[#B06000]" />
               <span>{currentUser.points} XP</span>
             </button>
           )}
@@ -145,16 +196,16 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
           {onOpenNotifications && (
             <button
               onClick={(e) => {
-                createRipple(e, 'rgba(255, 255, 255, 0.3)');
+                createRipple(e);
                 onOpenNotifications();
               }}
-              className="relative w-9 h-9 rounded flex items-center justify-center text-white/90 hover:text-white hover:bg-white/10 transition-colors ripple-surface"
+              className="relative w-9 h-9 rounded-full flex items-center justify-center text-[#5F6368] hover:text-[#202124] hover:bg-[#F1F3F4] transition-colors ripple-surface"
               aria-label={`Notifications (${unreadNotificationCount} unread)`}
               title="Notifications"
             >
-              <Bell className="w-5 h-5" />
+              <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
               {unreadNotificationCount > 0 && (
-                <span className="absolute top-1 right-1 bg-[#EA4335] text-white font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow">
+                <span className="absolute top-1.5 right-1.5 bg-[#EA4335] text-white font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                   {unreadNotificationCount}
                 </span>
               )}
@@ -164,36 +215,65 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
           {/* Language Selector */}
           <button
             onClick={(e) => {
-              createRipple(e, 'rgba(255, 255, 255, 0.3)');
+              createRipple(e);
               onOpenLanguage();
             }}
-            className="flex items-center space-x-1 text-white/90 hover:text-white hover:bg-white/10 px-2 py-1.5 rounded text-xs font-medium transition-colors ripple-surface"
-            title="Switch Language"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-[#5F6368] hover:text-[#202124] hover:bg-[#F1F3F4] transition-colors ripple-surface"
+            title={`Language: ${currentLangObj?.nativeName || 'English'}`}
+            aria-label={`Language: ${currentLangObj?.nativeName || 'English'}`}
           >
-            <Globe className="w-4 h-4 text-white" />
-            <span className="hidden xl:inline">{currentLangObj?.nativeName || 'Language'}</span>
+            <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
-          {/* User Session Chip */}
-          {session && (
-            <div className="hidden lg:flex items-center space-x-2 bg-white/15 px-2.5 py-1 rounded text-xs">
-              <span className="w-2 h-2 rounded-full bg-[#34A853]" />
-              <span className="text-white font-medium truncate max-w-[100px]">{session.name}</span>
-            </div>
-          )}
+          {/* User Profile Avatar with Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+              className="flex items-center space-x-1 p-1 rounded-full hover:ring-2 hover:ring-[#4285F4]/30 transition-all"
+              aria-label="User profile menu"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#4285F4] text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                {currentUser.name.charAt(0)}
+              </div>
+            </button>
 
-          {/* Logout Button */}
-          <button
-            onClick={(e) => {
-              createRipple(e, 'rgba(234, 67, 53, 0.3)');
-              logout();
-            }}
-            className="w-9 h-9 rounded flex items-center justify-center text-white/80 hover:text-white hover:bg-[#EA4335]/30 transition-colors ripple-surface"
-            title="Log out"
-            aria-label="Log out"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
+            {isProfileMenuOpen && (
+              <div className="absolute right-0 mt-1.5 w-64 bg-white rounded-xl shadow-elevation-4 border border-[#DADCE0] p-3 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="flex items-center space-x-3 pb-3 border-b border-[#DADCE0]">
+                  <div className="w-10 h-10 rounded-full bg-[#4285F4] text-white font-bold text-sm flex items-center justify-center shadow-xs">
+                    {currentUser.name.charAt(0)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-[#202124] truncate">{currentUser.name}</p>
+                    <p className="text-[11px] text-[#5F6368] truncate">{session?.phone || currentUser.phone}</p>
+                    <span className="inline-block mt-0.5 text-[9px] font-semibold bg-[#E8F0FE] text-[#1A73E8] px-1.5 py-0.2 rounded">
+                      {role.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="py-2 space-y-1">
+                  <div className="px-2 py-1.5 text-xs text-[#5F6368]">
+                    <span className="block font-medium text-[#202124]">{currentUser.levelName}</span>
+                    <span className="text-[11px]">{currentUser.points} XP • Ward: {currentUser.ward}</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-[#DADCE0]">
+                  <button
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      logout();
+                    }}
+                    className="w-full flex items-center space-x-2 px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#EA4335] hover:bg-red-50 transition-colors"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>{t.logout || 'Log Out'}</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>
