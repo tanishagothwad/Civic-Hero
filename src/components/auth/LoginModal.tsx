@@ -3,7 +3,6 @@ import { useApp } from '../../context/AppContext';
 import { UserRole } from '../../types';
 import { createRipple } from '../common/MaterialRipple';
 import {
-  Shield,
   Smartphone,
   KeyRound,
   CheckCircle2,
@@ -16,6 +15,7 @@ import {
   Building2,
 } from 'lucide-react';
 import { VoiceInputButton } from '../common/VoiceInputButton';
+import { CivicHeroLogo } from '../common/CivicHeroLogo';
 
 interface LoginModalProps {
   onOpenLanguage: () => void;
@@ -108,17 +108,12 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
     <div className="flex-1 w-full bg-[#F8F9FA] flex flex-col items-center justify-center p-4 relative">
       {/* Top bar with Branding & Language Switcher */}
       <div className="w-full max-w-md flex justify-between items-center mb-5 px-1">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-9 h-9 rounded bg-[#4285F4] flex items-center justify-center shadow-elevation-1">
-            <Shield className="w-5 h-5 text-white stroke-[2.2]" />
-          </div>
-          <div>
-            <span className="font-bold text-lg text-[#202124] tracking-tight">Civic Hero</span>
-            <span className="block text-[10px] text-[#5F6368] uppercase tracking-wider font-medium">
-              Citizen Portal
-            </span>
-          </div>
-        </div>
+        <CivicHeroLogo
+          variant="horizontal"
+          size="sm"
+          showTagline={true}
+          taglineText="CHANGE YOUR CITY."
+        />
 
         <button
           onClick={(e) => {

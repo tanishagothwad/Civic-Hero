@@ -3,7 +3,6 @@ import { useApp } from '../../context/AppContext';
 import { UserRole } from '../../types';
 import { createRipple } from './MaterialRipple';
 import {
-  Shield,
   LayoutDashboard,
   HardHat,
   Users,
@@ -14,6 +13,7 @@ import {
   X,
   MapPin,
 } from 'lucide-react';
+import { CivicHeroLogo } from './CivicHeroLogo';
 
 interface NavigationDrawerProps {
   isOpen: boolean;
@@ -90,18 +90,14 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 rounded bg-white/20 border border-white/30 flex items-center justify-center shadow">
-                  <Shield className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="font-bold text-base tracking-wide text-white leading-tight">
-                    {t.appName || 'Civic Hero'}
-                  </h2>
-                  <span className="text-[11px] text-white/80 uppercase tracking-wider font-medium">
-                    City Governance Portal
-                  </span>
-                </div>
+              <div className="mb-4">
+                <CivicHeroLogo
+                  variant="horizontal"
+                  size="sm"
+                  inverted={true}
+                  showTagline={true}
+                  taglineText="CHANGE YOUR CITY."
+                />
               </div>
 
               {/* Active User Card in Header */}

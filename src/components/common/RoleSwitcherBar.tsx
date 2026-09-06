@@ -4,7 +4,6 @@ import { UserRole } from '../../types';
 import { createRipple } from './MaterialRipple';
 import {
   Menu,
-  Shield,
   LayoutDashboard,
   HardHat,
   Users,
@@ -17,6 +16,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { languageList } from '../../i18n/translations';
+import { CivicHeroLogo } from './CivicHeroLogo';
 
 interface RoleSwitcherBarProps {
   onToggleRail?: () => void;
@@ -92,20 +92,15 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
             </button>
           )}
 
-          <div className="flex items-center space-x-2.5 cursor-pointer select-none">
-            <div className="w-9 h-9 rounded-xl bg-[#4285F4] flex items-center justify-center shadow-elevation-1 text-white">
-              <Shield className="w-5 h-5 stroke-[2.4]" />
-            </div>
-            <div className="hidden min-[420px]:block">
-              <div className="flex items-center space-x-1.5 leading-tight">
-                <span className="font-bold text-base sm:text-lg tracking-tight text-[#202124]">
-                  Civic<span className="text-[#4285F4]">Hero</span>
-                </span>
-                <span className="text-[10px] font-medium bg-[#E8F0FE] text-[#1A73E8] px-1.5 py-0.2 rounded border border-[#D2E3FC]">
-                  BBMP
-                </span>
-              </div>
-            </div>
+          <div className="flex items-center space-x-2 cursor-pointer select-none">
+            <CivicHeroLogo
+              variant="horizontal"
+              size="sm"
+              showTagline={false}
+            />
+            <span className="hidden sm:inline-block text-[10px] font-medium bg-[#E8F0FE] text-[#1A73E8] px-1.5 py-0.5 rounded border border-[#D2E3FC]">
+              BBMP
+            </span>
           </div>
         </div>
 

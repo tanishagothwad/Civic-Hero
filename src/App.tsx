@@ -14,6 +14,7 @@ import { GamificationHub } from './components/citizen/GamificationHub';
 import { NotificationDrawer } from './components/citizen/NotificationDrawer';
 import { MunicipalDashboard } from './components/municipal/MunicipalDashboard';
 import { FieldWorkerApp } from './components/worker/FieldWorkerApp';
+import { CivicHeroLogo } from './components/common/CivicHeroLogo';
 import { CivicIssue } from './types';
 
 const MainApp: React.FC = () => {
@@ -44,8 +45,11 @@ const MainApp: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#F8F9FA] flex flex-col justify-between">
         <LoginModal onOpenLanguage={() => setIsLanguageModalOpen(true)} />
-        <footer className="py-4 text-center text-xs text-[#5F6368] bg-white border-t border-[#DADCE0]">
-          Designed by Tanisha Gothwad
+        <footer className="py-4 px-4 sm:px-8 bg-white border-t border-[#DADCE0]">
+          <div className="max-w-md mx-auto flex items-center justify-between text-xs text-[#5F6368]">
+            <CivicHeroLogo variant="horizontal" size="sm" showTagline={false} />
+            <span>Designed by <strong className="text-[#202124] font-medium">Tanisha Gothwad</strong></span>
+          </div>
         </footer>
         <LanguagePicker
           isOpen={isLanguageModalOpen}
@@ -131,9 +135,15 @@ const MainApp: React.FC = () => {
           {role === 'worker' && <FieldWorkerApp />}
         </main>
 
-        {/* Footer Credit (Preserved) */}
-        <footer className="py-4 text-center text-xs text-[#5F6368] bg-white border-t border-[#DADCE0] shrink-0">
-          Designed by Tanisha Gothwad
+        {/* Footer with Civic Hero Logo & Creator Credit */}
+        <footer className="py-5 px-4 sm:px-8 bg-white border-t border-[#DADCE0] shrink-0">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#5F6368]">
+            <CivicHeroLogo variant="horizontal" size="sm" showTagline={true} taglineText="CHANGE YOUR CITY." />
+            <div className="text-center sm:text-right">
+              <span>Designed by </span>
+              <strong className="text-[#202124] font-medium">Tanisha Gothwad</strong>
+            </div>
+          </div>
         </footer>
       </div>
 

@@ -4,14 +4,13 @@ import { createRipple } from '../common/MaterialRipple';
 import {
   Search,
   Camera,
-  Shield,
   Sparkles,
   ArrowRight,
-  CheckCircle2,
   Trophy,
   Activity,
   X,
 } from 'lucide-react';
+import { CivicHeroLogo } from '../common/CivicHeroLogo';
 
 interface GoogleSearchHeroProps {
   searchQuery: string;
@@ -31,32 +30,15 @@ export const GoogleSearchHero: React.FC<GoogleSearchHeroProps> = ({
   return (
     <section className="w-full py-8 sm:py-12 flex flex-col items-center justify-center">
       {/* 1. Centered Minimal Hero: Logo + Tagline with Generous Whitespace */}
-      <div className="text-center max-w-2xl mx-auto px-4 mb-6 sm:mb-8 space-y-3">
-        {/* Google-Style Shield Brand Logo */}
-        <div className="inline-flex items-center justify-center mb-1">
-          <div className="relative">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border border-[#DADCE0] shadow-elevation-2 flex items-center justify-center">
-              <Shield className="w-9 h-9 sm:w-11 sm:h-11 text-[#4285F4] stroke-[2.2]" />
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#34A853] text-white flex items-center justify-center border-2 border-white shadow-xs">
-              <CheckCircle2 className="w-3.5 h-3.5 stroke-[3]" />
-            </div>
-          </div>
-        </div>
-
-        {/* Brand Name with Multi-Color Google Aesthetic */}
-        <div className="flex items-center justify-center space-x-1">
-          <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#4285F4]">C</span>
-          <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#EA4335]">i</span>
-          <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#FBBC05]">v</span>
-          <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#4285F4]">i</span>
-          <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#34A853]">c</span>
-          <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#202124] ml-2">Hero</span>
-        </div>
-
-        <p className="text-base sm:text-lg text-[#5F6368] font-normal max-w-lg mx-auto leading-relaxed">
-          {t.tagline || 'Fix your city, earn rewards, empower your community.'}
-        </p>
+      <div className="text-center max-w-2xl mx-auto px-4 mb-6 sm:mb-8 space-y-4">
+        {/* Official Google-Themed Civic Hero Logo (Icon + Wordmark + Tagline) */}
+        <CivicHeroLogo
+          variant="full"
+          size="xl"
+          showTagline={true}
+          taglineText={t.tagline || 'CHANGE YOUR CITY.'}
+          className="mx-auto"
+        />
 
         <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#E8F0FE] text-[#1A73E8] text-xs font-medium border border-[#D2E3FC]">
           <Sparkles className="w-3.5 h-3.5 text-[#4285F4]" />

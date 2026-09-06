@@ -125,7 +125,7 @@ export interface TranslationStrings {
 export const translations: Record<SupportedLanguage, TranslationStrings> = {
   en: {
     appName: 'Civic Hero',
-    tagline: 'Report. Track. Earn. Change Your City.',
+    tagline: 'Change Your City.',
     taglineSub: 'Empowering citizens with AI to fix public issues faster.',
     loginTitle: 'Sign In to Civic Hero',
     loginSubtitle: 'Enter your mobile number to get started or manage civic issues.',
@@ -246,7 +246,7 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
   },
   hi: {
     appName: 'सिविक हीरो',
-    tagline: 'रिपोर्ट करें। ट्रैक करें। पॉइंट्स पाएं। शहर बदलें।',
+    tagline: 'शहर बदलें।',
     taglineSub: 'नागरिकों को समस्याओं को तुरंत हल करने की शक्ति।',
     reportIssue: 'समस्या की रिपोर्ट करें',
     reportProblem: 'समस्या बताएं',
@@ -347,7 +347,7 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
   },
   mr: {
     appName: 'नागरीक हिरो',
-    tagline: 'नोंदवा. ट्रॅक करा. कमवा. शहर बदला.',
+    tagline: 'शहर बदला.',
     taglineSub: 'समस्या त्वरित सोडवण्यासाठी नागरिकांचे हक्काचे ॲप.',
     reportIssue: 'समस्या नोंदवा',
     reportProblem: 'तक्रार नोंदवा',
@@ -448,7 +448,7 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
   },
   ta: {
     appName: 'சிவிக் ஹீரோ',
-    tagline: 'புகார் செய். கண்காணி. புள்ளிகள் பெறு. நகரத்தை மாற்று.',
+    tagline: 'நகரத்தை மாற்று.',
     taglineSub: 'நகர பிரச்சனைகளை விரைவாக தீர்க்க பொதுமக்களுக்கான செயலி.',
     reportIssue: 'புகார் பதிவு செய்க',
     reportProblem: 'பிரச்சினையை தெரிவிக்க',
@@ -549,7 +549,7 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
   },
   te: {
     appName: 'సివిక్ హీరో',
-    tagline: 'రిపోర్ట్ చేయండి. ట్రాక్ చేయండి. పాయింట్లు పొందండి. నగరాన్ని మార్చండి.',
+    tagline: 'నగరాన్ని మార్చండి.',
     taglineSub: 'సమస్యలను త్వరగా పరిష్కరించడానికి పౌర వేదిక.',
     reportIssue: 'సమస్యను నివేదించండి',
     reportProblem: 'ఫిర్యాదు చేయండి',
@@ -650,7 +650,7 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
   },
   bn: {
     appName: 'সিভিক হিরো',
-    tagline: 'রিপোর্ট করুন। ট্র্যাক করুন। পয়েন্ট জিতুন। শহর বদলান।',
+    tagline: 'শহর বদলান।',
     taglineSub: 'নাগরিকদের সমস্যার দ্রুত সমাধানের স্মার্ট প্ল্যাটফর্ম।',
     reportIssue: 'সমস্যার রিপোর্ট করুন',
     reportProblem: 'অভিযোগ জানান',
@@ -751,7 +751,7 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
   },
   kn: {
     appName: 'ಸಿವಿಕ್ ಹೀರೋ',
-    tagline: 'ವರದಿ ಮಾಡಿ. ಟ್ರ್ಯಾಕ್ ಮಾಡಿ. ಪಾಯಿಂಟ್ಸ್ ಗಳಿಸಿ. ನಗರ ಬದಲಾಯಿಸಿ.',
+    tagline: 'ನಗರ ಬದಲಾಯಿಸಿ.',
     taglineSub: 'ಸಾರ್ವಜನಿಕ ಸಮಸ್ಯೆಗಳನ್ನು ವೇಗವಾಗಿ ಪರಿಹರಿಸುವ ನಾಗರಿಕ ವೇದಿಕೆ.',
     reportIssue: 'ಸಮಸ್ಯೆ ವರದಿ ಮಾಡಿ',
     reportProblem: 'ದೂರು ದಾಖಲಿಸಿ',

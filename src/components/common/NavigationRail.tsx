@@ -16,6 +16,7 @@ import {
   LogOut,
   Users,
 } from 'lucide-react';
+import { CivicHeroLogo } from './CivicHeroLogo';
 
 export type NavSection = 'home' | 'my-reports' | 'community' | 'leaderboard';
 
@@ -121,6 +122,11 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({
         aria-label="Navigation rail"
       >
       <div className="flex-1 overflow-y-auto overflow-x-hidden pt-3 px-2 sm:px-3 space-y-4">
+        {/* Mobile Header Branding */}
+        <div className="md:hidden pb-3 mb-2 border-b border-[#DADCE0] px-2">
+          <CivicHeroLogo variant="horizontal" size="sm" showTagline={true} taglineText="CHANGE YOUR CITY." />
+        </div>
+
         {/* 1. Gmail-Style "+ Compose" / Google Drive "+ New" Pill Action Button */}
         <div className="mb-2">
           {role === 'citizen' && (
