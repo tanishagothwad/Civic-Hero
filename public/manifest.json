@@ -4,39 +4,39 @@
   "description": "AI-powered gamified citizen engagement platform for reporting and tracking civic issues in Indian cities.",
   "icons": [
     {
-      "src": "./favicon-16x16.png",
+      "src": "/Civic-Hero/favicon-16x16.png",
       "sizes": "16x16",
       "type": "image/png"
     },
     {
-      "src": "./favicon-32x32.png",
+      "src": "/Civic-Hero/favicon-32x32.png",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "./favicon-48x48.png",
+      "src": "/Civic-Hero/favicon-48x48.png",
       "sizes": "48x48",
       "type": "image/png"
     },
     {
-      "src": "./favicon-96x96.png",
+      "src": "/Civic-Hero/favicon-96x96.png",
       "sizes": "96x96",
       "type": "image/png"
     },
     {
-      "src": "./favicon-192x192.png",
+      "src": "/Civic-Hero/favicon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./favicon-512x512.png",
+      "src": "/Civic-Hero/favicon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./logo-1024x1024.png",
+      "src": "/Civic-Hero/logo-1024x1024.png",
       "sizes": "1024x1024",
       "type": "image/png"
     }
@@ -45,5 +45,5 @@
   "background_color": "#FFFFFF",
   "display": "standalone",
   "orientation": "portrait",
-  "start_url": "./index.html"
+  "start_url": "/Civic-Hero/"
 }
