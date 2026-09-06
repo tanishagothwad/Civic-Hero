@@ -3,7 +3,6 @@ import { AppProvider, useApp } from './context/AppContext';
 import { RoleSwitcherBar } from './components/common/RoleSwitcherBar';
 import { NavigationRail, NavSection } from './components/common/NavigationRail';
 import { IssueDetailPanel } from './components/citizen/IssueDetailPanel';
-import { FloatingActionButton } from './components/common/FloatingActionButton';
 import { LanguagePicker } from './components/common/LanguagePicker';
 import { ToastNotification } from './components/common/ToastNotification';
 import { LoginModal } from './components/auth/LoginModal';
@@ -136,8 +135,8 @@ const MainApp: React.FC = () => {
         </main>
 
         {/* Footer with Civic Hero Logo & Creator Credit */}
-        <footer className="py-5 px-4 sm:px-8 bg-white border-t border-[#DADCE0] shrink-0">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#5F6368]">
+        <footer className="relative z-10 py-6 px-4 sm:px-8 bg-white border-t border-[#DADCE0] shrink-0">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#5F6368]">
             <CivicHeroLogo variant="horizontal" size="sm" showTagline={true} taglineText="CHANGE YOUR CITY." />
             <div className="text-center sm:text-right">
               <span>Designed by </span>
@@ -159,16 +158,7 @@ const MainApp: React.FC = () => {
         />
       )}
 
-      {/* 5. Floating Action Button (FAB) for mobile/convenience */}
-      {role === 'citizen' && (
-        <FloatingActionButton
-          onClick={() => setIsReportModalOpen(true)}
-          label="Report Issue"
-          hasRightPanel={!!selectedIssueForPane}
-        />
-      )}
-
-      {/* 6. Modals & Dialogs */}
+      {/* 5. Modals & Dialogs */}
       {/* 3-Step Report Wizard */}
       <ReportWizard
         isOpen={isReportModalOpen}

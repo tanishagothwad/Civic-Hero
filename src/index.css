@@ -34,6 +34,10 @@
 /* Signature Google 4-Color Strip */
 .google-accent-bar {
   background: linear-gradient(to right, #4285F4 25%, #EA4335 25% 50%, #FBBC05 50% 75%, #34A853 75% 100%);
+  height: 3.5px;
+  width: 100%;
+  display: block;
+  flex-shrink: 0;
 }
 
 .google-accent-ring {
