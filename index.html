@@ -2,14 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="icon" type="image/png" sizes="96x96" href="./favicon-96x96.png" />
-    <link rel="icon" type="image/png" sizes="48x48" href="./favicon-48x48.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
-    <link rel="shortcut icon" href="./favicon.ico" />
-    <link rel="manifest" href="./site.webmanifest" />
+    <link rel="icon" href="/Civic-Hero/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/Civic-Hero/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/Civic-Hero/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/Civic-Hero/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/Civic-Hero/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/Civic-Hero/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/Civic-Hero/favicon-180x180.png" />
+    <link rel="apple-touch-icon" href="/Civic-Hero/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/Civic-Hero/favicon.ico" />
+    <link rel="manifest" href="/Civic-Hero/site.webmanifest" />
+    <link rel="canonical" href="https://tanishagothwad.github.io/Civic-Hero/" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#4285F4" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -54,6 +57,10 @@
   <body class="bg-[#F8F9FA] text-[#202124] antialiased selection:bg-[#4285F4] selection:text-white font-sans">
     <div id="root"></div>
     <script>
+      // Ensure canonical trailing slash on /Civic-Hero
+      if (window.location.pathname === '/Civic-Hero') {
+        window.history.replaceState(null, '', '/Civic-Hero/' + window.location.search + window.location.hash);
+      }
       // Cleanly unregister any legacy service workers and clear caches
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function(registrations) {
