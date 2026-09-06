@@ -188,13 +188,13 @@ export const CivicHeroLogo: React.FC<CivicHeroLogoProps> = ({
       className={`inline-flex items-center ${currentSize.gap} select-none ${onClick ? 'cursor-pointer' : ''} ${className}`}
     >
       <CivicHeroIcon size={currentSize.icon} monochrome={monochrome} inverted={inverted} />
-      <div className="flex flex-col justify-center leading-none">
+      <div className="flex flex-col justify-center">
         <div className={`font-bold tracking-tight ${currentSize.text} leading-tight flex items-center space-x-1`}>
           <span className={civicColor}>CIVIC</span>
           <span className={heroColor}>HERO</span>
         </div>
         {showTagline && (
-          <span className={`font-medium tracking-[0.14em] uppercase ${currentSize.tagline} ${taglineColor} mt-0.5`}>
+          <span className={`font-medium tracking-[0.14em] uppercase ${currentSize.tagline} ${taglineColor} mt-0.5 whitespace-nowrap block`}>
             {taglineText}
           </span>
         )}

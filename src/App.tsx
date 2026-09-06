@@ -45,10 +45,13 @@ const MainApp: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#F8F9FA] flex flex-col justify-between">
         <LoginModal onOpenLanguage={() => setIsLanguageModalOpen(true)} />
-        <footer className="py-4 px-4 sm:px-8 bg-white border-t border-[#DADCE0]">
-          <div className="max-w-md mx-auto flex items-center justify-between text-xs text-[#5F6368]">
-            <CivicHeroLogo variant="horizontal" size="sm" showTagline={false} />
-            <span>Designed by <strong className="text-[#202124] font-medium">Tanisha Gothwad</strong></span>
+        <footer className="relative z-20 py-5 px-4 sm:px-8 bg-white border-t border-[#DADCE0] shrink-0">
+          <div className="max-w-md mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#5F6368]">
+            <CivicHeroLogo variant="horizontal" size="sm" showTagline={true} taglineText="CHANGE YOUR CITY." />
+            <div className="text-center sm:text-right">
+              <span>Designed by </span>
+              <strong className="text-[#202124] font-medium">Tanisha Gothwad</strong>
+            </div>
           </div>
         </footer>
         <LanguagePicker
@@ -116,7 +119,7 @@ const MainApp: React.FC = () => {
           selectedIssueForPane ? 'lg:pr-[420px] xl:pr-[460px]' : 'pr-0'
         }`}
       >
-        <main className="flex-1 pb-16">
+        <main className="flex-1 pb-20 sm:pb-16">
           {role === 'citizen' && (
             <CitizenHome
               activeSection={activeSection}
@@ -136,7 +139,7 @@ const MainApp: React.FC = () => {
         </main>
 
         {/* Footer with Civic Hero Logo & Creator Credit */}
-        <footer className="relative z-10 py-6 px-4 sm:px-8 bg-white border-t border-[#DADCE0] shrink-0">
+        <footer className="relative z-20 py-6 px-4 sm:px-8 bg-white border-t border-[#DADCE0] shrink-0">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#5F6368]">
             <CivicHeroLogo variant="horizontal" size="sm" showTagline={true} taglineText="CHANGE YOUR CITY." />
             <div className="text-center sm:text-right">
