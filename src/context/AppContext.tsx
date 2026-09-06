@@ -11,6 +11,7 @@ import {
   IssueCategory,
   IssueSeverity,
   AuthSession,
+  Badge,
 } from '../types';
 import {
   initialIssues,
@@ -90,6 +91,9 @@ interface AppContextType {
   markNotificationsAsRead: () => void;
   dismissToast: (id: string) => void;
   triggerCelebration: () => void;
+  celebratingBadge: Badge | null;
+  setCelebratingBadge: (badge: Badge | null) => void;
+  celebrateBadge: (badge: Badge) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -177,17 +181,47 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const [celebratingBadge, setCelebratingBadge] = useState<Badge | null>(null);
+
   const triggerCelebration = () => {
     try {
+      // Primary celebratory burst using signature Google brand palette
       confetti({
-        particleCount: 80,
+        particleCount: 75,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#10B981', '#F59E0B', '#3B82F6', '#6366F1', '#EC4899'],
+        colors: ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#F59E0B'],
       });
+
+      // Secondary golden stars/shimmer cascade from sides
+      setTimeout(() => {
+        try {
+          confetti({
+            particleCount: 45,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0.15, y: 0.65 },
+            colors: ['#FBBC05', '#F59E0B', '#FFFFFF', '#4285F4'],
+          });
+          confetti({
+            particleCount: 45,
+            angle: 120,
+            spread: 55,
+            origin: { x: 0.85, y: 0.65 },
+            colors: ['#FBBC05', '#F59E0B', '#FFFFFF', '#34A853'],
+          });
+        } catch {
+          // ignore
+        }
+      }, 180);
     } catch {
       // fallback
     }
+  };
+
+  const celebrateBadge = (badge: Badge) => {
+    setCelebratingBadge(badge);
+    triggerCelebration();
   };
 
   // Helper to normalize phone numbers
@@ -723,6 +757,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         markNotificationsAsRead,
         dismissToast,
         triggerCelebration,
+        celebratingBadge,
+        setCelebratingBadge,
+        celebrateBadge,
       }}
     >
       {children}

@@ -10,6 +10,7 @@ import { CitizenHome } from './components/citizen/CitizenHome';
 import { ReportWizard } from './components/citizen/ReportWizard';
 import { IssueTrackerModal } from './components/citizen/IssueTrackerModal';
 import { GamificationHub } from './components/citizen/GamificationHub';
+import { BadgeUnlockCelebration } from './components/citizen/BadgeUnlockCelebration';
 import { NotificationDrawer } from './components/citizen/NotificationDrawer';
 import { MunicipalDashboard } from './components/municipal/MunicipalDashboard';
 import { FieldWorkerApp } from './components/worker/FieldWorkerApp';
@@ -182,6 +183,9 @@ const MainApp: React.FC = () => {
         isOpen={isGamificationModalOpen}
         onClose={() => setIsGamificationModalOpen(false)}
       />
+
+      {/* Celebratory Badge Unlock & Trophy Inspection Modal */}
+      <BadgeUnlockCelebration />
 
       {/* Notifications Drawer */}
       <NotificationDrawer

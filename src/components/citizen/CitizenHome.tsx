@@ -13,6 +13,9 @@ import {
   ChevronRight,
   Search,
   CheckCircle2,
+  Sparkles,
+  Lock,
+  Award,
 } from 'lucide-react';
 import { NavSection } from '../common/NavigationRail';
 
@@ -37,8 +40,15 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
   onOpenGamification,
   selectedIssueId,
 }) => {
-  const { currentUser, issues, upvoteReport, t } = useApp();
+  const { currentUser, issues, upvoteReport, t, celebrateBadge } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  // Gamification level progress calculation
+  const currentLevelProgress = Math.min(
+    100,
+    Math.round(((currentUser.points % 200) / 200) * 100)
+  );
+  const unlockedBadgesCount = currentUser.badges.filter((b) => b.unlocked).length;
 
   // Filter issues based on activeSection, search query, and category filters
   const filteredIssues = useMemo(() => {
@@ -118,45 +128,178 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
             onBrowseCommunity={() => onSelectSection('community')}
           />
 
-          {/* Gamification & Neighborhood Rewards Summary Card */}
-          <div className="bg-white rounded-xl border border-[#DADCE0] shadow-elevation-1 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-14 h-14 rounded-2xl bg-[#FEF7E0] border border-[#FEEFC3] text-[#B06000] flex items-center justify-center shadow-xs shrink-0">
-                <Trophy className="w-7 h-7 fill-[#FBBC05] text-[#B06000]" />
+          {/* CIVIC TROPHY SHELF & NEIGHBORHOOD REWARDS */}
+          <div className="bg-gradient-to-b from-[#FFFDF7] to-white rounded-2xl border border-[#FEEFC3] shadow-elevation-2 p-5 sm:p-6 space-y-5 relative overflow-hidden">
+            {/* Top Shelf Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#FEEFC3]">
+              <div className="flex items-center space-x-4">
+                <div className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-[#FEF7E0] to-[#FFF0B3] border border-[#FBBC05]/40 text-[#B06000] flex items-center justify-center shadow-xs shrink-0 animate-trophy-glow">
+                  <Trophy className="w-7 h-7 fill-[#FBBC05] text-[#B06000]" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs uppercase font-bold tracking-wider text-[#B06000]">
+                      {currentUser.ward.split('-')[0].trim()} • LEVEL {currentUser.level}
+                    </span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#FEF7E0] text-[#B06000] border border-[#FBBC05]/40">
+                      <Sparkles className="w-2.5 h-2.5 mr-1 fill-[#FBBC05]" /> {currentUser.levelName}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-[#202124] mt-0.5">
+                    Civic Trophy Shelf & Rewards
+                  </h3>
+                  <p className="text-xs text-[#5F6368] mt-0.5">
+                    {unlockedBadgesCount} of {currentUser.badges.length} badges unlocked • Click any unlocked badge to celebrate!
+                  </p>
+                </div>
               </div>
-              <div>
-                <span className="text-xs uppercase font-medium tracking-wider text-[#5F6368]">
-                  {currentUser.ward} • {currentUser.levelName}
-                </span>
-                <h3 className="text-xl font-bold text-[#202124] mt-0.5">
-                  {currentUser.points} <span className="text-sm font-normal text-[#5F6368]">Citizen XP Points</span>
-                </h3>
-                <p className="text-xs text-[#5F6368] mt-0.5">
-                  Level {currentUser.level} Citizen • {currentUser.badges.filter((b) => b.unlocked).length} of {currentUser.badges.length} badges unlocked
-                </p>
+
+              {/* Action Buttons: Golden Claim CTA + Report Button */}
+              <div className="flex items-center space-x-3 w-full md:w-auto">
+                <button
+                  onClick={(e) => {
+                    createRipple(e, 'rgba(255, 255, 255, 0.4)');
+                    onOpenGamification();
+                  }}
+                  className="flex-1 md:flex-none px-5 py-2.5 rounded-lg btn-golden-claim text-xs font-semibold uppercase tracking-wider flex items-center justify-center space-x-1.5 shadow-elevation-1 cursor-pointer ripple-surface"
+                >
+                  <Sparkles className="w-3.5 h-3.5 fill-[#202124]/20 text-[#202124]" />
+                  <span>Claim Rewards & Perks</span>
+                  <ChevronRight className="w-4 h-4 ml-0.5" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    createRipple(e, 'rgba(255, 255, 255, 0.3)');
+                    onOpenReport();
+                  }}
+                  className="flex-1 md:flex-none px-4 py-2.5 rounded-lg bg-[#4285F4] hover:bg-[#1A73E8] text-white text-xs font-medium transition-colors shadow-elevation-1 ripple-surface flex items-center justify-center space-x-1.5 cursor-pointer"
+                >
+                  <Camera className="w-4 h-4" />
+                  <span>Report Issue</span>
+                </button>
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 w-full md:w-auto">
-              <button
-                onClick={(e) => {
-                  createRipple(e, 'rgba(66, 133, 244, 0.15)');
-                  onOpenGamification();
-                }}
-                className="flex-1 md:flex-none px-4 py-2 rounded-lg border border-[#DADCE0] hover:bg-[#F8F9FA] text-xs font-medium text-[#202124] transition-colors ripple-surface"
-              >
-                View Badges & Perks
-              </button>
-              <button
-                onClick={(e) => {
-                  createRipple(e, 'rgba(255, 255, 255, 0.3)');
-                  onOpenReport();
-                }}
-                className="flex-1 md:flex-none px-5 py-2 rounded-lg bg-[#4285F4] hover:bg-[#1A73E8] text-white text-xs font-medium transition-colors shadow-elevation-1 ripple-surface flex items-center justify-center space-x-1.5"
-              >
-                <Camera className="w-4 h-4" />
-                <span>Report an Issue</span>
-              </button>
+            {/* Level & Points Progress Bar */}
+            <div className="bg-[#FEF7E0]/50 rounded-xl p-3.5 border border-[#FEEFC3]">
+              <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
+                <span className="text-[#202124] flex items-center gap-1.5 font-bold">
+                  <Award className="w-4 h-4 text-[#FBBC05]" />
+                  Level {currentUser.level} Progress
+                </span>
+                <span className="text-[#5F6368]">
+                  <strong className="text-[#B06000]">{currentUser.points} XP</strong> / {currentUser.nextLevelPoints} XP ({currentLevelProgress}%)
+                </span>
+              </div>
+              <div className="w-full bg-black/10 rounded-full h-2.5 overflow-hidden p-0.5">
+                <div
+                  className="bg-gradient-to-r from-[#FBBC05] via-[#F5A623] to-[#E67C00] h-full rounded-full transition-all duration-700 shadow-xs"
+                  style={{ width: `${currentLevelProgress}%` }}
+                />
+              </div>
+              <div className="flex justify-between items-center text-[11px] text-[#5F6368] mt-1.5 font-medium">
+                <span>⭐ {currentUser.points} Citizen XP collected</span>
+                <span>{currentUser.nextLevelPoints - currentUser.points} XP to next citizen rank</span>
+              </div>
+            </div>
+
+            {/* Trophy Shelf Horizontal Carousel */}
+            <div>
+              <div className="flex items-center justify-between mb-2 px-0.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#5F6368] flex items-center gap-1">
+                  <Trophy className="w-3.5 h-3.5 text-[#FBBC05]" />
+                  Trophy Showcase
+                </span>
+                <span className="text-[11px] text-[#5F6368]">
+                  Scroll horizontally to view all trophies →
+                </span>
+              </div>
+
+              <div className="flex items-stretch space-x-3.5 overflow-x-auto pb-2 pt-1 -mx-1 px-1 scrollbar-thin">
+                {currentUser.badges.map((badge) => (
+                  <div
+                    key={badge.id}
+                    onClick={() => {
+                      if (badge.unlocked) {
+                        celebrateBadge(badge);
+                      }
+                    }}
+                    className={`min-w-[210px] sm:min-w-[230px] max-w-[240px] p-4 rounded-xl flex flex-col justify-between select-none ${
+                      badge.unlocked
+                        ? 'trophy-shelf-card cursor-pointer group'
+                        : 'trophy-shelf-card-locked cursor-default'
+                    }`}
+                  >
+                    {/* Top: Icon & Status */}
+                    <div className="flex items-start justify-between">
+                      <div
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-xs ${
+                          badge.unlocked
+                            ? 'bg-gradient-to-br from-[#FEF7E0] to-[#FFF3CD] border border-[#FBBC05]/50 badge-shimmer-container'
+                            : 'bg-[#E8EAED] border border-[#DADCE0] text-[#70757A]'
+                        }`}
+                      >
+                        <span>{badge.icon}</span>
+                      </div>
+
+                      {badge.unlocked ? (
+                        <span className="text-[10px] bg-[#E6F4EA] text-[#137333] border border-[#CEEAD6] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 uppercase tracking-wide shadow-xs">
+                          <CheckCircle2 className="w-3 h-3 text-[#34A853]" /> Unlocked
+                        </span>
+                      ) : (
+                        <span className="text-[10px] bg-[#F1F3F4] text-[#5F6368] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 uppercase tracking-wide border border-[#DADCE0]">
+                          <Lock className="w-3 h-3 text-[#70757A]" /> {badge.progress}/{badge.maxProgress}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="my-2.5">
+                      <h4
+                        className={`text-sm font-bold truncate ${
+                          badge.unlocked
+                            ? 'text-[#202124] group-hover:text-[#B06000] transition-colors'
+                            : 'text-[#5F6368]'
+                        }`}
+                      >
+                        {badge.name}
+                      </h4>
+                      <p className="text-[11px] text-[#5F6368] line-clamp-2 mt-1 leading-snug">
+                        {badge.description}
+                      </p>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="pt-2 border-t border-[#FEEFC3]/60 mt-auto">
+                      {badge.unlocked ? (
+                        <div className="flex items-center justify-between text-[10px] text-[#B06000] font-semibold">
+                          <span>🎉 {badge.unlockedAt || 'Earned'}</span>
+                          <span className="underline opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                            Celebrate <Sparkles className="w-3 h-3" />
+                          </span>
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="w-full bg-[#E8EAED] rounded-full h-1.5 overflow-hidden">
+                            <div
+                              className="bg-[#FBBC05] h-full rounded-full"
+                              style={{
+                                width: `${Math.min(
+                                  100,
+                                  (badge.progress / badge.maxProgress) * 100
+                                )}%`,
+                              }}
+                            />
+                          </div>
+                          <span className="text-[9px] text-[#70757A] mt-1 block font-medium">
+                            {badge.maxProgress - badge.progress} more to unlock
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </>
