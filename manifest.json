@@ -2,5 +2,12 @@
   "name": "Civic Hero",
   "short_name": "Civic Hero",
   "description": "AI-powered citizen engagement platform for reporting and tracking civic issues.",
-  "theme_color": "#0B132B"
+  "theme_color": "#4285F4",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
 }
