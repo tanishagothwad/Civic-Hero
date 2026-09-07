@@ -72,6 +72,16 @@ const formatTimestamp = (ts: any): string => {
     if (diffHours < 24) return `${diffHours} hr ago`;
     return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   }
+  if (typeof ts === 'object' && typeof ts.seconds === 'number') {
+    const date = new Date(ts.seconds * 1000);
+    const diffMs = Date.now() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours} hr ago`;
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
   if (typeof ts === 'number') {
     const diffMs = Date.now() - ts;
     const diffMins = Math.floor(diffMs / 60000);
@@ -307,6 +317,8 @@ export const subscribeToListings = (
             id: docSnap.id,
             ...(docSnap.data() as Omit<FirestoreListing, 'id'>),
           }));
+          // Keep local storage synchronized with latest Firestore community listings
+          saveLocalListings(listings);
           const filtered = listings.filter((l) => !l.flagged || l.reporterId === currentUserId);
           callback(filtered.map((l) => mapListingToCivicIssue(l, currentUserId)));
         },

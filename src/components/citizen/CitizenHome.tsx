@@ -18,6 +18,7 @@ import {
   Award,
   Flag,
   Trash2,
+  User,
 } from 'lucide-react';
 import { NavSection } from '../common/NavigationRail';
 
@@ -321,7 +322,11 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                 : 'Community Issues Feed'}
             </h2>
             <p className="text-xs text-[#5F6368] mt-0.5">
-              {filteredIssues.length} reports in {currentUser.ward.split('-')[0]}
+              {activeSection === 'my-reports'
+                ? `${filteredIssues.length} issues reported by you`
+                : activeSection === 'community'
+                ? `${filteredIssues.length} community reports across Bengaluru`
+                : `${filteredIssues.length} reports in ${currentUser.ward.split('-')[0]}`}
             </p>
           </div>
 
@@ -462,12 +467,24 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                     {/* Footer Row */}
                     <div className="space-y-2 pt-2 border-t border-[#DADCE0]/60">
                       <div className="flex items-center justify-between text-xs text-[#5F6368]">
-                        <span className="flex items-center">
-                          <Clock className="w-3.5 h-3.5 mr-1" />
-                          {issue.createdAt}
-                        </span>
+                        <div className="flex items-center space-x-1.5 min-w-0 flex-1">
+                          <span
+                            className="flex items-center text-[11px] text-[#5F6368] truncate"
+                            title={`Reported by ${issue.citizenName || 'Citizen'}`}
+                          >
+                            <User className="w-3 h-3 mr-1 shrink-0 text-[#70757A]" />
+                            <span className="truncate">
+                              {issue.citizenName ? `By ${issue.citizenName}` : 'By a citizen'}
+                            </span>
+                          </span>
+                          <span className="text-[#DADCE0]">•</span>
+                          <span className="flex items-center text-[11px] shrink-0">
+                            <Clock className="w-3 h-3 mr-1 text-[#70757A]" />
+                            {issue.createdAt}
+                          </span>
+                        </div>
                         {issue.assignedWorkerName && (
-                          <span className="text-[#1A73E8] font-medium truncate max-w-[120px]">
+                          <span className="text-[#1A73E8] text-[11px] font-medium truncate max-w-[110px] shrink-0 ml-1">
                             {issue.assignedWorkerName}
                           </span>
                         )}
@@ -487,7 +504,8 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                                 ? 'bg-[#E8F0FE] text-[#1A73E8] border border-[#4285F4]'
                                 : 'bg-white text-[#202124] border border-[#DADCE0] hover:bg-[#F8F9FA]'
                             }`}
-                            aria-label="Upvote report"
+                            title={issue.hasUpvoted ? "You confirmed facing this issue" : "I'm facing this too / Upvote (+5 XP)"}
+                            aria-label="I'm facing this too / Upvote"
                           >
                             <ThumbsUp className={`w-3.5 h-3.5 ${issue.hasUpvoted ? 'fill-[#1A73E8] text-[#1A73E8]' : ''}`} />
                             <span>{issue.upvotes}</span>

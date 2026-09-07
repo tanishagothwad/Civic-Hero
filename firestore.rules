@@ -9,14 +9,11 @@ service cloud.firestore {
     }
 
     match /listings/{listingId} {
-      // Anyone authenticated can read non-flagged listings; original poster can always read their own
-      allow read: if request.auth != null && (
-        resource.data.flagged == false || resource.data.reporterId == request.auth.uid
-      );
+      // Public community feed: readable by anyone (all citizens and community visitors)
+      allow read: if true;
 
       // Authenticated users can create listings
-      allow create: if request.auth != null
-        && request.resource.data.reporterId == request.auth.uid
+      allow create: if (request.auth != null ? request.resource.data.reporterId == request.auth.uid : true)
         && request.resource.data.title is string
         && request.resource.data.category is string
         && request.resource.data.severity in ['Low', 'Medium', 'High', 'Critical']
@@ -26,16 +23,17 @@ service cloud.firestore {
 
       // Update rules:
       // 1. Author can edit their own listing within 15 minutes of creation
-      // 2. Any authenticated user can upvote or confirm ("I'm facing this too")
-      // 3. Any authenticated user can flag listing as spam
-      // 4. Staff/worker can update status, assignedWorker, timeline, or resolvedPhotoUrl
-      allow update: if request.auth != null && (
+      // 2. Any user can upvote or confirm ("I'm facing this too")
+      // 3. Any user can flag listing as spam
+      // 4. Duplicate merge update
+      // 5. Staff/worker can update status, assignedWorker, timeline, or resolvedPhotoUrl
+      allow update: if (
         // Author edit within 15 minutes
-        (resource.data.reporterId == request.auth.uid && request.time < resource.data.createdAt + duration.value(15, 'm')) ||
-        // Upvote / confirmedBy update only
-        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes', 'confirmedBy'])) ||
+        (request.auth != null && resource.data.reporterId == request.auth.uid && request.time < resource.data.createdAt + duration.value(15, 'm')) ||
+        // Upvote / confirmedBy update only (allows any citizen to upvote or confirm)
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes', 'confirmedBy', 'updatedAt'])) ||
         // Flag as spam update only
-        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['flagged'])) ||
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['flagged', 'updatedAt'])) ||
         // Duplicate merge update
         (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes', 'mergedCount', 'timeline', 'updatedAt'])) ||
         // Staff/worker status & resolution update

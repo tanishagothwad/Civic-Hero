@@ -14,6 +14,7 @@ import {
   ExternalLink,
   Flag,
   Trash2,
+  User,
 } from 'lucide-react';
 
 interface IssueDetailPanelProps {
@@ -300,7 +301,14 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
         )}
 
         {/* Timeline Meta */}
-        <div className="p-3 rounded border border-[#DADCE0] bg-[#F8F9FA] space-y-1 text-xs text-[#5F6368]">
+        <div className="p-3 rounded border border-[#DADCE0] bg-[#F8F9FA] space-y-1.5 text-xs text-[#5F6368]">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center">
+              <User className="w-3.5 h-3.5 mr-1 text-[#4285F4]" />
+              Reported By:
+            </span>
+            <span className="font-medium text-[#202124]">{issue.citizenName || 'Citizen Hero'}</span>
+          </div>
           <div className="flex items-center justify-between">
             <span className="flex items-center">
               <Calendar className="w-3.5 h-3.5 mr-1" />

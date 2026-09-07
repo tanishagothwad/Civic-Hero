@@ -59,13 +59,13 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({
     },
     {
       id: 'my-reports',
-      label: 'My Reports',
+      label: t.myReports || 'My Reports',
       icon: FileText,
       count: myReportsCount,
     },
     {
       id: 'community',
-      label: 'Community Feed',
+      label: t.communityFeed || 'Community Feed',
       icon: Compass,
       count: communityCount,
     },
