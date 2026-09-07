@@ -22,6 +22,16 @@ import {
 } from '../data/mockData';
 import { translations, TranslationStrings } from '../i18n/translations';
 import confetti from 'canvas-confetti';
+import {
+  subscribeToListings,
+  createListingDocument,
+  toggleUpvoteListingDocument,
+  flagListingDocument,
+  mergeDuplicateListingDocument,
+  assignWorkerToListingDocument,
+  updateListingStatusDocument,
+  resolveListingDocument,
+} from '../services/listingsService';
 
 interface ToastData {
   id: string;
@@ -73,6 +83,7 @@ interface AppContextType {
     description: string;
     photoUrl: string;
     photos?: string[];
+    photoFiles?: (File | Blob | string)[];
     voiceNoteTranscription?: string;
     includeReporterContact?: boolean;
     location: {
@@ -85,6 +96,7 @@ interface AppContextType {
   }) => CivicIssue;
   mergeReport: (existingIssueId: string) => void;
   upvoteReport: (issueId: string) => void;
+  flagReport: (issueId: string) => Promise<void>;
   assignWorker: (issueId: string, workerId: string, targetHours: number, instructions?: string) => void;
   updateIssueStatus: (issueId: string, newStatus: IssueStatus, remarks?: string) => void;
   resolveIssueWithProof: (issueId: string, afterPhotoUrl: string, remarks: string) => void;
@@ -166,6 +178,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const t = translations[language];
 
   const unreadNotificationCount = notifications.filter((n) => !n.read).length;
+
+  // Real-time subscription to persistent Firestore listings
+  useEffect(() => {
+    const unsubscribe = subscribeToListings((liveIssues) => {
+      setIssues(liveIssues);
+    }, session?.userId || currentUser.id);
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [session?.userId, currentUser.id]);
 
   const addToast = (toast: Omit<ToastData, 'id'>) => {
     const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4);
@@ -415,7 +438,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
-  // Create a new civic issue report
+  // Create a new civic issue report (with Firestore / Storage persistence)
   const createReport = (data: {
     title: string;
     category: IssueCategory;
@@ -424,6 +447,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     description: string;
     photoUrl: string;
     photos?: string[];
+    photoFiles?: (File | Blob | string)[];
     voiceNoteTranscription?: string;
     includeReporterContact?: boolean;
     location: {
@@ -434,14 +458,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       lng: number;
     };
   }): CivicIssue => {
-    const newId = 'civic-' + (issues.length + 101);
-    const newTicket = `BLR-2026-0${850 + issues.length}`;
+    const tempId = 'civic-' + Date.now();
+    const newTicket = `BLR-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const effectiveCategory = data.category === 'Other' && data.customCategory ? 'Other' : data.category;
     const effectiveTitle = data.title.trim() || `${data.category === 'Other' && data.customCategory ? data.customCategory : data.category} near ${data.location.address.split(',')[0]}`;
+    const photosList = data.photos && data.photos.length > 0 ? data.photos : [data.photoUrl];
 
-    const newIssue: CivicIssue = {
-      id: newId,
+    const optimisticIssue: CivicIssue = {
+      id: tempId,
       ticketNumber: newTicket,
       title: effectiveTitle,
       category: effectiveCategory,
@@ -451,7 +476,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       description: data.description || 'Reported via Civic Hero citizen community listing.',
       location: data.location,
       photoUrl: data.photoUrl,
-      photos: data.photos && data.photos.length > 0 ? data.photos : [data.photoUrl],
+      photos: photosList,
       voiceNoteTranscription: data.voiceNoteTranscription,
       includeReporterContact: data.includeReporterContact ?? true,
       reporterPhone: session?.phone || currentUser.phone,
@@ -475,8 +500,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       citizenName: currentUser.name,
     };
 
-    setIssues((prev) => [newIssue, ...prev]);
+    // Optimistic UI state
+    setIssues((prev) => [optimisticIssue, ...prev]);
 
+    // Asynchronous backend persistence with Firebase Storage & Firestore
+    const filesToUpload = data.photoFiles && data.photoFiles.length > 0 ? data.photoFiles : photosList;
+    createListingDocument({
+      title: effectiveTitle,
+      category: effectiveCategory,
+      customCategory: data.customCategory,
+      severity: data.severity,
+      description: data.description || 'Reported via Civic Hero citizen community listing.',
+      photoFiles: filesToUpload,
+      address: data.location.address,
+      ward: data.location.ward,
+      lat: data.location.lat,
+      lng: data.location.lng,
+      reporterId: currentUser.id,
+      reporterName: currentUser.name,
+      reporterPhone: session?.phone || currentUser.phone,
+      includeReporterContact: data.includeReporterContact ?? true,
+      voiceNoteTranscription: data.voiceNoteTranscription,
+    }).catch((err) => {
+      console.error('Failed to persist listing:', err);
+      if (err.message && err.message.includes('Rate limit')) {
+        addToast({
+          title: 'Rate Limit Reached ⚠️',
+          message: 'You can submit at most 5 listings per 24 hours.',
+          type: 'info',
+        });
+      }
+    });
 
     // Update user stats
     setCurrentUser((prev) => ({
@@ -503,16 +557,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         type: 'status',
         timestamp: 'Just now',
         read: false,
-        issueId: newId,
+        issueId: tempId,
       },
       ...prev,
     ]);
 
-    return newIssue;
+    return optimisticIssue;
   };
 
   // Merge report into existing nearby complaint
   const mergeReport = (existingIssueId: string) => {
+    mergeDuplicateListingDocument(existingIssueId, currentUser.name).catch(console.error);
+
     setIssues((prev) =>
       prev.map((issue) => {
         if (issue.id === existingIssueId) {
@@ -547,8 +603,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     triggerCelebration();
   };
 
-  // Upvote an issue
+  // Upvote an issue / "I'm facing this too"
   const upvoteReport = (issueId: string) => {
+    toggleUpvoteListingDocument(issueId, session?.userId || currentUser.id).then(({ nextUpvoted }) => {
+      if (nextUpvoted) {
+        addPoints(5, 'Upvoted Community Issue');
+        addToast({
+          title: '+5 XP Earned! 👍',
+          message: 'You supported a community issue in your ward.',
+          xp: 5,
+          type: 'xp',
+        });
+      }
+    }).catch(console.error);
+
     setIssues((prev) =>
       prev.map((issue) => {
         if (issue.id === issueId) {
@@ -562,14 +630,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return issue;
       })
     );
+  };
 
-    addPoints(5, 'Upvoted Community Issue');
-    addToast({
-      title: '+5 XP Earned! 👍',
-      message: 'You supported a community issue in your ward.',
-      xp: 5,
-      type: 'xp',
-    });
+  // Flag listing as spam (excluded from public feed)
+  const flagReport = async (issueId: string): Promise<void> => {
+    try {
+      await flagListingDocument(issueId);
+      setIssues((prev) => prev.filter((i) => i.id !== issueId));
+      addToast({
+        title: 'Listing Flagged 🚩',
+        message: 'Thank you for reporting. This listing has been hidden from the public feed pending review.',
+        type: 'info',
+      });
+    } catch (e) {
+      console.error('Error flagging report:', e);
+    }
   };
 
   // Assign worker from Municipal Dashboard
@@ -581,6 +656,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   ) => {
     const worker = fieldWorkers.find((w) => w.id === workerId);
     if (!worker) return;
+
+    assignWorkerToListingDocument(issueId, worker.id, worker.name, targetHours).catch(console.error);
 
     setIssues((prev) =>
       prev.map((issue) => {
@@ -627,6 +704,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Update Status
   const updateIssueStatus = (issueId: string, newStatus: IssueStatus, remarks?: string) => {
+    updateListingStatusDocument(issueId, newStatus, remarks).catch(console.error);
+
     setIssues((prev) =>
       prev.map((issue) => {
         if (issue.id === issueId) {
@@ -657,6 +736,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     afterPhotoUrl: string,
     remarks: string
   ) => {
+    resolveListingDocument(issueId, afterPhotoUrl, remarks).catch(console.error);
+
     setIssues((prev) =>
       prev.map((issue) => {
         if (issue.id === issueId) {
@@ -751,6 +832,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         createReport,
         mergeReport,
         upvoteReport,
+        flagReport,
         assignWorker,
         updateIssueStatus,
         resolveIssueWithProof,

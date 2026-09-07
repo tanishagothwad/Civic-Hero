@@ -16,6 +16,7 @@ import {
   Sparkles,
   Lock,
   Award,
+  Flag,
 } from 'lucide-react';
 import { NavSection } from '../common/NavigationRail';
 
@@ -40,7 +41,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
   onOpenGamification,
   selectedIssueId,
 }) => {
-  const { currentUser, issues, upvoteReport, t, celebrateBadge } = useApp();
+  const { currentUser, issues, upvoteReport, flagReport, t, celebrateBadge } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   // Gamification level progress calculation
@@ -472,28 +473,45 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                       </div>
 
                       <div className="flex items-center justify-between pt-1">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            createRipple(e, 'rgba(66, 133, 244, 0.2)');
-                            upvoteReport(issue.id);
-                          }}
-                          className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-medium transition-all ripple-surface ${
-                            issue.hasUpvoted
-                              ? 'bg-[#E8F0FE] text-[#1A73E8] border border-[#4285F4]'
-                              : 'bg-white text-[#202124] border border-[#DADCE0] hover:bg-[#F8F9FA]'
-                          }`}
-                          aria-label="Upvote report"
-                        >
-                          <ThumbsUp className={`w-3.5 h-3.5 ${issue.hasUpvoted ? 'fill-[#1A73E8] text-[#1A73E8]' : ''}`} />
-                          <span>{issue.upvotes}</span>
-                          {issue.mergedCount > 0 && (
-                            <span className="text-[9px] text-[#B06000] font-bold bg-[#FEF7E0] border border-[#FBBC05]/40 px-1 rounded">
-                              +{issue.mergedCount}
-                            </span>
-                          )}
-                        </button>
+                        <div className="flex items-center space-x-1.5">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              createRipple(e, 'rgba(66, 133, 244, 0.2)');
+                              upvoteReport(issue.id);
+                            }}
+                            className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs font-medium transition-all ripple-surface ${
+                              issue.hasUpvoted
+                                ? 'bg-[#E8F0FE] text-[#1A73E8] border border-[#4285F4]'
+                                : 'bg-white text-[#202124] border border-[#DADCE0] hover:bg-[#F8F9FA]'
+                            }`}
+                            aria-label="Upvote report"
+                          >
+                            <ThumbsUp className={`w-3.5 h-3.5 ${issue.hasUpvoted ? 'fill-[#1A73E8] text-[#1A73E8]' : ''}`} />
+                            <span>{issue.upvotes}</span>
+                            {issue.mergedCount > 0 && (
+                              <span className="text-[9px] text-[#B06000] font-bold bg-[#FEF7E0] border border-[#FBBC05]/40 px-1 rounded">
+                                +{issue.mergedCount}
+                              </span>
+                            )}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (window.confirm('Report this listing as spam or inappropriate? It will be hidden pending review.')) {
+                                flagReport(issue.id);
+                              }
+                            }}
+                            title="Report listing as spam"
+                            className="p-1 rounded text-[#5F6368] hover:text-[#EA4335] hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors"
+                            aria-label="Report listing as spam"
+                          >
+                            <Flag className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
 
                         <span className="text-xs text-[#1A73E8] font-medium group-hover:underline flex items-center">
                           Inspect Details <ChevronRight className="w-3.5 h-3.5 ml-0.5" />

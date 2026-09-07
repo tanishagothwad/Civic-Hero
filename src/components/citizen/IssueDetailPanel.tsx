@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Calendar,
   ExternalLink,
+  Flag,
 } from 'lucide-react';
 
 interface IssueDetailPanelProps {
@@ -25,7 +26,7 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
   onClose,
   onOpenFullModal,
 }) => {
-  const { upvoteReport, t } = useApp();
+  const { upvoteReport, flagReport, t } = useApp();
 
   if (!issue) return null;
 
@@ -316,26 +317,42 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
         </div>
       </div>
 
-      {/* 3. Footer with Upvote Action */}
+      {/* 3. Footer with Upvote Action and Flag Spam */}
       <div className="p-4 bg-[#F8F9FA] border-t border-[#DADCE0] flex items-center justify-between shrink-0">
-        <button
-          onClick={(e) => {
-            createRipple(e, 'rgba(66, 133, 244, 0.2)');
-            upvoteReport(issue.id);
-          }}
-          className={`flex items-center space-x-2 px-4 py-2 rounded text-xs font-medium transition-all ripple-surface ${
-            issue.hasUpvoted
-              ? 'bg-[#E8F0FE] text-[#1A73E8] border border-[#4285F4]'
-              : 'bg-white text-[#202124] border border-[#DADCE0] hover:bg-gray-50'
-          }`}
-          aria-label="Upvote report"
-        >
-          <ThumbsUp className={`w-4 h-4 ${issue.hasUpvoted ? 'fill-[#1A73E8] text-[#1A73E8]' : ''}`} />
-          <span>{issue.hasUpvoted ? 'Upvoted' : 'Upvote Issue'}</span>
-          <span className="bg-gray-200 text-[#202124] text-[11px] font-bold px-1.5 py-0.2 rounded ml-1">
-            {issue.upvotes}
-          </span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={(e) => {
+              createRipple(e, 'rgba(66, 133, 244, 0.2)');
+              upvoteReport(issue.id);
+            }}
+            className={`flex items-center space-x-2 px-4 py-2 rounded text-xs font-medium transition-all ripple-surface ${
+              issue.hasUpvoted
+                ? 'bg-[#E8F0FE] text-[#1A73E8] border border-[#4285F4]'
+                : 'bg-white text-[#202124] border border-[#DADCE0] hover:bg-gray-50'
+            }`}
+            aria-label="Upvote report"
+          >
+            <ThumbsUp className={`w-4 h-4 ${issue.hasUpvoted ? 'fill-[#1A73E8] text-[#1A73E8]' : ''}`} />
+            <span>{issue.hasUpvoted ? 'Upvoted' : 'Upvote Issue'}</span>
+            <span className="bg-gray-200 text-[#202124] text-[11px] font-bold px-1.5 py-0.2 rounded ml-1">
+              {issue.upvotes}
+            </span>
+          </button>
+
+          <button
+            onClick={() => {
+              if (window.confirm('Report this listing as spam or inappropriate? It will be hidden pending review.')) {
+                flagReport(issue.id);
+                onClose();
+              }
+            }}
+            title="Report listing as spam"
+            className="p-2 rounded text-[#5F6368] hover:text-[#EA4335] hover:bg-rose-50 border border-[#DADCE0] hover:border-rose-200 transition-colors"
+            aria-label="Report listing as spam"
+          >
+            <Flag className="w-4 h-4" />
+          </button>
+        </div>
 
         <span className="text-[11px] text-[#5F6368]">
           {issue.upvotes > 1 ? `${issue.upvotes} citizens supported` : '1 citizen supported'}

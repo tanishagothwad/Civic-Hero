@@ -1,0 +1,14 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /listings/{listingId}/{fileName} {
+      // Anyone authenticated can read listing photos
+      allow read: if request.auth != null;
+      
+      // Only authenticated users can upload photos up to 10MB each, restricted to images
+      allow write: if request.auth != null
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

@@ -48,6 +48,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
   // Form State
   const [title, setTitle] = useState<string>('');
   const [photos, setPhotos] = useState<string[]>([samplePresetImages[0].url]);
+  const [photoFiles, setPhotoFiles] = useState<(File | Blob | string)[]>([samplePresetImages[0].url]);
   const [photoHint, setPhotoHint] = useState<string>(samplePresetImages[0].label);
   const [category, setCategory] = useState<IssueCategory>('Pothole');
   const [customCategory, setCustomCategory] = useState<string>('');
@@ -123,8 +124,10 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
       const url = URL.createObjectURL(file);
       if (photos.length < 3) {
         setPhotos((prev) => [...prev, url]);
+        setPhotoFiles((prev) => [...prev, file]);
       } else {
         setPhotos([url]);
+        setPhotoFiles([file]);
       }
       setPhotoHint(file.name);
     }
@@ -140,14 +143,17 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
     if (photos.includes(preset.url)) return;
     if (photos.length < 3) {
       setPhotos((prev) => [...prev, preset.url]);
+      setPhotoFiles((prev) => [...prev, preset.url]);
     } else {
       setPhotos([preset.url]);
+      setPhotoFiles([preset.url]);
     }
   };
 
   const removePhoto = (indexToRemove: number) => {
     if (photos.length <= 1) return;
     setPhotos((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    setPhotoFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   // Run AI Detection when moving to Step 2
@@ -182,6 +188,7 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
       description: description || voiceTranscription || `${category} reported by citizen with photo evidence.`,
       photoUrl: photos[0] || getAssetUrl('issues/pothole.jpg'),
       photos: photos,
+      photoFiles: photoFiles.length > 0 ? photoFiles : photos,
       voiceNoteTranscription: voiceTranscription || undefined,
       includeReporterContact,
       location: {
