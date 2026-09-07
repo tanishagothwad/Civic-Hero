@@ -20,6 +20,7 @@ import { db, storage, isFirebaseConfigured } from '../lib/firebase';
 import { CivicIssue, IssueCategory, IssueSeverity, IssueStatus, TimelineEvent } from '../types';
 import { initialIssues } from '../data/mockData';
 import { getAssetUrl } from '../utils/assetUrl';
+import { normalizePhone } from '../utils/ownership';
 
 export interface FirestoreListing {
   id?: string;
@@ -713,14 +714,23 @@ export const resolveListingDocument = async (
 export const deleteListingDocument = async (
   listingId: string,
   currentUserId: string,
-  isStaff: boolean = false
+  isStaff: boolean = false,
+  userPhone?: string
 ): Promise<{ success: boolean; error?: string }> => {
   const localListings = loadLocalListings();
   const listing = localListings.find((l) => l.id === listingId);
 
   // 1. Authorization check: only original poster or staff can delete
-  if (listing && listing.reporterId !== currentUserId && !isStaff) {
-    throw new Error('Unauthorized: You can only delete your own reports.');
+  if (listing && !isStaff) {
+    const isIdMatch = listing.reporterId === currentUserId;
+    const isPhoneMatch = Boolean(
+      userPhone &&
+      listing.reporterPhone &&
+      normalizePhone(userPhone) === normalizePhone(listing.reporterPhone)
+    );
+    if (!isIdMatch && !isPhoneMatch) {
+      throw new Error('Unauthorized: You can only delete your own reports.');
+    }
   }
 
   // 2. Delete from Firestore if configured

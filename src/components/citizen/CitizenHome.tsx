@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
 import { CivicIssue } from '../../types';
 import { getAssetUrl } from '../../utils/assetUrl';
+import { isListingOwner } from '../../utils/ownership';
+import { auth } from '../../lib/firebase';
 import { createRipple } from '../common/MaterialRipple';
 import { GoogleSearchHero } from './GoogleSearchHero';
 import {
@@ -60,7 +62,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
 
     // Filter by tab
     if (activeSection === 'my-reports') {
-      list = list.filter((i) => i.citizenId === currentUser.id);
+      list = list.filter((i) => isListingOwner(i, currentUser, auth?.currentUser?.uid));
     }
 
     // Filter by search query
@@ -88,7 +90,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
     }
 
     return list;
-  }, [issues, activeSection, currentUser.id, searchQuery, selectedCategory, sortBy]);
+  }, [issues, activeSection, currentUser.id, currentUser.phone, searchQuery, selectedCategory, sortBy]);
 
   const categories: { key: string; label: string }[] = [
     { key: 'all', label: 'All Categories' },
@@ -557,7 +559,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                             )}
                           </button>
 
-                          {issue.citizenId === currentUser.id ? (
+                          {isListingOwner(issue, currentUser, auth?.currentUser?.uid) ? (
                             <button
                               type="button"
                               onClick={(e) => {

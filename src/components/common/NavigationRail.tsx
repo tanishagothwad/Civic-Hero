@@ -1,5 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
+import { isListingOwner } from '../../utils/ownership';
+import { auth } from '../../lib/firebase';
 import { UserRole } from '../../types';
 import { createRipple } from './MaterialRipple';
 import {
@@ -43,7 +45,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({
 }) => {
   const { role, setRole, issues, currentUser, logout, t } = useApp();
 
-  const myReportsCount = issues.filter((i) => i.citizenId === currentUser.id).length;
+  const myReportsCount = issues.filter((i) => isListingOwner(i, currentUser, auth?.currentUser?.uid)).length;
   const communityCount = issues.length;
 
   const citizenNavItems: {

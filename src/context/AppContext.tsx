@@ -22,6 +22,9 @@ import {
 } from '../data/mockData';
 import { translations, TranslationStrings } from '../i18n/translations';
 import confetti from 'canvas-confetti';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, isFirebaseConfigured } from '../lib/firebase';
+import { normalizePhone } from '../utils/ownership';
 import {
   subscribeToListings,
   createListingDocument,
@@ -44,6 +47,38 @@ interface ToastData {
 }
 
 const AUTH_STORAGE_KEY = 'civic_hero_auth_session';
+const PROFILES_STORAGE_KEY = 'civic_hero_user_profiles_v1';
+
+interface SavedProfile {
+  userId: string;
+  name: string;
+  ward: string;
+  points?: number;
+}
+
+const getSavedProfile = (phone: string): SavedProfile | null => {
+  try {
+    const raw = localStorage.getItem(PROFILES_STORAGE_KEY);
+    if (!raw) return null;
+    const map = JSON.parse(raw);
+    const key = normalizePhone(phone);
+    return map[key] || null;
+  } catch {
+    return null;
+  }
+};
+
+const saveUserProfile = (phone: string, profile: SavedProfile) => {
+  try {
+    const raw = localStorage.getItem(PROFILES_STORAGE_KEY);
+    const map = raw ? JSON.parse(raw) : {};
+    const key = normalizePhone(phone);
+    map[key] = profile;
+    localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(map));
+  } catch (e) {
+    console.error('Failed to persist user profile:', e);
+  }
+};
 
 interface AppContextType {
   role: UserRole;
@@ -192,6 +227,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
   }, [session?.userId, currentUser.id]);
 
+  // Sync Firebase Auth UID with session if phone auth completes
+  useEffect(() => {
+    if (isFirebaseConfigured && auth) {
+      const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+        if (firebaseUser && session && session.userId !== firebaseUser.uid) {
+          const updatedSession = { ...session, userId: firebaseUser.uid };
+          setSession(updatedSession);
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updatedSession));
+          setCurrentUser((prev) => ({ ...prev, id: firebaseUser.uid }));
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, [session?.phone]);
+
   const addToast = (toast: Omit<ToastData, 'id'>) => {
     const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4);
     const newToast = { ...toast, id };
@@ -249,9 +299,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     triggerCelebration();
   };
 
-  // Helper to normalize phone numbers
-  const cleanPhone = (p: string) => p.replace(/[\s\-()]/g, '').trim();
-
   // Login method
   const loginWithPhone = (
     phone: string,
@@ -263,15 +310,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return { success: false, isNewUser: false, role: 'citizen', error: 'Please enter a valid 6-digit OTP' };
     }
 
-    const normalizedInput = cleanPhone(phone);
+    const normalizedInput = normalizePhone(phone);
+    const savedProfile = getSavedProfile(normalizedInput);
+
     // Find in pre-provisioned directory
     const matched = preProvisionedUsers.find(
-      (u) => cleanPhone(u.phone) === normalizedInput || cleanPhone(u.phone).endsWith(normalizedInput.slice(-10))
+      (u) => normalizePhone(u.phone) === normalizedInput
     );
 
     let assignedRole: UserRole = 'citizen';
-    let userName = 'Citizen Hero';
-    let userWard = 'Ward 4 - Indiranagar';
+    let userName = savedProfile?.name || 'Citizen Hero';
+    let userWard = savedProfile?.ward || 'Ward 4 - Indiranagar';
     let userDept = '';
     let workerId = '';
     let avatar = '';
@@ -302,12 +351,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       } else {
         // Default role for anyone signing up without a special code/invite: Citizen
         assignedRole = 'citizen';
-        isNewUser = true;
+        isNewUser = !savedProfile;
       }
     }
 
+    // Stable deterministic User ID: persists identically across all logins for the same phone number
+    const stableUserId =
+      savedProfile?.userId ||
+      (auth?.currentUser?.uid
+        ? auth.currentUser.uid
+        : matched
+        ? `user-${normalizePhone(matched.phone)}`
+        : `user-${normalizedInput}`);
+
     const newSession: AuthSession = {
-      userId: matched ? `user-${matched.phone}` : `user-${Date.now()}`,
+      userId: stableUserId,
       name: userName,
       phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
       role: assignedRole,
@@ -322,12 +380,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setRole(assignedRole);
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(newSession));
 
-    if (assignedRole === 'citizen' && !isNewUser) {
+    if (assignedRole === 'citizen') {
+      saveUserProfile(newSession.phone, {
+        userId: stableUserId,
+        name: userName,
+        ward: userWard,
+      });
+
       setCurrentUser((prev) => ({
         ...prev,
+        id: stableUserId,
         name: userName,
         phone: newSession.phone,
         ward: userWard,
+        points: savedProfile?.points !== undefined ? savedProfile.points : prev.points,
       }));
     }
 
@@ -359,8 +425,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setSession(updatedSession);
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updatedSession));
 
+    saveUserProfile(session.phone, {
+      userId: session.userId,
+      name: finalName,
+      ward: finalWard,
+      points: currentUser.points + 50,
+    });
+
     setCurrentUser((prev) => ({
       ...prev,
+      id: session.userId,
       name: finalName,
       ward: finalWard,
       points: prev.points + 50,
@@ -388,8 +462,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Logout method
   const logout = () => {
+    if (isFirebaseConfigured && auth) {
+      auth.signOut().catch(console.warn);
+    }
     setSession(null);
     localStorage.removeItem(AUTH_STORAGE_KEY);
+    setCurrentUser(initialCurrentUser);
     addToast({
       title: 'Logged Out',
       message: 'You have been safely signed out.',
@@ -654,7 +732,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const activeUserId = session?.userId || currentUser.id;
       const isStaff = role === 'municipal';
-      await deleteListingDocument(issueId, activeUserId, isStaff);
+      const userPhone = session?.phone || currentUser.phone;
+      await deleteListingDocument(issueId, activeUserId, isStaff, userPhone);
 
       setIssues((prev) => prev.filter((i) => i.id !== issueId));
 

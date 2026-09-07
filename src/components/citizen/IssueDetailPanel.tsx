@@ -2,6 +2,8 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { CivicIssue } from '../../types';
 import { getAssetUrl } from '../../utils/assetUrl';
+import { isListingOwner } from '../../utils/ownership';
+import { auth } from '../../lib/firebase';
 import { createRipple } from '../common/MaterialRipple';
 import {
   X,
@@ -348,7 +350,7 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
             </span>
           </button>
 
-          {issue.citizenId === currentUser.id ? (
+          {isListingOwner(issue, currentUser, auth?.currentUser?.uid) ? (
             <button
               onClick={() => {
                 const message =
