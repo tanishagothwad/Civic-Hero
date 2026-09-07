@@ -45,6 +45,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
 }) => {
   const { currentUser, issues, upvoteReport, flagReport, deleteReport, t, celebrateBadge } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'recent' | 'upvotes'>('recent');
 
   // Gamification level progress calculation
   const currentLevelProgress = Math.min(
@@ -81,8 +82,13 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
       list = list.filter((i) => i.category === selectedCategory);
     }
 
+    // Sort by upvotes if selected; otherwise retains most recent order from query
+    if (sortBy === 'upvotes') {
+      list = [...list].sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+    }
+
     return list;
-  }, [issues, activeSection, currentUser.id, searchQuery, selectedCategory]);
+  }, [issues, activeSection, currentUser.id, searchQuery, selectedCategory, sortBy]);
 
   const categories: { key: string; label: string }[] = [
     { key: 'all', label: 'All Categories' },
@@ -330,24 +336,59 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
             </p>
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
-            {categories.map((cat) => (
+          {/* Filter & Sorting Toolbar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-end gap-2.5">
+            {/* Category Filter Pills */}
+            <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
+              {categories.map((cat) => (
+                <button
+                  key={cat.key}
+                  onClick={(e) => {
+                    createRipple(e, 'rgba(66, 133, 244, 0.15)');
+                    setSelectedCategory(cat.key);
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border ${
+                    selectedCategory === cat.key
+                      ? 'bg-[#E8F0FE] text-[#1A73E8] border-[#4285F4]'
+                      : 'bg-white text-[#5F6368] border-[#DADCE0] hover:bg-[#F8F9FA]'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Sort Toggle: Newest vs Most Upvoted */}
+            <div className="flex items-center space-x-1.5 shrink-0 sm:pl-2.5 sm:border-l sm:border-[#DADCE0]">
               <button
-                key={cat.key}
                 onClick={(e) => {
                   createRipple(e, 'rgba(66, 133, 244, 0.15)');
-                  setSelectedCategory(cat.key);
+                  setSortBy('recent');
                 }}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border ${
-                  selectedCategory === cat.key
+                className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors border ${
+                  sortBy === 'recent'
                     ? 'bg-[#E8F0FE] text-[#1A73E8] border-[#4285F4]'
                     : 'bg-white text-[#5F6368] border-[#DADCE0] hover:bg-[#F8F9FA]'
                 }`}
+                title="Sort by most recent"
               >
-                {cat.label}
+                Newest
               </button>
-            ))}
+              <button
+                onClick={(e) => {
+                  createRipple(e, 'rgba(251, 188, 5, 0.2)');
+                  setSortBy('upvotes');
+                }}
+                className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors border ${
+                  sortBy === 'upvotes'
+                    ? 'bg-[#FEF7E0] text-[#B06000] border-[#FBBC05]/60'
+                    : 'bg-white text-[#5F6368] border-[#DADCE0] hover:bg-[#F8F9FA]'
+                }`}
+                title="Sort by most upvoted"
+              >
+                Most Upvoted 🔥
+              </button>
+            </div>
           </div>
         </div>
 

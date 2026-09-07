@@ -26,14 +26,22 @@ const MainApp: React.FC = () => {
     selectedIssueForTracking,
     setSelectedIssueForTracking,
     issues,
+    session,
   } = useApp();
 
-  // App Layout State
-  const [activeSection, setActiveSection] = useState<NavSection>('home');
+  // App Layout State: default to 'community' so every user lands on the active Public Community Feed
+  const [activeSection, setActiveSection] = useState<NavSection>('community');
   const [isRailCollapsed, setIsRailCollapsed] = useState<boolean>(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedIssueForPane, setSelectedIssueForPane] = useState<CivicIssue | null>(null);
+
+  // Ensure new users land on the public community feed right after login / onboarding
+  React.useEffect(() => {
+    if (session) {
+      setActiveSection('community');
+    }
+  }, [session?.userId]);
 
   // Modals and Overlays
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState<boolean>(false);
