@@ -29,17 +29,17 @@ const MainApp: React.FC = () => {
     session,
   } = useApp();
 
-  // App Layout State: default to 'community' so every user lands on the active Public Community Feed
-  const [activeSection, setActiveSection] = useState<NavSection>('community');
+  // App Layout State: default to 'home' so every user lands on the Home page
+  const [activeSection, setActiveSection] = useState<NavSection>('home');
   const [isRailCollapsed, setIsRailCollapsed] = useState<boolean>(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedIssueForPane, setSelectedIssueForPane] = useState<CivicIssue | null>(null);
 
-  // Ensure new users land on the public community feed right after login / onboarding
+  // Ensure all users land on the Home page immediately after login / onboarding
   React.useEffect(() => {
     if (session) {
-      setActiveSection('community');
+      setActiveSection('home');
     }
   }, [session?.userId]);
 
