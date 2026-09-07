@@ -45,7 +45,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
   onOpenGamification,
   selectedIssueId,
 }) => {
-  const { currentUser, issues, upvoteReport, flagReport, deleteReport, t, celebrateBadge } = useApp();
+  const { currentUser, role, issues, upvoteReport, flagReport, deleteReport, t, celebrateBadge } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'upvotes'>('recent');
 
@@ -559,7 +559,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                             )}
                           </button>
 
-                          {isListingOwner(issue, currentUser, auth?.currentUser?.uid) ? (
+                          {isListingOwner(issue, currentUser, auth?.currentUser?.uid) || role === 'municipal' ? (
                             <button
                               type="button"
                               onClick={(e) => {

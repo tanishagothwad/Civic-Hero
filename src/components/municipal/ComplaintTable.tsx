@@ -11,6 +11,7 @@ import {
   HardHat,
   ChevronLeft,
   ChevronRight,
+  Trash2,
 } from 'lucide-react';
 
 interface ComplaintTableProps {
@@ -30,7 +31,7 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
   severityFilter,
   setSeverityFilter,
 }) => {
-  const { issues, t } = useApp();
+  const { issues, deleteReport, t } = useApp();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [wardFilter, setWardFilter] = useState<string>('all');
@@ -342,6 +343,20 @@ export const ComplaintTable: React.FC<ComplaintTableProps> = ({
                           Assign
                         </button>
                       )}
+
+                      <button
+                        onClick={(e) => {
+                          createRipple(e);
+                          if (window.confirm(`Delete report #${issue.ticketNumber}? This will permanently remove it from the municipal portal.`)) {
+                            deleteReport(issue.id);
+                          }
+                        }}
+                        className="p-1.5 text-[#5F6368] hover:text-[#EA4335] hover:bg-rose-50 rounded-lg transition-colors ripple-surface"
+                        title="Delete report"
+                        aria-label="Delete report"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>

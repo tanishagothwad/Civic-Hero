@@ -30,7 +30,7 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
   onClose,
   onOpenFullModal,
 }) => {
-  const { upvoteReport, flagReport, deleteReport, currentUser, t } = useApp();
+  const { upvoteReport, flagReport, deleteReport, currentUser, role, t } = useApp();
 
   if (!issue) return null;
 
@@ -350,7 +350,7 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
             </span>
           </button>
 
-          {isListingOwner(issue, currentUser, auth?.currentUser?.uid) ? (
+          {isListingOwner(issue, currentUser, auth?.currentUser?.uid) || role === 'municipal' ? (
             <button
               onClick={() => {
                 const message =

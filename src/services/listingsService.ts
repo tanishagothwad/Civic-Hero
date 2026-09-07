@@ -59,6 +59,32 @@ const LOCAL_STORAGE_KEY = 'civic_hero_persistent_listings_v1';
 const RATE_LIMIT_KEY = 'civic_hero_rate_limits_v1';
 const MAX_LISTINGS_PER_DAY = 5;
 
+const PURGED_TICKETS = new Set(['BLR-2026-9065']);
+const PURGED_TITLES = new Set(['hdjkhgdfgngkd']);
+
+export const isPurgedListing = (l: { ticketNumber?: string; title?: string }): boolean => {
+  if (l.ticketNumber && PURGED_TICKETS.has(l.ticketNumber)) return true;
+  if (l.title && PURGED_TITLES.has(l.title.trim())) return true;
+  return false;
+};
+
+// Purge test listing from Firestore if configured
+if (isFirebaseConfigured && db) {
+  try {
+    const firestore = db;
+    PURGED_TICKETS.forEach((ticket) => {
+      const q = query(collection(firestore, 'listings'), where('ticketNumber', '==', ticket));
+      getDocs(q).then((snap) => {
+        snap.forEach((docSnap) => {
+          deleteDoc(docSnap.ref).catch(console.warn);
+        });
+      }).catch(console.warn);
+    });
+  } catch {
+    // ignore
+  }
+}
+
 // Helper: Format timestamps into human readable strings
 const formatTimestamp = (ts: any): string => {
   if (!ts) return 'Just now';
@@ -181,14 +207,19 @@ const loadLocalListings = (): FirestoreListing[] => {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (!raw) {
-      const init = getInitialListings();
+      const init = getInitialListings().filter((l) => !isPurgedListing(l));
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(init));
       return init;
     }
-    return JSON.parse(raw);
+    const parsed: FirestoreListing[] = JSON.parse(raw);
+    const cleaned = parsed.filter((l) => !isPurgedListing(l));
+    if (cleaned.length !== parsed.length) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cleaned));
+    }
+    return cleaned;
   } catch (e) {
     console.error('Failed to read local listings:', e);
-    return getInitialListings();
+    return getInitialListings().filter((l) => !isPurgedListing(l));
   }
 };
 
@@ -314,10 +345,12 @@ export const subscribeToListings = (
             emitLocal();
             return;
           }
-          const listings: FirestoreListing[] = snapshot.docs.map((docSnap) => ({
-            id: docSnap.id,
-            ...(docSnap.data() as Omit<FirestoreListing, 'id'>),
-          }));
+          const listings: FirestoreListing[] = snapshot.docs
+            .map((docSnap) => ({
+              id: docSnap.id,
+              ...(docSnap.data() as Omit<FirestoreListing, 'id'>),
+            }))
+            .filter((l) => !isPurgedListing(l));
           // Keep local storage synchronized with latest Firestore community listings
           saveLocalListings(listings);
           const filtered = listings.filter((l) => !l.flagged || l.reporterId === currentUserId);
