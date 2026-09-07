@@ -49,8 +49,7 @@ const MainApp: React.FC = () => {
           <div className="max-w-md mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#5F6368]">
             <CivicHeroLogo variant="horizontal" size="sm" showTagline={true} taglineText="CHANGE YOUR CITY." />
             <div className="text-center sm:text-right">
-              <span>Designed by </span>
-              <strong className="text-[#202124] font-medium">Tanisha Gothwad</strong>
+              <span>© {new Date().getFullYear()} Civic Hero</span>
             </div>
           </div>
         </footer>
@@ -138,13 +137,12 @@ const MainApp: React.FC = () => {
           {role === 'worker' && <FieldWorkerApp />}
         </main>
 
-        {/* Footer with Civic Hero Logo & Creator Credit */}
+        {/* Footer with Civic Hero Logo */}
         <footer className="relative z-20 py-6 px-4 sm:px-8 bg-white border-t border-[#DADCE0] shrink-0">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#5F6368]">
             <CivicHeroLogo variant="horizontal" size="sm" showTagline={true} taglineText="CHANGE YOUR CITY." />
             <div className="text-center sm:text-right">
-              <span>Designed by </span>
-              <strong className="text-[#202124] font-medium">Tanisha Gothwad</strong>
+              <span>© {new Date().getFullYear()} Civic Hero. Empowering cleaner, smarter cities.</span>
             </div>
           </div>
         </footer>
