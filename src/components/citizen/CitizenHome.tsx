@@ -17,6 +17,7 @@ import {
   Lock,
   Award,
   Flag,
+  Trash2,
 } from 'lucide-react';
 import { NavSection } from '../common/NavigationRail';
 
@@ -41,7 +42,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
   onOpenGamification,
   selectedIssueId,
 }) => {
-  const { currentUser, issues, upvoteReport, flagReport, t, celebrateBadge } = useApp();
+  const { currentUser, issues, upvoteReport, flagReport, deleteReport, t, celebrateBadge } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   // Gamification level progress calculation
@@ -497,20 +498,41 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
                             )}
                           </button>
 
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (window.confirm('Report this listing as spam or inappropriate? It will be hidden pending review.')) {
-                                flagReport(issue.id);
-                              }
-                            }}
-                            title="Report listing as spam"
-                            className="p-1 rounded text-[#5F6368] hover:text-[#EA4335] hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors"
-                            aria-label="Report listing as spam"
-                          >
-                            <Flag className="w-3.5 h-3.5" />
-                          </button>
+                          {issue.citizenId === currentUser.id ? (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const message =
+                                  issue.status !== 'Submitted'
+                                    ? `This issue is already being worked on (${issue.status}) — are you sure you want to delete this report? This cannot be undone.`
+                                    : "Delete this report? This can't be undone.";
+                                if (window.confirm(message)) {
+                                  deleteReport(issue.id);
+                                }
+                              }}
+                              title="Delete your report"
+                              className="p-1 rounded text-[#5F6368] hover:text-[#EA4335] hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors"
+                              aria-label="Delete report"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (window.confirm('Report this listing as spam or inappropriate? It will be hidden pending review.')) {
+                                  flagReport(issue.id);
+                                }
+                              }}
+                              title="Report listing as spam"
+                              className="p-1 rounded text-[#5F6368] hover:text-[#EA4335] hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors"
+                              aria-label="Report listing as spam"
+                            >
+                              <Flag className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
 
                         <span className="text-xs text-[#1A73E8] font-medium group-hover:underline flex items-center">

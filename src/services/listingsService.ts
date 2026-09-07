@@ -3,6 +3,7 @@ import {
   doc,
   setDoc,
   updateDoc,
+  deleteDoc,
   onSnapshot,
   query,
   orderBy,
@@ -14,7 +15,7 @@ import {
   getDocs,
   Timestamp,
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject, listAll } from 'firebase/storage';
 import { db, storage, isFirebaseConfigured } from '../lib/firebase';
 import { CivicIssue, IssueCategory, IssueSeverity, IssueStatus, TimelineEvent } from '../types';
 import { initialIssues } from '../data/mockData';
@@ -694,4 +695,46 @@ export const resolveListingDocument = async (
   saveLocalListings(updated);
 
   return proofUrl;
+};
+
+// Delete Listing Document and its associated photos
+export const deleteListingDocument = async (
+  listingId: string,
+  currentUserId: string,
+  isStaff: boolean = false
+): Promise<{ success: boolean; error?: string }> => {
+  const localListings = loadLocalListings();
+  const listing = localListings.find((l) => l.id === listingId);
+
+  // 1. Authorization check: only original poster or staff can delete
+  if (listing && listing.reporterId !== currentUserId && !isStaff) {
+    throw new Error('Unauthorized: You can only delete your own reports.');
+  }
+
+  // 2. Delete from Firestore if configured
+  if (isFirebaseConfigured && db) {
+    try {
+      const docRef = doc(db, 'listings', listingId);
+      await deleteDoc(docRef);
+    } catch (err) {
+      console.warn('Firestore deleteDoc failed:', err);
+    }
+  }
+
+  // 3. Remove associated photos from Firebase Storage
+  if (isFirebaseConfigured && storage) {
+    try {
+      const folderRef = ref(storage, `listings/${listingId}`);
+      const filesList = await listAll(folderRef);
+      await Promise.all(filesList.items.map((itemRef) => deleteObject(itemRef)));
+    } catch (err) {
+      console.warn('Firebase Storage delete photos failed:', err);
+    }
+  }
+
+  // 4. Remove from local store and emit real-time event to all subscribers
+  const remaining = localListings.filter((l) => l.id !== listingId);
+  saveLocalListings(remaining);
+
+  return { success: true };
 };

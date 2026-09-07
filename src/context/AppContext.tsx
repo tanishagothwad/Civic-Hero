@@ -27,6 +27,7 @@ import {
   createListingDocument,
   toggleUpvoteListingDocument,
   flagListingDocument,
+  deleteListingDocument,
   mergeDuplicateListingDocument,
   assignWorkerToListingDocument,
   updateListingStatusDocument,
@@ -97,6 +98,7 @@ interface AppContextType {
   mergeReport: (existingIssueId: string) => void;
   upvoteReport: (issueId: string) => void;
   flagReport: (issueId: string) => Promise<void>;
+  deleteReport: (issueId: string) => Promise<{ success: boolean; error?: string }>;
   assignWorker: (issueId: string, workerId: string, targetHours: number, instructions?: string) => void;
   updateIssueStatus: (issueId: string, newStatus: IssueStatus, remarks?: string) => void;
   resolveIssueWithProof: (issueId: string, afterPhotoUrl: string, remarks: string) => void;
@@ -647,6 +649,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  // Delete listing report (Author or Municipal Staff)
+  const deleteReport = async (issueId: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const activeUserId = session?.userId || currentUser.id;
+      const isStaff = role === 'municipal';
+      await deleteListingDocument(issueId, activeUserId, isStaff);
+
+      setIssues((prev) => prev.filter((i) => i.id !== issueId));
+
+      if (selectedIssueForTracking?.id === issueId) {
+        setSelectedIssueForTracking(null);
+      }
+
+      addToast({
+        title: 'Report Deleted 🗑️',
+        message: 'Your listing has been permanently deleted.',
+        type: 'info',
+      });
+
+      return { success: true };
+    } catch (err: any) {
+      console.error('Failed to delete report:', err);
+      addToast({
+        title: 'Delete Failed ⚠️',
+        message: err.message || 'Could not delete this report.',
+        type: 'info',
+      });
+      return { success: false, error: err.message };
+    }
+  };
+
   // Assign worker from Municipal Dashboard
   const assignWorker = (
     issueId: string,
@@ -833,6 +866,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         mergeReport,
         upvoteReport,
         flagReport,
+        deleteReport,
         assignWorker,
         updateIssueStatus,
         resolveIssueWithProof,

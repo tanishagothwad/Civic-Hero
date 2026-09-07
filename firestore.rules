@@ -42,10 +42,11 @@ service cloud.firestore {
         (request.resource.data.diff(resource.data).affectedKeys().hasAny(['status', 'assignedWorkerId', 'assignedWorkerName', 'targetResolutionHours', 'resolvedPhotoUrl', 'resolutionRemarks', 'resolvedAt', 'timeline', 'updatedAt']))
       );
 
-      // Only original poster can delete within 15 minutes of creation
-      allow delete: if request.auth != null
-        && resource.data.reporterId == request.auth.uid
-        && request.time < resource.data.createdAt + duration.value(15, 'm');
+      // Only original poster can delete their own listing; Municipal staff/Admin can also delete
+      allow delete: if request.auth != null && (
+        resource.data.reporterId == request.auth.uid ||
+        request.auth.token.role in ['municipal', 'admin']
+      );
     }
   }
 }

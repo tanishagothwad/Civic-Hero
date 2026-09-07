@@ -13,6 +13,7 @@ import {
   Calendar,
   ExternalLink,
   Flag,
+  Trash2,
 } from 'lucide-react';
 
 interface IssueDetailPanelProps {
@@ -26,7 +27,7 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
   onClose,
   onOpenFullModal,
 }) => {
-  const { upvoteReport, flagReport, t } = useApp();
+  const { upvoteReport, flagReport, deleteReport, currentUser, t } = useApp();
 
   if (!issue) return null;
 
@@ -339,19 +340,39 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
             </span>
           </button>
 
-          <button
-            onClick={() => {
-              if (window.confirm('Report this listing as spam or inappropriate? It will be hidden pending review.')) {
-                flagReport(issue.id);
-                onClose();
-              }
-            }}
-            title="Report listing as spam"
-            className="p-2 rounded text-[#5F6368] hover:text-[#EA4335] hover:bg-rose-50 border border-[#DADCE0] hover:border-rose-200 transition-colors"
-            aria-label="Report listing as spam"
-          >
-            <Flag className="w-4 h-4" />
-          </button>
+          {issue.citizenId === currentUser.id ? (
+            <button
+              onClick={() => {
+                const message =
+                  issue.status !== 'Submitted'
+                    ? `This issue is already being worked on (${issue.status}) — are you sure you want to delete this report? This cannot be undone.`
+                    : "Delete this report? This can't be undone.";
+                if (window.confirm(message)) {
+                  deleteReport(issue.id);
+                  onClose();
+                }
+              }}
+              title="Delete your report"
+              className="p-2 rounded text-[#5F6368] hover:text-[#EA4335] hover:bg-rose-50 border border-[#DADCE0] hover:border-rose-200 transition-colors"
+              aria-label="Delete report"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                if (window.confirm('Report this listing as spam or inappropriate? It will be hidden pending review.')) {
+                  flagReport(issue.id);
+                  onClose();
+                }
+              }}
+              title="Report listing as spam"
+              className="p-2 rounded text-[#5F6368] hover:text-[#EA4335] hover:bg-rose-50 border border-[#DADCE0] hover:border-rose-200 transition-colors"
+              aria-label="Report listing as spam"
+            >
+              <Flag className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         <span className="text-[11px] text-[#5F6368]">
