@@ -99,7 +99,7 @@ export const RoleSwitcherBar: React.FC<RoleSwitcherBarProps> = ({
               showTagline={false}
             />
             <span className="hidden sm:inline-block text-[10px] font-medium bg-[#E8F0FE] text-[#1A73E8] px-1.5 py-0.5 rounded border border-[#D2E3FC]">
-              BBMP
+              PMC
             </span>
           </div>
         </div>

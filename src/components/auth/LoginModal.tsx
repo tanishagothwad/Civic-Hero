@@ -38,15 +38,18 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
 
   // Citizen first-time onboarding state
   const [name, setName] = useState<string>('');
-  const [ward, setWard] = useState<string>('Ward 4 - Indiranagar');
+  const [ward, setWard] = useState<string>('Demo Ward 1 - Kothrud');
 
   const wardOptions = [
-    'Ward 4 - Indiranagar',
-    'Ward 8 - Koramangala',
-    'Ward 12 - HSR Layout',
-    'Ward 15 - Whitefield',
-    'Ward 2 - Malleshwaram',
-    'Ward 6 - Jayanagar',
+    'Demo Ward 1 - Kothrud',
+    'Demo Ward 2 - Shivajinagar',
+    'Demo Ward 3 - Aundh-Baner',
+    'Demo Ward 4 - Viman Nagar',
+    'Demo Ward 5 - Hadapsar',
+    'Demo Ward 6 - Koregaon Park',
+    'Demo Ward 7 - Wakad',
+    'Demo Ward 8 - Swargate',
+    'Demo Ward 9 - Kharadi',
   ];
 
   const handleSendOtp = async (e: React.FormEvent) => {
@@ -288,7 +291,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onOpenLanguage }) => {
                       <div className="text-xs font-medium text-[#202124]">
                         Municipal Staff — Dr. Sunita Rao
                       </div>
-                      <div className="text-[10px] text-[#5F6368]">+91 91234 56789 (HQ Triage)</div>
+                      <div className="text-[10px] text-[#5F6368]">+91 91234 56789 (PMC HQ Triage)</div>
                     </div>
                   </div>
                   <span className="text-[10px] font-medium bg-[#E8F0FE] text-[#1A73E8] px-2 py-0.5 rounded">

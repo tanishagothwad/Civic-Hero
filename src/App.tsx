@@ -7,11 +7,12 @@ import { LanguagePicker } from './components/common/LanguagePicker';
 import { ToastNotification } from './components/common/ToastNotification';
 import { LoginModal } from './components/auth/LoginModal';
 import { CitizenHome } from './components/citizen/CitizenHome';
-import { ReportWizard } from './components/citizen/ReportWizard';
+import { ReportWizard, ReportWizardPrefill } from './components/citizen/ReportWizard';
 import { IssueTrackerModal } from './components/citizen/IssueTrackerModal';
 import { GamificationHub } from './components/citizen/GamificationHub';
 import { BadgeUnlockCelebration } from './components/citizen/BadgeUnlockCelebration';
 import { NotificationDrawer } from './components/citizen/NotificationDrawer';
+import { CivicHeroAssistantModal } from './components/assistant/CivicHeroAssistantModal';
 import { MunicipalDashboard } from './components/municipal/MunicipalDashboard';
 import { FieldWorkerApp } from './components/worker/FieldWorkerApp';
 import { CivicHeroLogo } from './components/common/CivicHeroLogo';
@@ -47,6 +48,8 @@ const MainApp: React.FC = () => {
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState<boolean>(false);
   const [isGamificationModalOpen, setIsGamificationModalOpen] = useState<boolean>(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
+  const [isAssistantModalOpen, setIsAssistantModalOpen] = useState<boolean>(false);
+  const [assistantPrefillData, setAssistantPrefillData] = useState<ReportWizardPrefill | null>(null);
 
   // If not authenticated, present phone + OTP login screen
   if (!isAuthenticated) {
@@ -137,6 +140,7 @@ const MainApp: React.FC = () => {
               onSelectIssue={handleSelectIssue}
               onOpenGamification={() => setIsGamificationModalOpen(true)}
               selectedIssueId={selectedIssueForPane?.id}
+              onOpenAssistant={() => setIsAssistantModalOpen(true)}
             />
           )}
 
@@ -172,10 +176,38 @@ const MainApp: React.FC = () => {
       {/* 3-Step Report Wizard */}
       <ReportWizard
         isOpen={isReportModalOpen}
-        onClose={() => setIsReportModalOpen(false)}
+        onClose={() => {
+          setIsReportModalOpen(false);
+          setAssistantPrefillData(null);
+        }}
         onSubmitted={(issueId) => {
           const created = issues.find((i) => i.id === issueId);
           if (created) setSelectedIssueForPane(created);
+          setAssistantPrefillData(null);
+        }}
+        prefillData={assistantPrefillData}
+        onOpenAssistant={() => {
+          setIsReportModalOpen(false);
+          setIsAssistantModalOpen(true);
+        }}
+      />
+
+      {/* Multilingual Civic Hero AI Assistant Modal */}
+      <CivicHeroAssistantModal
+        isOpen={isAssistantModalOpen}
+        onClose={() => setIsAssistantModalOpen(false)}
+        onPopulateReport={(draft) => {
+          setAssistantPrefillData({
+            category: draft.category,
+            severity: draft.severity,
+            title: draft.title,
+            description: draft.description,
+            originalLanguage: draft.originalLanguage,
+            originalText: draft.originalText,
+            normalizedDescription: draft.normalizedDescription,
+          });
+          setIsAssistantModalOpen(false);
+          setIsReportModalOpen(true);
         }}
       />
 

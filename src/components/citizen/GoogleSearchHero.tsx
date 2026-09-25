@@ -42,7 +42,7 @@ export const GoogleSearchHero: React.FC<GoogleSearchHeroProps> = ({
 
         <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#E8F0FE] text-[#1A73E8] text-xs font-medium border border-[#D2E3FC]">
           <Sparkles className="w-3.5 h-3.5 text-[#4285F4]" />
-          <span>BBMP Bengaluru Citizen Governance Portal</span>
+          <span>PMC Pune Citizen Governance Portal (Prototype)</span>
         </div>
       </div>
 
@@ -59,7 +59,7 @@ export const GoogleSearchHero: React.FC<GoogleSearchHeroProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search civic issues, pothole, street light, Indiranagar, ticket #..."
+            placeholder="Search civic issues, pothole, street light, Kothrud, ticket #..."
             className="w-full py-3.5 sm:py-4 text-sm sm:text-base text-[#202124] placeholder:text-[#5F6368]/80 bg-transparent focus:outline-none"
             aria-label="Search civic issues or enter problem description"
           />
@@ -142,7 +142,7 @@ export const GoogleSearchHero: React.FC<GoogleSearchHeroProps> = ({
               </div>
               <h3 className="text-base font-bold text-[#202124]">1. Report with AI Evidence</h3>
               <p className="text-xs text-[#5F6368] leading-relaxed">
-                Snap a photo on site. Automated GPS geocoding pins your BBMP ward, while on-device AI detects hazard severity and avoids duplicate entries.
+                Snap a photo on site. Automated GPS geocoding pins your PMC demo area, while on-device AI detects hazard severity and avoids duplicate entries.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-[#DADCE0]/60 flex items-center justify-between text-[11px] text-[#4285F4] font-medium">
@@ -158,7 +158,7 @@ export const GoogleSearchHero: React.FC<GoogleSearchHeroProps> = ({
               <div className="w-10 h-10 rounded bg-[#E6F4EA] text-[#137333] flex items-center justify-center border border-[#CEEAD6]">
                 <Activity className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-[#202124]">2. Track Live BBMP Progress</h3>
+              <h3 className="text-base font-bold text-[#202124]">2. Track Live PMC Progress</h3>
               <p className="text-xs text-[#5F6368] leading-relaxed">
                 Follow real-time ticket progression from Acknowledged to In Progress. Field officers upload verified before/after photographic proof of resolution.
               </p>

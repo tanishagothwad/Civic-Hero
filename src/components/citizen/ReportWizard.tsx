@@ -18,28 +18,46 @@ import {
 } from 'lucide-react';
 
 
+export interface ReportWizardPrefill {
+  category?: IssueCategory;
+  severity?: IssueSeverity;
+  title?: string;
+  description?: string;
+  originalLanguage?: string;
+  originalText?: string;
+  normalizedDescription?: string;
+}
+
 interface ReportWizardProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmitted: (issueId: string) => void;
+  prefillData?: ReportWizardPrefill | null;
+  onOpenAssistant?: () => void;
 }
 
-const INDIAN_ADDRESS_SUGGESTIONS = [
-  '100 Feet Rd, near 12th Main Junction, Indiranagar, Bengaluru - 560038',
-  '5th Cross Rd, Defense Colony Park Gate, Indiranagar, Bengaluru - 560038',
-  '80 Feet Road Junction, HAL 2nd Stage, Indiranagar, Bengaluru - 560008',
-  '6th Main Rd, Koramangala 4th Block, Bengaluru - 560034',
-  '14th Main, Near Primary School, HSR Layout Sector 1, Bengaluru - 560102',
-  'CMH Road, Metro Station Exit Gate 2, Indiranagar, Bengaluru - 560038',
-  'MG Road, Near Trinity Circle Metro Station, Bengaluru - 560001',
-  'Outer Ring Road, Bellandur Eco-Space Flyover, Bengaluru - 560103',
-  'Sarjapur Main Road, Doddakannelli Signal, Bengaluru - 560035',
-  'Whitefield Main Road, Near Hope Farm Junction, Bengaluru - 560066',
-  'Bannerghatta Road, Near Jayadeva Hospital Junction, Bengaluru - 560069',
-  'Sampige Road, 7th Cross Junction, Malleshwaram, Bengaluru - 560003'
+const PUNE_ADDRESS_SUGGESTIONS = [
+  'Karve Road, near Kothrud Stand, Kothrud, Pune - 411038',
+  'JM Road, opposite Sambhaji Park, Shivajinagar, Pune - 411005',
+  'FC Road, near Goodluck Cafe, Shivajinagar, Pune - 411004',
+  'Baner Road, near Balewadi High Street, Baner, Pune - 411045',
+  'Parihar Chowk, DP Road, Aundh, Pune - 411007',
+  'North Main Road, Lane 5, Koregaon Park, Pune - 411001',
+  'Viman Nagar Central Road, near Phoenix Mall, Viman Nagar, Pune - 411014',
+  'Hadapsar Gadital Chowk, Pune-Solapur Rd, Hadapsar, Pune - 411028',
+  'Swargate Chowk, near ST Bus Depot, Swargate, Pune - 411042',
+  'World Trade Center Road, EON Free Zone, Kharadi, Pune - 411014',
+  'Wakad Chowk, Hinjawadi Link Road, Wakad, Pune - 411057',
+  'Paud Road, near Vanaz Metro Station, Kothrud, Pune - 411038'
 ];
 
-export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onSubmitted }) => {
+export const ReportWizard: React.FC<ReportWizardProps> = ({
+  isOpen,
+  onClose,
+  onSubmitted,
+  prefillData,
+  onOpenAssistant,
+}) => {
   const { createReport, mergeReport, issues, session, currentUser, t } = useApp();
 
   // Wizard Steps: 1: Details & Photos, 2: AI Auto-Detect & Duplicates, 3: Review & Publish
@@ -56,14 +74,17 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
   const [description, setDescription] = useState<string>('');
   const [voiceTranscription, setVoiceTranscription] = useState<string>('');
   const [includeReporterContact, setIncludeReporterContact] = useState<boolean>(true);
+  const [originalLanguage, setOriginalLanguage] = useState<string>('en');
+  const [originalText, setOriginalText] = useState<string>('');
+  const [normalizedDescription, setNormalizedDescription] = useState<string>('');
 
-  // Address & Location State
-  const [manualAddress, setManualAddress] = useState<string>('100 Feet Rd, near 12th Main Junction, Indiranagar, Bengaluru - 560038');
-  const [selectedWard, setSelectedWard] = useState<string>('Ward 4 - Indiranagar');
-  const [cityName] = useState<string>('Bengaluru');
+  // Address & Location State (Pune Demo Area)
+  const [manualAddress, setManualAddress] = useState<string>('Karve Road, near Kothrud Stand, Kothrud, Pune - 411038');
+  const [selectedWard, setSelectedWard] = useState<string>('Demo Ward 1 - Kothrud');
+  const [cityName] = useState<string>('Pune');
   const [showAddressSuggestions, setShowAddressSuggestions] = useState<boolean>(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
-  const [gpsCoords] = useState<{ lat: number; lng: number }>({ lat: 12.9784, lng: 77.6408 });
+  const [gpsCoords] = useState<{ lat: number; lng: number }>({ lat: 18.5074, lng: 73.8077 });
 
   // AI & Detection State
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
@@ -90,12 +111,15 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
   const severities: IssueSeverity[] = ['Low', 'Medium', 'High', 'Critical'];
 
   const wardList = [
-    'Ward 4 - Indiranagar',
-    'Ward 7 - Koramangala',
-    'Ward 12 - HSR Layout',
-    'Ward 1 - Malleshwaram',
-    'Ward 8 - Whitefield',
-    'Ward 15 - Jayanagar',
+    'Demo Ward 1 - Kothrud',
+    'Demo Ward 2 - Shivajinagar',
+    'Demo Ward 3 - Aundh-Baner',
+    'Demo Ward 4 - Viman Nagar',
+    'Demo Ward 5 - Hadapsar',
+    'Demo Ward 6 - Koregaon Park',
+    'Demo Ward 7 - Wakad',
+    'Demo Ward 8 - Swargate',
+    'Demo Ward 9 - Kharadi',
   ];
 
   const quickTitleSuggestions = [
@@ -110,12 +134,25 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
   useEffect(() => {
     if (manualAddress.trim().length > 1) {
       const q = manualAddress.toLowerCase();
-      const matches = INDIAN_ADDRESS_SUGGESTIONS.filter((s) => s.toLowerCase().includes(q));
+      const matches = PUNE_ADDRESS_SUGGESTIONS.filter((s) => s.toLowerCase().includes(q));
       setFilteredSuggestions(matches.slice(0, 4));
     } else {
-      setFilteredSuggestions(INDIAN_ADDRESS_SUGGESTIONS.slice(0, 4));
+      setFilteredSuggestions(PUNE_ADDRESS_SUGGESTIONS.slice(0, 4));
     }
   }, [manualAddress]);
+
+  // Handle Assistant Prefill Data
+  useEffect(() => {
+    if (isOpen && prefillData) {
+      if (prefillData.category) setCategory(prefillData.category);
+      if (prefillData.severity) setSeverity(prefillData.severity);
+      if (prefillData.title) setTitle(prefillData.title);
+      if (prefillData.description) setDescription(prefillData.description);
+      if (prefillData.originalLanguage) setOriginalLanguage(prefillData.originalLanguage);
+      if (prefillData.originalText) setOriginalText(prefillData.originalText);
+      if (prefillData.normalizedDescription) setNormalizedDescription(prefillData.normalizedDescription);
+    }
+  }, [isOpen, prefillData]);
 
   // Handle Photo File Upload
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,12 +201,15 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
     setTimeout(() => {
       const promptText = `${title} ${description} ${voiceTranscription} ${photoHint}`;
       const res = simulateAIDetection(promptText, photoHint);
-      
+
       setCategory((prev) => (prev === 'Other' ? prev : res.category));
       setSeverity((prev) => (prev ? prev : res.severity));
       setAiSummary(res.summary);
       setAiConfidence(Math.round(res.confidence * 100));
       setAiTags(res.tags);
+      if (res.detectedLanguage) setOriginalLanguage(res.detectedLanguage);
+      if (res.normalizedDescription) setNormalizedDescription(res.normalizedDescription);
+      if (!title && res.suggestedTitle) setTitle(res.suggestedTitle);
       setIsAnalyzing(false);
 
       // Check for nearby duplicates based on GPS & Category
@@ -191,6 +231,9 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
       photoFiles: photoFiles.length > 0 ? photoFiles : photos,
       voiceNoteTranscription: voiceTranscription || undefined,
       includeReporterContact,
+      originalLanguage,
+      originalText: originalText || description || title || voiceTranscription,
+      normalizedDescription: normalizedDescription || description,
       location: {
         address: manualAddress,
         ward: selectedWard,
@@ -274,6 +317,32 @@ export const ReportWizard: React.FC<ReportWizardProps> = ({ isOpen, onClose, onS
           {currentStep === 1 && (
             <div className="space-y-5">
               
+              {/* Multilingual AI Assistant Callout */}
+              {onOpenAssistant && (
+                <div className="bg-gradient-to-r from-[#E8F0FE] to-[#F1F3F4] border border-[#DADCE0] rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-3 shadow-xs">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-full bg-[#1A73E8] text-white flex items-center justify-center shrink-0 shadow-xs">
+                      <Sparkles className="w-4 h-4 text-amber-300" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-[#202124]">
+                        {t.assistantBtn || 'Civic Hero AI Assistant'}
+                      </h4>
+                      <p className="text-[11px] text-[#5F6368] leading-tight">
+                        मराठी, हिन्दी किंवा English मध्ये बोला अथवा लिहा — तक्रार फॉर्म आपोआप भरला जाईल.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onOpenAssistant}
+                    className="px-3 py-1.5 bg-[#1A73E8] hover:bg-[#1557B0] text-white text-xs font-semibold rounded-lg shadow-xs whitespace-nowrap shrink-0 transition-colors"
+                  >
+                    Open Assistant
+                  </button>
+                </div>
+              )}
+
               {/* 1. Issue Title */}
               <div>
                 <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1">

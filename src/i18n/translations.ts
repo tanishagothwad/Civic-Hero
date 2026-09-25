@@ -120,6 +120,18 @@ export interface TranslationStrings {
   logout?: string;
   loggedInAs?: string;
   installApp?: string;
+  mapViewPins?: string;
+  mapViewHeatmap?: string;
+  mapViewWards?: string;
+  hotspotsTitle?: string;
+  hotspotsSubtitle?: string;
+  assistantBtn?: string;
+  askStatus?: string;
+  demoNotice?: string;
+  timeRangeAll?: string;
+  timeRange24h?: string;
+  timeRange7d?: string;
+  timeRange30d?: string;
 }
 
 export const translations: Record<SupportedLanguage, TranslationStrings> = {
@@ -243,6 +255,18 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
       'In Progress': 'In Progress',
       Resolved: 'Resolved',
     },
+    mapViewPins: 'Complaint Pins',
+    mapViewHeatmap: 'Issue Heatmap',
+    mapViewWards: 'Ward View',
+    hotspotsTitle: 'Issue Hotspots & Spatial Density',
+    hotspotsSubtitle: 'Live clustering of active grievances across municipal sectors',
+    assistantBtn: 'Civic Hero Assistant',
+    askStatus: 'Ask Civic Hero',
+    demoNotice: 'Prototype Dataset — PMC Demonstration Mode',
+    timeRangeAll: 'All Time',
+    timeRange24h: 'Last 24 Hours',
+    timeRange7d: 'Last 7 Days',
+    timeRange30d: 'Last 30 Days',
   },
   hi: {
     appName: 'सिविक हीरो',
@@ -344,6 +368,38 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
       'In Progress': 'काम जारी',
       Resolved: 'हल हुआ',
     },
+    loginTitle: 'सिविक हीरो में साइन इन करें',
+    loginSubtitle: 'शुरुआत करने या नागरिक समस्याओं के प्रबंधन के लिए अपना मोबाइल नंबर दर्ज करें।',
+    enterPhone: 'मोबाइल फोन नंबर',
+    phonePlaceholder: '10 अंकों का मोबाइल नंबर दर्ज करें',
+    sendOtp: 'ओटीपी प्राप्त करें',
+    enterOtp: '6 अंकों का ओटीपी कोड दर्ज करें',
+    verifyOtp: 'सत्यापित करें और साइन इन करें',
+    demoOtpNotice: 'डेमो मोड: ओटीपी के रूप में 123456 का उपयोग करें',
+    quickDemoLogin: 'त्वरित डेमो साइन-इन (1-टैप)',
+    citizenDemo: 'नागरिक (आरव मेहता)',
+    municipalDemo: 'नगर निगम स्टाफ (डॉ. सुनीता राव)',
+    workerDemo: 'फील्ड वर्कर (रमेश कुमार)',
+    welcomeCitizen: 'स्वागत है नागरिक हीरो! 🎉',
+    enterName: 'आपका पूरा नाम क्या है?',
+    namePlaceholder: 'अपना पूरा नाम दर्ज करें',
+    selectWard: 'अपना गृह प्रभाग / वॉर्ड चुनें',
+    startApp: 'रिपोर्टिंग शुरू करें और XP अर्जित करें',
+    logout: 'लॉग आउट',
+    loggedInAs: 'लॉग इन किया गया',
+    installApp: 'फोन में ऐप इंस्टॉल करें',
+    mapViewPins: 'शिकायत पिन',
+    mapViewHeatmap: 'समस्या हीटमैप',
+    mapViewWards: 'वॉर्ड दृश्य',
+    hotspotsTitle: 'शिकायत हॉटस्पॉट विश्लेषण',
+    hotspotsSubtitle: 'शिकायत घनत्व और प्राथमिकता क्षेत्रों का वास्तविक विश्लेषण',
+    assistantBtn: 'सिविक हीरो सहायक',
+    askStatus: 'तक्रार की स्थिति पूछें',
+    demoNotice: 'प्रोटोटाइप डेटासेट — पुणे नगर निगम (PMC) प्रदर्शन',
+    timeRangeAll: 'सभी समय',
+    timeRange24h: 'पिछले 24 घंटे',
+    timeRange7d: 'पिछले 7 दिन',
+    timeRange30d: 'पिछले 30 दिन',
   },
   mr: {
     appName: 'नागरीक हिरो',
@@ -445,6 +501,38 @@ export const translations: Record<SupportedLanguage, TranslationStrings> = {
       'In Progress': 'काम सुरू',
       Resolved: 'निराकरण',
     },
+    loginTitle: 'नागरीक हिरो मध्ये साइन इन करा',
+    loginSubtitle: 'सुरू करण्यासाठी किंवा नागरी समस्यांचे व्यवस्थापन करण्यासाठी आपला मोबाईल क्रमांक टाका.',
+    enterPhone: 'मोबाईल क्रमांक',
+    phonePlaceholder: '१० अंकी मोबाईल नंबर प्रविष्ट करा',
+    sendOtp: 'ओटीपी मिळवा',
+    enterOtp: '६ अंकी ओटीपी कोड प्रविष्ट करा',
+    verifyOtp: 'पडताळणी करा व साइन इन करा',
+    demoOtpNotice: 'डेमो मोड: १२३४५६ हा ओटीपी वापरा',
+    quickDemoLogin: 'त्वरित डेमो साइन-इन (१-टॅप)',
+    citizenDemo: 'नागरिक (आरव मेहता)',
+    municipalDemo: 'महापालिका अधिकारी (डॉ. सुनीता राव)',
+    workerDemo: 'फील्ड कर्मचारी (रमेश कुमार)',
+    welcomeCitizen: 'स्वागत आहे नागरीक हिरो! 🎉',
+    enterName: 'आपले पूर्ण नाव काय आहे?',
+    namePlaceholder: 'आपले पूर्ण नाव टाका',
+    selectWard: 'आपला प्रभाग / वॉर्ड निवडा',
+    startApp: 'तक्रार नोंदवा आणि गुण मिळवा',
+    logout: 'लॉग आउट',
+    loggedInAs: 'लॉग इन केलेले',
+    installApp: 'फोनमध्ये ॲप स्थापित करा',
+    mapViewPins: 'तक्रार पिन',
+    mapViewHeatmap: 'समस्या हीटमॅप',
+    mapViewWards: 'प्रभाग दृश्य',
+    hotspotsTitle: 'तक्रार हॉटस्पॉट विश्लेषण',
+    hotspotsSubtitle: 'तक्रार घनता आणि प्राधान्य क्षेत्रांचे थेट विश्लेषण',
+    assistantBtn: 'नागरीक हिरो सहाय्यक',
+    askStatus: 'तक्रारीची स्थिती विचारा',
+    demoNotice: 'प्रोटोटाइप डेटासेट — पुणे महानगरपालिका (PMC) प्रात्यक्षिक',
+    timeRangeAll: 'सर्व वेळ',
+    timeRange24h: 'मागील २४ तास',
+    timeRange7d: 'मागील ७ दिवस',
+    timeRange30d: 'मागील ३० दिवस',
   },
   ta: {
     appName: 'சிவிக் ஹீரோ',

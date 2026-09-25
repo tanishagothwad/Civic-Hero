@@ -238,7 +238,7 @@ export const GamificationHub: React.FC<GamificationHubProps> = ({ isOpen, onClos
                       : 'text-[#5F6368] hover:text-[#202124]'
                   }`}
                 >
-                  Bengaluru Citywide
+                  Pune Citywide
                 </button>
               </div>
 

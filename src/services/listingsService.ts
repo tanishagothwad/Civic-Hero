@@ -53,13 +53,16 @@ export interface FirestoreListing {
   resolutionRemarks?: string;
   resolvedAt?: string;
   voiceNoteTranscription?: string;
+  originalLanguage?: string;
+  originalText?: string;
+  normalizedDescription?: string;
 }
 
 const LOCAL_STORAGE_KEY = 'civic_hero_persistent_listings_v1';
 const RATE_LIMIT_KEY = 'civic_hero_rate_limits_v1';
 const MAX_LISTINGS_PER_DAY = 5;
 
-const PURGED_TICKETS = new Set(['BLR-2026-9065']);
+const PURGED_TICKETS = new Set(['PUN-2026-9065', 'BLR-2026-9065']);
 const PURGED_TITLES = new Set(['hdjkhgdfgngkd']);
 
 export const isPurgedListing = (l: { ticketNumber?: string; title?: string }): boolean => {
@@ -131,18 +134,20 @@ export const mapListingToCivicIssue = (
 
   return {
     id: listing.id || `listing-${Date.now()}`,
-    ticketNumber: listing.ticketNumber || `BLR-2026-${(listing.id || '000').slice(-4).toUpperCase()}`,
+    ticketNumber:
+      listing.ticketNumber?.replace('BLR-', 'PUN-') ||
+      `PUN-2026-${(listing.id || '000').slice(-4).toUpperCase()}`,
     title: listing.title,
     category: (listing.category as IssueCategory) || 'Other',
     severity: listing.severity || 'Medium',
     status: listing.status || 'Submitted',
     description: listing.description || '',
     location: {
-      address: listing.address || 'Bengaluru, Karnataka',
-      ward: listing.ward || 'Ward 4 - Indiranagar',
-      city: 'Bengaluru',
-      lat: Number(listing.lat) || 12.9784,
-      lng: Number(listing.lng) || 77.6408,
+      address: listing.address || 'Pune, Maharashtra',
+      ward: listing.ward || 'Demo Ward 1 - Kothrud',
+      city: 'Pune',
+      lat: Number(listing.lat) || 18.5204,
+      lng: Number(listing.lng) || 73.8567,
     },
     photoUrl: photos[0],
     photos,
@@ -163,6 +168,9 @@ export const mapListingToCivicIssue = (
     includeReporterContact: listing.includeReporterContact,
     resolutionRemarks: listing.resolutionRemarks,
     resolvedAt: listing.resolvedAt,
+    originalLanguage: listing.originalLanguage,
+    originalText: listing.originalText,
+    normalizedDescription: listing.normalizedDescription,
   };
 };
 
@@ -199,6 +207,9 @@ const getInitialListings = (): FirestoreListing[] => {
     resolutionRemarks: issue.resolutionRemarks,
     resolvedAt: issue.resolvedAt,
     voiceNoteTranscription: issue.voiceNoteTranscription,
+    originalLanguage: issue.originalLanguage,
+    originalText: issue.originalText,
+    normalizedDescription: issue.normalizedDescription,
   }));
 };
 
@@ -213,6 +224,30 @@ const loadLocalListings = (): FirestoreListing[] => {
     }
     const parsed: FirestoreListing[] = JSON.parse(raw);
     const cleaned = parsed.filter((l) => !isPurgedListing(l));
+
+    // Migration helper: If local storage has old Bangalore coordinates (lat < 15), migrate them to Pune coordinates
+    const hasOldBangaloreCoordinates = cleaned.some((l) => Number(l.lat) < 15);
+    if (hasOldBangaloreCoordinates) {
+      const puneInit = getInitialListings().filter((l) => !isPurgedListing(l));
+      const userCustomListings = cleaned
+        .filter((l) => !l.id?.startsWith('civic-10') && l.reporterId !== 'user-me')
+        .map((l) => ({
+          ...l,
+          ticketNumber:
+            l.ticketNumber?.replace('BLR-', 'PUN-') ||
+            `PUN-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+          lat: Number(l.lat) < 15 ? 18.5204 + (Math.random() - 0.5) * 0.05 : l.lat,
+          lng: Number(l.lng) > 75 ? 73.8567 + (Math.random() - 0.5) * 0.05 : l.lng,
+          address: l.address?.includes('Bengaluru')
+            ? l.address.replace('Bengaluru', 'Pune')
+            : l.address || 'Pune, Maharashtra',
+          ward: l.ward?.includes('Indiranagar') ? 'Demo Ward 1 - Kothrud' : l.ward,
+        }));
+      const migrated = [...puneInit, ...userCustomListings];
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(migrated));
+      return migrated;
+    }
+
     if (cleaned.length !== parsed.length) {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cleaned));
     }
@@ -398,6 +433,9 @@ export const createListingDocument = async (
     reporterPhone?: string;
     includeReporterContact?: boolean;
     voiceNoteTranscription?: string;
+    originalLanguage?: string;
+    originalText?: string;
+    normalizedDescription?: string;
   }
 ): Promise<CivicIssue> => {
   // 1. Check Rate Limit
@@ -407,7 +445,7 @@ export const createListingDocument = async (
   }
 
   const tempId = data.id || ('civic-' + Date.now());
-  const ticketNumber = data.ticketNumber || (`BLR-2026-${Math.floor(1000 + Math.random() * 9000)}`);
+  const ticketNumber = data.ticketNumber || (`PUN-2026-${Math.floor(1000 + Math.random() * 9000)}`);
 
   // 2. Upload Photos (max 3)
   const photosToProcess = data.photoFiles.slice(0, 3);
@@ -445,6 +483,9 @@ export const createListingDocument = async (
     mergedCount: 0,
     targetResolutionHours: data.severity === 'Critical' ? 4 : data.severity === 'High' ? 12 : 24,
     voiceNoteTranscription: data.voiceNoteTranscription,
+    originalLanguage: data.originalLanguage,
+    originalText: data.originalText,
+    normalizedDescription: data.normalizedDescription,
     timeline: [
       {
         id: 't-' + Date.now(),

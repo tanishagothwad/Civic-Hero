@@ -13,7 +13,7 @@ export const AnalyticsOverview: React.FC = () => {
   issues.forEach((i) => {
     wardMap[i.location.ward] = (wardMap[i.location.ward] || 0) + 1;
   });
-  const topWard = Object.entries(wardMap).sort((a, b) => b[1] - a[1])[0] || ['Indiranagar', 0];
+  const topWard = Object.entries(wardMap).sort((a, b) => b[1] - a[1])[0] || ['Kothrud', 0];
 
   const cards = [
     {

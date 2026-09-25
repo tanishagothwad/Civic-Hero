@@ -59,6 +59,9 @@ export interface CivicIssue {
   includeReporterContact?: boolean;
   resolutionRemarks?: string;
   resolvedAt?: string;
+  originalLanguage?: string;
+  originalText?: string;
+  normalizedDescription?: string;
 }
 
 

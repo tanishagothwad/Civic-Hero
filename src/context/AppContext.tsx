@@ -48,6 +48,7 @@ interface ToastData {
 
 const AUTH_STORAGE_KEY = 'civic_hero_auth_session';
 const PROFILES_STORAGE_KEY = 'civic_hero_user_profiles_v1';
+const LANGUAGE_STORAGE_KEY = 'civic_hero_language';
 
 interface SavedProfile {
   userId: string;
@@ -122,6 +123,9 @@ interface AppContextType {
     photoFiles?: (File | Blob | string)[];
     voiceNoteTranscription?: string;
     includeReporterContact?: boolean;
+    originalLanguage?: string;
+    originalText?: string;
+    normalizedDescription?: string;
     location: {
       address: string;
       ward: string;
@@ -162,7 +166,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [role, setRole] = useState<UserRole>(session ? session.role : 'citizen');
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const [language, setLanguageState] = useState<SupportedLanguage>(() => {
+    try {
+      const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (saved && ['mr', 'hi', 'en', 'ta', 'te', 'bn', 'kn'].includes(saved)) {
+        return saved as SupportedLanguage;
+      }
+    } catch {
+      // ignore
+    }
+    return 'en';
+  });
+
+  const setLanguage = (lang: SupportedLanguage) => {
+    setLanguageState(lang);
+    try {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+    } catch {
+      // ignore
+    }
+  };
+
   const [issues, setIssues] = useState<CivicIssue[]>(initialIssues);
   const [currentUser, setCurrentUser] = useState<UserProfile>(() => {
     if (session && session.role === 'citizen') {
@@ -186,7 +210,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     {
       id: 'notif-1',
       title: 'Report In Progress',
-      message: 'Officer Ramesh Kumar has been dispatched to 100ft Road pothole.',
+      message: 'Officer Ramesh Kumar has been dispatched to Karve Road pothole in Kothrud.',
       type: 'worker',
       timestamp: '30 mins ago',
       read: false,
@@ -195,7 +219,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     {
       id: 'notif-2',
       title: 'Issue Resolved & +50 XP Awarded!',
-      message: 'Garbage pile near Defense Colony park has been successfully cleaned.',
+      message: 'Garbage pile near Sambhaji Park has been successfully cleaned.',
       type: 'xp',
       timestamp: '3 hours ago',
       read: false,
@@ -320,7 +344,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     let assignedRole: UserRole = 'citizen';
     let userName = savedProfile?.name || 'Citizen Hero';
-    let userWard = savedProfile?.ward || 'Ward 4 - Indiranagar';
+    let userWard = savedProfile?.ward || 'Demo Ward 1 - Kothrud';
     let userDept = '';
     let workerId = '';
     let avatar = '';
@@ -329,7 +353,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (matched) {
       assignedRole = matched.role;
       userName = matched.name;
-      userWard = matched.ward || 'Ward 4 - Indiranagar';
+      userWard = matched.ward || 'Demo Ward 1 - Kothrud';
       userDept = matched.department || '';
       workerId = matched.workerId || '';
       avatar = matched.avatar || '';
@@ -340,13 +364,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (code === 'MUNI-STAFF-2026') {
         assignedRole = 'municipal';
         userName = 'Municipal Officer';
-        userDept = 'BBMP Municipal Administration';
-        userWard = 'Citywide Admin HQ';
+        userDept = 'PMC Municipal Administration';
+        userWard = 'PMC Headquarters - Shivajinagar';
       } else if (code === 'WORKER-FIELD-2026') {
         assignedRole = 'worker';
         userName = 'Field Operative';
-        userDept = 'Public Works Dept';
-        userWard = 'Ward 4 - Indiranagar';
+        userDept = 'PMC Civil & Pothole Repair';
+        userWard = 'Demo Ward 1 - Kothrud';
         workerId = 'worker-1';
       } else {
         // Default role for anyone signing up without a special code/invite: Citizen
@@ -414,7 +438,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const completeCitizenOnboarding = (name: string, ward: string) => {
     if (!session) return;
     const finalName = name.trim() || 'Citizen Hero';
-    const finalWard = ward || 'Ward 4 - Indiranagar';
+    const finalWard = ward || 'Demo Ward 1 - Kothrud';
 
     const updatedSession: AuthSession = {
       ...session,
@@ -530,6 +554,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     photoFiles?: (File | Blob | string)[];
     voiceNoteTranscription?: string;
     includeReporterContact?: boolean;
+    originalLanguage?: string;
+    originalText?: string;
+    normalizedDescription?: string;
     location: {
       address: string;
       ward: string;
@@ -539,7 +566,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
   }): CivicIssue => {
     const tempId = 'civic-' + Date.now();
-    const newTicket = `BLR-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newTicket = `PUN-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const effectiveCategory = data.category === 'Other' && data.customCategory ? 'Other' : data.category;
     const effectiveTitle = data.title.trim() || `${data.category === 'Other' && data.customCategory ? data.customCategory : data.category} near ${data.location.address.split(',')[0]}`;
@@ -560,6 +587,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       voiceNoteTranscription: data.voiceNoteTranscription,
       includeReporterContact: data.includeReporterContact ?? true,
       reporterPhone: session?.phone || currentUser.phone,
+      originalLanguage: data.originalLanguage,
+      originalText: data.originalText,
+      normalizedDescription: data.normalizedDescription,
       createdAt: 'Just now',
       updatedAt: 'Just now',
       timeline: [
@@ -567,7 +597,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           id: 't-now-' + Date.now(),
           status: 'Submitted',
           timestamp: 'Just now',
-          title: 'Report Submitted & Published to Ward',
+          title: 'Report Submitted & Published to Area',
           description: `Citizen listing published to ${data.location.ward}. Priority: ${data.severity}.`,
           actor: currentUser.name,
         },
@@ -601,6 +631,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       reporterPhone: session?.phone || currentUser.phone,
       includeReporterContact: data.includeReporterContact ?? true,
       voiceNoteTranscription: data.voiceNoteTranscription,
+      originalLanguage: data.originalLanguage,
+      originalText: data.originalText,
+      normalizedDescription: data.normalizedDescription,
     }).catch((err) => {
       console.error('Failed to persist listing:', err);
       if (err.message && err.message.includes('Rate limit')) {

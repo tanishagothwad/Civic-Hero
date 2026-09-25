@@ -11,16 +11,32 @@ import {
   LayoutDashboard,
   Map as MapIcon,
   Table as TableIcon,
+  Flame,
 } from 'lucide-react';
 
 export const MunicipalDashboard: React.FC = () => {
-  const { t } = useApp();
+  const { t, issues } = useApp();
   const [viewMode, setViewMode] = useState<'map' | 'table' | 'split'>('split');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [severityFilter, setSeverityFilter] = useState<string>('all');
 
   const [selectedIssue, setSelectedIssue] = useState<CivicIssue | null>(null);
   const [assigningIssue, setAssigningIssue] = useState<CivicIssue | null>(null);
+
+  // Dynamic Hotspot & Priority Analysis
+  const totalActive = issues.filter((i) => i.status !== 'Resolved').length;
+  const criticalActive = issues.filter((i) => i.status !== 'Resolved' && i.severity === 'Critical').length;
+  const criticalRatio = totalActive > 0 ? Math.round((criticalActive / totalActive) * 100) : 0;
+
+  const wardCounts: Record<string, number> = {};
+  const categoryCounts: Record<string, number> = {};
+  issues.filter((i) => i.status !== 'Resolved').forEach((i) => {
+    wardCounts[i.location.ward] = (wardCounts[i.location.ward] || 0) + 1;
+    categoryCounts[i.category] = (categoryCounts[i.category] || 0) + 1;
+  });
+
+  const topWardEntry = Object.entries(wardCounts).sort((a, b) => b[1] - a[1])[0] || ['Demo Ward 1 - Kothrud', 0];
+  const topCategoryEntry = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0] || ['Pothole', 0];
 
   return (
     <div className="w-full bg-[#F8F9FA] text-[#202124] pb-12 font-sans">
@@ -41,7 +57,7 @@ export const MunicipalDashboard: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs text-[#5F6368]">
-                Bengaluru Municipal Corporation • Indiranagar & Koramangala Zones
+                Pune Municipal Corporation (PMC) • Kothrud, Shivajinagar & City Zones (Prototype Demo)
               </p>
             </div>
           </div>
@@ -99,6 +115,53 @@ export const MunicipalDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* KPI Analytics Overview */}
         <AnalyticsOverview />
+
+        {/* Dynamic Issue Hotspots & Priority Zones (Prototype Demo Dataset) */}
+        <div className="bg-white border border-[#DADCE0] rounded-xl p-4 sm:p-5 shadow-elevation-1">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#DADCE0]">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shrink-0">
+                <Flame className="w-4 h-4 text-rose-600" />
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h3 className="text-sm font-bold text-[#202124]">
+                    {t.hotspotsTitle || 'Active Issue Hotspots & Priority Clusters'}
+                  </h3>
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-300 px-2 py-0.5 rounded shadow-2xs">
+                    {t.demoNotice || 'Prototype Dataset — Demo Data'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#5F6368]">
+                  {t.hotspotsSubtitle || 'Calculated in real-time from active municipal listings across Pune'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3">
+            <div className="p-3 bg-[#F8F9FA] rounded-lg border border-[#DADCE0]">
+              <span className="text-[10px] uppercase font-bold text-[#5F6368] tracking-wider block">Top Hotspot Ward</span>
+              <p className="text-sm sm:text-base font-bold text-[#202124] mt-0.5">{topWardEntry[0].split('-')[1]?.trim() || topWardEntry[0]}</p>
+              <span className="text-[11px] text-rose-600 font-semibold">{topWardEntry[1]} active complaints</span>
+            </div>
+            <div className="p-3 bg-[#F8F9FA] rounded-lg border border-[#DADCE0]">
+              <span className="text-[10px] uppercase font-bold text-[#5F6368] tracking-wider block">Predominant Hazard</span>
+              <p className="text-sm sm:text-base font-bold text-[#202124] mt-0.5">{topCategoryEntry[0]}</p>
+              <span className="text-[11px] text-[#1A73E8] font-semibold">{topCategoryEntry[1]} reports ({totalActive > 0 ? Math.round((topCategoryEntry[1] / totalActive) * 100) : 0}%)</span>
+            </div>
+            <div className="p-3 bg-[#F8F9FA] rounded-lg border border-[#DADCE0]">
+              <span className="text-[10px] uppercase font-bold text-[#5F6368] tracking-wider block">Critical Severity Ratio</span>
+              <p className="text-sm sm:text-base font-bold text-rose-600 mt-0.5">{criticalRatio}% Critical</p>
+              <span className="text-[11px] text-[#5F6368] font-medium">{criticalActive} immediate hazards</span>
+            </div>
+            <div className="p-3 bg-[#F8F9FA] rounded-lg border border-[#DADCE0]">
+              <span className="text-[10px] uppercase font-bold text-[#5F6368] tracking-wider block">Suggested Tactical Action</span>
+              <p className="text-xs sm:text-sm font-semibold text-emerald-700 mt-0.5">Deploy Quick Response Squad</p>
+              <span className="text-[11px] text-[#5F6368] font-medium">Prioritize {topWardEntry[0].split('-')[1]?.trim() || 'Kothrud'} corridor</span>
+            </div>
+          </div>
+        </div>
 
         {/* Dynamic Views */}
         {viewMode === 'split' && (

@@ -13,6 +13,7 @@ import {
   Sparkles,
   Volume2,
 } from 'lucide-react';
+import { aiAssistantService } from '../../services/aiAssistantService';
 
 interface IssueTrackerModalProps {
   issue: CivicIssue | null;
@@ -20,7 +21,7 @@ interface IssueTrackerModalProps {
 }
 
 export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onClose }) => {
-  const { upvoteReport, t } = useApp();
+  const { upvoteReport, language, t } = useApp();
 
   if (!issue) return null;
 
@@ -239,6 +240,26 @@ export const IssueTrackerModal: React.FC<IssueTrackerModalProps> = ({ issue, onC
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Ask Civic Hero Assistant Explanation Card */}
+          <div className="bg-gradient-to-r from-[#E8F0FE] to-[#F8F9FA] rounded-xl border border-[#D2E3FC] p-3.5 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 rounded-full bg-[#4285F4] text-white flex items-center justify-center shadow-xs">
+                  <Sparkles className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-bold text-[#1A73E8]">
+                  {language === 'mr' ? 'नागरीक हिरो सहाय्यक' : language === 'hi' ? 'सिविक हीरो सहायक' : 'Ask Civic Hero Assistant'}
+                </span>
+              </div>
+              <span className="text-[10px] text-[#137333] font-semibold bg-[#E6F4EA] px-2 py-0.5 rounded border border-[#CEEAD6]">
+                {language === 'mr' ? 'थेट स्थिती' : language === 'hi' ? 'लाइव स्थिति' : 'Live Status'}
+              </span>
+            </div>
+            <p className="text-xs text-[#202124] leading-relaxed bg-white p-2.5 rounded border border-[#DADCE0] shadow-xs">
+              {aiAssistantService.explainComplaintStatus(issue, language)}
+            </p>
           </div>
 
           {/* Assigned Worker Info (If available) */}

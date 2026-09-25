@@ -17,7 +17,9 @@ import {
   Flag,
   Trash2,
   User,
+  Sparkles,
 } from 'lucide-react';
+import { aiAssistantService } from '../../services/aiAssistantService';
 
 interface IssueDetailPanelProps {
   issue: CivicIssue | null;
@@ -30,7 +32,7 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
   onClose,
   onOpenFullModal,
 }) => {
-  const { upvoteReport, flagReport, deleteReport, currentUser, role, t } = useApp();
+  const { upvoteReport, flagReport, deleteReport, currentUser, role, language, t } = useApp();
 
   if (!issue) return null;
 
@@ -254,7 +256,7 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
           </p>
         </div>
 
-        {/* Location & BBMP Ward Info */}
+        {/* Location & PMC Area Info */}
         <div className="space-y-2">
           <span className="text-xs font-medium uppercase tracking-wider text-[#5F6368] block">
             Location & GPS Verification
@@ -265,7 +267,7 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
               <div>
                 <p className="text-xs font-medium text-[#202124]">{issue.location.address}</p>
                 <p className="text-[11px] text-[#5F6368] mt-0.5">
-                  Ward: {issue.location.ward} • {issue.location.city}
+                  Area: {issue.location.ward} • {issue.location.city}
                 </p>
               </div>
             </div>
@@ -276,6 +278,26 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Ask Civic Hero Assistant Explanation Card */}
+        <div className="bg-gradient-to-r from-[#E8F0FE] to-[#F8F9FA] rounded-xl border border-[#D2E3FC] p-3.5 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 rounded-full bg-[#4285F4] text-white flex items-center justify-center shadow-xs">
+                <Sparkles className="w-3.5 h-3.5" />
+              </div>
+              <span className="text-xs font-bold text-[#1A73E8]">
+                {language === 'mr' ? 'नागरीक हिरो सहाय्यक' : language === 'hi' ? 'सिविक हीरो सहायक' : 'Ask Civic Hero Assistant'}
+              </span>
+            </div>
+            <span className="text-[10px] text-[#137333] font-semibold bg-[#E6F4EA] px-2 py-0.5 rounded border border-[#CEEAD6]">
+              {language === 'mr' ? 'थेट स्थिती' : language === 'hi' ? 'लाइव स्थिति' : 'Live Status'}
+            </span>
+          </div>
+          <p className="text-xs text-[#202124] leading-relaxed bg-white p-2.5 rounded border border-[#DADCE0] shadow-xs">
+            {aiAssistantService.explainComplaintStatus(issue, language)}
+          </p>
         </div>
 
         {/* Assigned Officer / Resolution Notes */}
@@ -290,7 +312,7 @@ export const IssueDetailPanel: React.FC<IssueDetailPanelProps> = ({
               </div>
               <div className="flex-1 min-w-0 text-xs">
                 <p className="font-medium text-[#202124] truncate">{issue.assignedWorkerName}</p>
-                <p className="text-[11px] text-[#5F6368]">BBMP Civic Operations Team</p>
+                <p className="text-[11px] text-[#5F6368]">PMC Civic Operations Team</p>
               </div>
               {issue.targetResolutionHours && (
                 <div className="text-right">

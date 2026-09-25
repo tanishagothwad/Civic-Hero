@@ -33,6 +33,7 @@ interface CitizenHomeProps {
   onSelectIssue: (issue: CivicIssue) => void;
   onOpenGamification: () => void;
   selectedIssueId?: string | null;
+  onOpenAssistant?: () => void;
 }
 
 export const CitizenHome: React.FC<CitizenHomeProps> = ({
@@ -44,6 +45,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
   onSelectIssue,
   onOpenGamification,
   selectedIssueId,
+  onOpenAssistant,
 }) => {
   const { currentUser, role, issues, upvoteReport, flagReport, deleteReport, t, celebrateBadge } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -333,7 +335,7 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
               {activeSection === 'my-reports'
                 ? `${filteredIssues.length} issues reported by you`
                 : activeSection === 'community'
-                ? `${filteredIssues.length} community reports across Bengaluru`
+                ? `${filteredIssues.length} community reports across Pune`
                 : `${filteredIssues.length} reports in ${currentUser.ward.split('-')[0]}`}
             </p>
           </div>
@@ -608,6 +610,26 @@ export const CitizenHome: React.FC<CitizenHomeProps> = ({
           </div>
         )}
       </div>
+
+      {/* Floating Civic Hero AI Assistant Trigger */}
+      {onOpenAssistant && (
+        <button
+          onClick={(e) => {
+            createRipple(e, 'rgba(255, 255, 255, 0.4)');
+            onOpenAssistant();
+          }}
+          className="fixed bottom-6 right-6 z-30 flex items-center space-x-2.5 px-4 py-3 bg-gradient-to-r from-[#1A73E8] to-[#4285F4] hover:from-[#1557B0] hover:to-[#1A73E8] text-white rounded-full shadow-elevation-4 hover:shadow-elevation-8 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer group border border-white/20"
+          title={t.assistantBtn || 'Civic Hero AI Assistant'}
+          aria-label={t.assistantBtn || 'Civic Hero AI Assistant'}
+        >
+          <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+          </div>
+          <span className="font-semibold text-xs tracking-wide pr-1 whitespace-nowrap">
+            {t.assistantBtn || 'Civic Hero AI'}
+          </span>
+        </button>
+      )}
     </div>
   );
 };
